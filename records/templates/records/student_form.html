@@ -1,0 +1,40 @@
+{% extends "records/base.html" %}
+{% block content %}
+<h2>{% if student %}Edit Student{% else %}Register Student{% endif %}</h2>
+
+{% if form.errors or document_form.errors or multiple_docs_form.errors %}
+  <div class="alert alert-danger">Please fix the errors below.</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-header">Student Information</div>
+          <div class="card-body">
+            {{ form.as_p }}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card mb-3">
+          <div class="card-header">Initial Document (optional)</div>
+          <div class="card-body">
+            {{ document_form.as_p }}
+          </div>
+        </div>
+        <div class="card mb-3">
+          <div class="card-header">Multiple Documents (optional)</div>
+          <div class="card-body">
+            {{ multiple_docs_form.as_p }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    {% if student %}
+      <a class="btn btn-link" href="{% url 'student_detail' student.id %}">Cancel</a>
+    {% endif %}
+  </form>
+{% endblock %}

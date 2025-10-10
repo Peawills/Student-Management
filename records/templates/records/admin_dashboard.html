@@ -1,0 +1,70 @@
+{% extends "records/base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="m-0">Admin Dashboard</h3>
+  <a href="{% url 'student_create' %}" class="btn btn-primary">+ Add Student</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-muted">Total Students</div>
+            <div class="fs-3 fw-bold">{{ total_students }}</div>
+          </div>
+          <span class="badge bg-secondary">All</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="text-muted">Male</div>
+        <div class="fs-3 fw-bold">{{ male_count }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="text-muted">Female</div>
+        <div class="fs-3 fw-bold">{{ female_count }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">Recently Added Students</div>
+  <div class="card-body p-0">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Admission No</th>
+          <th>Class</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in recent_students %}
+        <tr>
+          <td>{{ student.surname }} {{ student.other_name }}</td>
+          <td>{{ student.admission_no }}</td>
+          <td>{{ student.class_at_present }}</td>
+          <td><a class="btn btn-sm btn-outline-primary" href="{% url 'student_detail' student.id %}">Open</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center text-muted">No students yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

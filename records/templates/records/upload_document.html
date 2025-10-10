@@ -1,0 +1,26 @@
+{% extends "records/base.html" %} 
+{% block content %}
+
+    <h1>Upload Document for {{ student.surname }} {{ student.other_name }}</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Existing Documents</h2>
+    <ul>
+        {% for doc in student.documents.all %}
+            <li>
+                {{ doc.name }} -
+                <a href="{{ doc.file.url }}" target="_blank">View</a>
+            </li>
+        {% empty %}
+            <li>No documents uploaded yet.</li>
+        {% endfor %}
+    </ul>
+
+    <a class="btn btn-link" href="{% url 'student_detail' student.id %}">Back to student</a>
+
+{% endblock %}

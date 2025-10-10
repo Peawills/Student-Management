@@ -1,0 +1,11 @@
+{% extends "records/base.html" %}
+{% block content %}
+<h3>Delete Document</h3>
+<p>Are you sure you want to delete <b>{{ document.name }}</b> for <b>{{ student.surname }} {{ student.other_name }}</b>?</p>
+<form method="post">
+  {% csrf_token %}
+  <a class="btn btn-secondary" href="{% url 'student_detail' student.id %}">Cancel</a>
+  <button type="submit" class="btn btn-danger">Yes, delete</button>
+</form>
+{% endblock %}
+
