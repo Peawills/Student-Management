@@ -1,11 +1,468 @@
 {% extends "records/base.html" %}
-{% block content %}
-<h3>Delete Student</h3>
-<p>Are you sure you want to delete <b>{{ student.surname }} {{ student.other_name }}</b> ({{ student.admission_no }})?</p>
-<form method="post">
-  {% csrf_token %}
-  <a class="btn btn-secondary" href="{% url 'records:student_detail' student.id %}">Cancel</a>
-  <button type="submit" class="btn btn-danger">Yes, delete</button>
-</form>
+{% load static %}
+
+{% block title %}Delete Student - Student Management{% endblock %}
+
+{% block extra_css %}
+<style>
+  .delete-wrapper {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+
+  .delete-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 600px;
+    width: 100%;
+    animation: scaleIn 0.4s ease;
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .delete-header {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    padding: 2rem;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .delete-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+
+    50% {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+  }
+
+  .warning-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 1;
+    animation: shake 0.5s ease;
+  }
+
+  @keyframes shake {
+
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+
+    25% {
+      transform: rotate(-10deg);
+    }
+
+    75% {
+      transform: rotate(10deg);
+    }
+  }
+
+  .warning-icon i {
+    font-size: 2.5rem;
+    animation: iconPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes iconPulse {
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  .delete-header h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.75rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .delete-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.95;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .delete-body {
+    padding: 2.5rem 2rem;
+  }
+
+  .student-info-card {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 2px solid #fecaca;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .student-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #ef4444;
+  }
+
+  .student-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  }
+
+  .student-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #991b1b;
+    margin-bottom: 0.5rem;
+  }
+
+  .student-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #991b1b;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+  }
+
+  .student-detail i {
+    font-size: 1rem;
+    opacity: 0.7;
+  }
+
+  .warning-message {
+    background: #fffbeb;
+    border: 2px solid #fde047;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .warning-message i {
+    font-size: 1.5rem;
+    color: #ca8a04;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  .warning-message-content {
+    flex: 1;
+  }
+
+  .warning-message h5 {
+    color: #854d0e;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .warning-message p {
+    color: #a16207;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .warning-list {
+    margin: 0.75rem 0 0;
+    padding-left: 1.25rem;
+  }
+
+  .warning-list li {
+    color: #a16207;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn-custom {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+
+  .btn-cancel {
+    background: #f3f4f6;
+    color: #4b5563;
+    border: 2px solid #e5e7eb;
+  }
+
+  .btn-cancel:hover {
+    background: #e5e7eb;
+    color: #1f2937;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  }
+
+  .btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+
+  .btn-delete:active {
+    transform: translateY(0);
+  }
+
+  .checkbox-confirm {
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    border: 2px solid #d1d5db;
+  }
+
+  .form-check-input:checked {
+    background-color: #ef4444;
+    border-color: #ef4444;
+  }
+
+  .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25);
+    border-color: #ef4444;
+  }
+
+  .form-check-label {
+    color: #374151;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  @media (max-width: 768px) {
+    .delete-card {
+      margin: 1rem;
+    }
+
+    .delete-body {
+      padding: 2rem 1.5rem;
+    }
+
+    .action-buttons {
+      flex-direction: column-reverse;
+    }
+
+    .btn-custom {
+      width: 100%;
+    }
+  }
+</style>
 {% endblock %}
 
+{% block content %}
+<div class="delete-wrapper">
+  <div class="delete-card">
+    <!-- Header -->
+    <div class="delete-header">
+      <div class="warning-icon">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+      </div>
+      <h3>Delete Student Record</h3>
+      <p>This action cannot be undone</p>
+    </div>
+
+    <!-- Body -->
+    <div class="delete-body">
+      <!-- Student Info Card -->
+      <div class="student-info-card">
+        <div class="student-avatar">
+          {{ student.surname.0|upper }}{{ student.other_name.0|upper }}
+        </div>
+        <div class="student-name">
+          {{ student.surname }} {{ student.other_name }}
+        </div>
+        <div class="student-detail">
+          <i class="bi bi-hash"></i>
+          <span><strong>Admission No:</strong> {{ student.admission_no }}</span>
+        </div>
+        {% if student.class_at_present %}
+        <div class="student-detail">
+          <i class="bi bi-book"></i>
+          <span><strong>Class:</strong> {{ student.class_at_present }}</span>
+        </div>
+        {% endif %}
+        {% if student.email %}
+        <div class="student-detail">
+          <i class="bi bi-envelope"></i>
+          <span><strong>Email:</strong> {{ student.email }}</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Warning Message -->
+      <div class="warning-message">
+        <i class="bi bi-info-circle-fill"></i>
+        <div class="warning-message-content">
+          <h5>⚠️ Warning: Permanent Deletion</h5>
+          <p>You are about to permanently delete this student record. This will:</p>
+          <ul class="warning-list">
+            <li>Remove all student information from the database</li>
+            <li>Delete associated records and history</li>
+            <li>Cannot be recovered once deleted</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Confirmation Form -->
+      <form method="post" id="deleteForm">
+        {% csrf_token %}
+
+        <!-- Confirmation Checkbox -->
+        <div class="checkbox-confirm">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+            <label class="form-check-label" for="confirmDelete">
+              I understand this action is permanent and cannot be undone
+            </label>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <a class="btn btn-custom btn-cancel" href="{% url 'records:student_detail' student.id %}">
+            <i class="bi bi-x-circle"></i>
+            Cancel
+          </a>
+          <button type="submit" class="btn btn-custom btn-delete" id="deleteBtn" disabled>
+            <i class="bi bi-trash"></i>
+            Yes, Delete Student
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Enable delete button only when checkbox is checked
+  const checkbox = document.getElementById('confirmDelete');
+  const deleteBtn = document.getElementById('deleteBtn');
+
+  checkbox.addEventListener('change', function () {
+    if (this.checked) {
+      deleteBtn.disabled = false;
+      deleteBtn.style.opacity = '1';
+    } else {
+      deleteBtn.disabled = true;
+      deleteBtn.style.opacity = '0.5';
+    }
+  });
+
+  // Add loading state on form submission
+  document.getElementById('deleteForm').addEventListener('submit', function (e) {
+    if (checkbox.checked) {
+      deleteBtn.innerHTML = `
+                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                Deleting...
+            `;
+      deleteBtn.disabled = true;
+    }
+  });
+
+  // Keyboard shortcut: ESC to cancel
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      window.location.href = "{% url 'records:student_detail' student.id %}";
+    }
+  });
+</script>
+{% endblock %}
