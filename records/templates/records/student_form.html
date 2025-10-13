@@ -1,40 +1,456 @@
 {% extends "records/base.html" %}
 {% block content %}
-<h2>{% if student %}Edit Student{% else %}Register Student{% endif %}</h2>
+<div class="container py-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="mb-1">
+        <i class="bi bi-person-{% if student %}pencil{% else %}plus-circle{% endif %} me-2"></i>
+        {% if student %}Edit Student{% else %}Register New Student{% endif %}
+      </h2>
+      <p class="text-muted">
+        {% if student %}Update student information and documents{% else %}Complete the form below to register a new
+        student{% endif %}
+      </p>
+    </div>
+  </div>
 
-{% if form.errors or document_form.errors or multiple_docs_form.errors %}
-  <div class="alert alert-danger">Please fix the errors below.</div>
-{% endif %}
+  {% if form.errors or document_form.errors or multiple_docs_form.errors %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <strong>Error!</strong> Please fix the issues highlighted below before submitting.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="mt-2">
+      {% if form.errors %}
+      <div><strong>Student form errors:</strong>
+        <ul class="mb-0">{% for field, errors in form.errors.items %}
+          <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% if document_form.errors %}
+      <div class="mt-2"><strong>Document form errors:</strong>
+        <ul class="mb-0">{% for field, errors in document_form.errors.items %}
+          <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% if multiple_docs_form.errors %}
+      <div class="mt-2"><strong>Multiple docs form errors:</strong>
+        <ul class="mb-0">{% for field, errors in multiple_docs_form.errors.items %}
+          <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
 
-<form method="post" enctype="multipart/form-data">
+  <form method="post" enctype="multipart/form-data" id="studentForm" novalidate>
     {% csrf_token %}
-    <div class="row">
-      <div class="col-md-8">
-        <div class="card mb-3">
-          <div class="card-header">Student Information</div>
-          <div class="card-body">
-            {{ form.as_p }}
+
+    <div class="row g-4">
+      <!-- Student Information Section -->
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-header bg-primary text-white d-flex align-items-center">
+            <i class="bi bi-person-badge me-2"></i>
+            <h5 class="mb-0">Student Information</h5>
+            <span class="badge bg-light text-primary ms-auto">Required</span>
+          </div>
+          <div class="card-body p-4">
+            <!-- Render hidden fields -->
+            {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+
+            <!-- Student fields grouped for clarity -->
+            <div class="mb-4">
+              <h6 class="mb-3 text-primary">Student Details</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.surname.label }}</label>
+                  {{ form.surname }}
+                  {% if form.surname.errors %}
+                  <div class="invalid-feedback d-block">{{ form.surname.errors|join:", " }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.other_name.label }}</label>
+                  {{ form.other_name }}
+                  {% if form.other_name.errors %}
+                  <div class="invalid-feedback d-block">{{ form.other_name.errors|join:", " }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.admission_no.label }}</label>
+                  {{ form.admission_no }}
+                  {% if form.admission_no.errors %}
+                  <div class="invalid-feedback d-block">{{ form.admission_no.errors|join:", " }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.sex.label }}</label>
+                  {{ form.sex }}
+                  {% if form.sex.errors %}
+                  <div class="invalid-feedback d-block">{{ form.sex.errors|join:", " }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">{{ form.date_of_birth.label }}</label>
+                  {{ form.date_of_birth }}
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">{{ form.place_of_birth.label }}</label>
+                  {{ form.place_of_birth }}
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">{{ form.nin_no.label }}</label>
+                  {{ form.nin_no }}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.nationality.label }}</label>
+                  {{ form.nationality }}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.state_of_origin.label }}</label>
+                  {{ form.state_of_origin }}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.lga.label }}</label>
+                  {{ form.lga }}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.class_at_present.label }}</label>
+                  {{ form.class_at_present }}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.class_on_entry.label }}</label>
+                  {{ form.class_on_entry }}
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.date_of_entry.label }}</label>
+                  {{ form.date_of_entry }}
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">{{ form.residential_address.label }}</label>
+                  {{ form.residential_address }}
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Father Information -->
+            <div class="mb-4">
+              <h6 class="mb-3 text-secondary">Father / Paternal Details</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.father_name.label }}</label>
+                  {{ form.father_name }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.father_mobile.label }}</label>
+                  {{ form.father_mobile }}
+                </div>
+                <div class="col-12">
+                  <label class="form-label">{{ form.father_address.label }}</label>
+                  {{ form.father_address }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.father_occupation.label }}</label>
+                  {{ form.father_occupation }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.father_educational_level.label }}</label>
+                  {{ form.father_educational_level }}
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Mother Information -->
+            <div class="mb-4">
+              <h6 class="mb-3 text-secondary">Mother / Maternal Details</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.mother_name.label }}</label>
+                  {{ form.mother_name }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.mother_mobile.label }}</label>
+                  {{ form.mother_mobile }}
+                </div>
+                <div class="col-12">
+                  <label class="form-label">{{ form.mother_address.label }}</label>
+                  {{ form.mother_address }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.mother_occupation.label }}</label>
+                  {{ form.mother_occupation }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.mother_educational_level.label }}</label>
+                  {{ form.mother_educational_level }}
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Guardian Information -->
+            <div class="mb-4">
+              <h6 class="mb-3 text-secondary">Guardian (if applicable)</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.guardian_name.label }}</label>
+                  {{ form.guardian_name }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.guardian_mobile.label }}</label>
+                  {{ form.guardian_mobile }}
+                </div>
+                <div class="col-12">
+                  <label class="form-label">{{ form.guardian_address.label }}</label>
+                  {{ form.guardian_address }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">{{ form.guardian_occupation.label }}</label>
+                  {{ form.guardian_occupation }}
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Health & Previous Schools -->
+            <div class="mb-4">
+              <h6 class="mb-3 text-warning">Health & Previous Schools</h6>
+              <div class="row g-3 align-items-center">
+                <div class="col-md-6">
+                  <label class="form-label">Previous Schools</label>
+                  {{ form.prev_schools }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label d-block">Special Needs</label>
+                  <div class="form-check form-check-inline">
+                    {{ form.visually_impaired }} <label class="form-check-label ms-1">Visually Impaired</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    {{ form.deaf }} <label class="form-check-label ms-1">Deaf</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    {{ form.physically_disabled }} <label class="form-check-label ms-1">Physically Disabled</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    {{ form.mentally_impaired }} <label class="form-check-label ms-1">Mentally Impaired</label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">{{ form.others.label }}</label>
+                  {{ form.others }}
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card mb-3">
-          <div class="card-header">Initial Document (optional)</div>
+
+      <!-- Documents Section -->
+      <div class="col-lg-4">
+        <!-- Initial Document -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-info text-white d-flex align-items-center">
+            <i class="bi bi-file-earmark-arrow-up me-2"></i>
+            <h6 class="mb-0">Initial Document</h6>
+            <span class="badge bg-light text-info ms-auto" style="font-size: 0.7rem;">Optional</span>
+          </div>
           <div class="card-body">
             {{ document_form.as_p }}
+            <small class="text-muted d-block mt-2">
+              <i class="bi bi-info-circle me-1"></i>
+              Upload a primary document (PDF, DOC, or image)
+            </small>
           </div>
         </div>
-        <div class="card mb-3">
-          <div class="card-header">Multiple Documents (optional)</div>
+
+        <!-- Multiple Documents -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-info text-white d-flex align-items-center">
+            <i class="bi bi-files me-2"></i>
+            <h6 class="mb-0">Additional Documents</h6>
+            <span class="badge bg-light text-info ms-auto" style="font-size: 0.7rem;">Optional</span>
+          </div>
           <div class="card-body">
             {{ multiple_docs_form.as_p }}
+            <small class="text-muted d-block mt-2">
+              <i class="bi bi-info-circle me-1"></i>
+              Upload multiple supporting documents
+            </small>
+          </div>
+        </div>
+
+        <!-- Help Card -->
+        <div class="card shadow-sm border-0 bg-light">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="bi bi-question-circle me-2"></i>Need Help?
+            </h6>
+            <p class="card-text small mb-0">
+              Ensure all required fields are filled correctly. Accepted file formats: PDF, DOC, DOCX, JPG, PNG.
+            </p>
           </div>
         </div>
       </div>
     </div>
-    <button type="submit" class="btn btn-success">Save</button>
-    {% if student %}
-      <a class="btn btn-link" href="{% url 'student_detail' student.id %}">Cancel</a>
-    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="row mt-4">
+      <div class="col">
+        <div class="d-flex gap-2 justify-content-start">
+          <button type="submit" class="btn btn-success btn-lg px-4">
+            <i class="bi bi-check-circle me-2"></i>
+            {% if student %}Update Student{% else %}Register Student{% endif %}
+          </button>
+
+          {% if student %}
+          <a class="btn btn-outline-secondary btn-lg px-4" href="{% url 'records:student_detail' student.pk %}">
+            <i class="bi bi-x-circle me-2"></i>Cancel
+          </a>
+          {% else %}
+          <button type="reset" class="btn btn-outline-secondary btn-lg px-4">
+            <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+          </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
   </form>
+</div>
+
+<style>
+  .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .card-header {
+    font-weight: 500;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 252, 0.15);
+  }
+
+  .btn {
+    transition: all 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+  }
+
+  .alert {
+    border-left: 4px solid #dc3545;
+  }
+
+  @media (max-width: 991px) {
+    .card {
+      margin-bottom: 1rem;
+    }
+  }
+</style>
+
+<script>
+  // Add Bootstrap Icons if not already included
+  if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css';
+    document.head.appendChild(link);
+  }
+
+  // Form validation feedback (robust)
+  (function () {
+    const form = document.getElementById('studentForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      try {
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+          let hasValue = false;
+
+          if (field.type === 'file') {
+            hasValue = field.files && field.files.length > 0;
+          } else if (field.type === 'checkbox' || field.type === 'radio') {
+            // For checkboxes/radios, check if any in the same named group is checked
+            const name = field.getAttribute('name');
+            if (name) {
+              hasValue = this.querySelectorAll(`[name="${name}"]:checked`).length > 0;
+            } else {
+              hasValue = !!field.checked;
+            }
+          } else {
+            const v = field.value || '';
+            hasValue = (v + '').trim().length > 0;
+          }
+
+          if (!hasValue) {
+            isValid = false;
+            field.classList.add('is-invalid');
+          } else {
+            field.classList.remove('is-invalid');
+          }
+        });
+
+        if (!isValid) {
+          e.preventDefault();
+          alert('Please fill in all required fields.');
+        }
+      } catch (err) {
+        // Log and don't block submit on unexpected JS errors
+        console.error('Form validation error:', err);
+      }
+    });
+  })();
+
+  // File upload preview
+  document.querySelectorAll('input[type="file"]').forEach(input => {
+    input.addEventListener('change', function (e) {
+      const fileName = e.target.files[0]?.name;
+      if (fileName) {
+        const label = this.nextElementSibling;
+        if (label && label.classList.contains('form-label')) {
+          label.innerHTML = `<i class="bi bi-check-circle text-success me-1"></i> ${fileName}`;
+        }
+      }
+    });
+  });
+</script>
 {% endblock %}

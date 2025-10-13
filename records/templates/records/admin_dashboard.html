@@ -1,70 +1,405 @@
 {% extends "records/base.html" %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h3 class="m-0">Admin Dashboard</h3>
-  <a href="{% url 'student_create' %}" class="btn btn-primary">+ Add Student</a>
-</div>
+<div class="container-fluid py-4">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">
+        <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+      </h2>
+      <p class="text-muted mb-0">Overview of student records and statistics</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'records:student_create' %}" class="btn btn-primary btn-lg shadow-sm">
+        <i class="bi bi-person-plus-fill me-2"></i>Add Student
+      </a>
+    </div>
+  </div>
 
-<div class="row g-3 mb-4">
-  <div class="col-md-4">
-    <div class="card">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <div class="text-muted">Total Students</div>
-            <div class="fs-3 fw-bold">{{ total_students }}</div>
+  <!-- Statistics Cards -->
+  <div class="row g-4 mb-4">
+    <!-- Total Students Card -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="stat-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3">
+              <i class="bi bi-people-fill fs-3"></i>
+            </div>
+            <span class="badge bg-primary-subtle text-primary">Total</span>
           </div>
-          <span class="badge bg-secondary">All</span>
+          <h6 class="text-muted text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+            Total Students
+          </h6>
+          <div class="d-flex align-items-end">
+            <h2 class="mb-0 fw-bold display-5">{{ total_students }}</h2>
+            <span class="text-success ms-2 mb-1">
+              <i class="bi bi-arrow-up-short"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Male Students Card -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="stat-icon bg-info bg-opacity-10 text-info rounded-3 p-3">
+              <i class="bi bi-gender-male fs-3"></i>
+            </div>
+            <span class="badge bg-info-subtle text-info">
+              {% widthratio male_count total_students 100 %}%
+            </span>
+          </div>
+          <h6 class="text-muted text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+            Male Students
+          </h6>
+          <div class="d-flex align-items-end">
+            <h2 class="mb-0 fw-bold display-5">{{ male_count }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Female Students Card -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="stat-icon bg-danger bg-opacity-10 text-danger rounded-3 p-3">
+              <i class="bi bi-gender-female fs-3"></i>
+            </div>
+            <span class="badge bg-danger-subtle text-danger">
+              {% widthratio female_count total_students 100 %}%
+            </span>
+          </div>
+          <h6 class="text-muted text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+            Female Students
+          </h6>
+          <div class="d-flex align-items-end">
+            <h2 class="mb-0 fw-bold display-5">{{ female_count }}</h2>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="card">
-      <div class="card-body">
-        <div class="text-muted">Male</div>
-        <div class="fs-3 fw-bold">{{ male_count }}</div>
+
+  <!-- Recent Students Table -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-clock-history me-2 text-primary"></i>Recently Added Students
+        </h5>
+        <div class="input-group" style="max-width: 300px;">
+          <span class="input-group-text bg-light border-end-0">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" class="form-control border-start-0 bg-light" placeholder="Search students..."
+            id="searchInput">
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card">
-      <div class="card-body">
-        <div class="text-muted">Female</div>
-        <div class="fs-3 fw-bold">{{ female_count }}</div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle" id="studentsTable">
+          <thead class="table-light">
+            <tr>
+              <th class="px-4 py-3">
+                <i class="bi bi-person me-2"></i>Name
+              </th>
+              <th class="py-3">
+                <i class="bi bi-hash me-2"></i>Admission No
+              </th>
+              <th class="py-3">
+                <i class="bi bi-book me-2"></i>Class
+              </th>
+              <th class="py-3">
+                <i class="bi bi-calendar-event me-2"></i>Date Added
+              </th>
+              <th class="text-end px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in recent_students %}
+            <tr class="student-row" data-name="{{ student.surname|lower }} {{ student.other_name|lower }}"
+              data-admission="{{ student.admission_no|lower }}" data-class="{{ student.class_at_present|lower }}">
+              <td class="px-4 py-3">
+                <div class="d-flex align-items-center">
+                  <div class="avatar-circle bg-primary bg-opacity-10 text-primary me-3">
+                    {{ student.surname|slice:":1" }}{{ student.other_name|slice:":1" }}
+                  </div>
+                  <div>
+                    <div class="fw-semibold">{{ student.surname }} {{ student.other_name }}</div>
+                    <small class="text-muted">{{ student.email|default:"No email" }}</small>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3">
+                <span class="badge bg-light text-dark border">{{ student.admission_no }}</span>
+              </td>
+              <td class="py-3">
+                <span class="text-dark">{{ student.class_at_present }}</span>
+              </td>
+              <td class="py-3">
+                <small class="text-muted">
+                  <i class="bi bi-calendar3 me-1"></i>
+                  {{ student.created_at|date:"M d, Y"|default:"N/A" }}
+                </small>
+              </td>
+              <td class="text-end px-4 py-3">
+                <div class="btn-group" role="group">
+                  <a href="{% url 'records:student_detail' student.id %}" class="btn btn-sm btn-outline-primary"
+                    data-bs-toggle="tooltip" title="View Details">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <a href="{% url 'records:student_update' student.id %}" class="btn btn-sm btn-outline-secondary"
+                    data-bs-toggle="tooltip" title="Edit Student">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center py-5">
+                <div class="empty-state">
+                  <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                  <p class="text-muted mt-3 mb-0">No students added yet.</p>
+                  <a href="{% url 'records:student_create' %}" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle me-2"></i>Add Your First Student
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
+    </div>
+    <div class="card-footer bg-white border-top py-2">
+      <small class="text-muted" id="searchResults">
+        Showing {{ recent_students|length }} student{{ recent_students|length|pluralize }}
+      </small>
     </div>
   </div>
 </div>
 
-<div class="card">
-  <div class="card-header">Recently Added Students</div>
-  <div class="card-body p-0">
-    <table class="table mb-0">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Admission No</th>
-          <th>Class</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for student in recent_students %}
-        <tr>
-          <td>{{ student.surname }} {{ student.other_name }}</td>
-          <td>{{ student.admission_no }}</td>
-          <td>{{ student.class_at_present }}</td>
-          <td><a class="btn btn-sm btn-outline-primary" href="{% url 'student_detail' student.id %}">Open</a></td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="4" class="text-center text-muted">No students yet.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
+<style>
+  /* Stat Cards */
+  .stat-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Avatar Circle */
+  .avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  /* Table Styling */
+  .table> :not(caption)>*>* {
+    padding: 1rem 0.75rem;
+    border-bottom-width: 1px;
+  }
+
+  .table tbody tr {
+    transition: background-color 0.15s ease;
+  }
+
+  .table tbody tr:hover {
+    background-color: rgba(13, 110, 252, 0.03);
+  }
+
+  /* Search Input */
+  .input-group .form-control:focus {
+    box-shadow: none;
+    border-color: #0d6efd;
+  }
+
+  .input-group-text {
+    background-color: transparent;
+  }
+
+  /* Buttons */
+  .btn {
+    transition: all 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn-group .btn {
+    transform: none;
+  }
+
+  /* Empty State */
+  .empty-state {
+    padding: 2rem;
+  }
+
+  /* Search highlight */
+  .search-highlight {
+    background-color: rgba(255, 193, 7, 0.3);
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .stat-card {
+      margin-bottom: 1rem;
+    }
+
+    .table {
+      font-size: 0.875rem;
+    }
+
+    .avatar-circle {
+      width: 35px;
+      height: 35px;
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Badge Styling */
+  .badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+  }
+</style>
+
+<script>
+  // Add Bootstrap Icons if not already included
+  if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css';
+    document.head.appendChild(link);
+  }
+
+  // Initialize tooltips
+  document.addEventListener('DOMContentLoaded', function () {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+
+  // Enhanced search functionality
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function (e) {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      const rows = document.querySelectorAll('.student-row');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        // Get searchable data from data attributes
+        const name = row.dataset.name || '';
+        const admission = row.dataset.admission || '';
+        const studentClass = row.dataset.class || '';
+
+        // Combine all searchable fields
+        const searchableText = `${name} ${admission} ${studentClass}`;
+
+        // Check if search term matches
+        if (searchableText.includes(searchTerm) || searchTerm === '') {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Update results count
+      if (searchResults) {
+        if (searchTerm === '') {
+          searchResults.textContent = `Showing ${rows.length} student${rows.length !== 1 ? 's' : ''}`;
+        } else {
+          searchResults.textContent = `Found ${visibleCount} student${visibleCount !== 1 ? 's' : ''} matching "${searchTerm}"`;
+        }
+      }
+
+      // Show "no results" message if needed
+      if (visibleCount === 0 && searchTerm !== '') {
+        const tbody = document.querySelector('#studentsTable tbody');
+        const existingNoResults = tbody.querySelector('.no-results-row');
+
+        if (!existingNoResults) {
+          const noResultsRow = document.createElement('tr');
+          noResultsRow.className = 'no-results-row';
+          noResultsRow.innerHTML = `
+            <td colspan="5" class="text-center py-5">
+              <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+              <p class="text-muted mt-3 mb-0">No students found matching "${searchTerm}"</p>
+              <button class="btn btn-sm btn-outline-secondary mt-2" onclick="document.getElementById('searchInput').value=''; document.getElementById('searchInput').dispatchEvent(new Event('input'));">
+                Clear Search
+              </button>
+            </td>
+          `;
+          tbody.appendChild(noResultsRow);
+        }
+      } else {
+        // Remove "no results" message if it exists
+        const noResultsRow = document.querySelector('.no-results-row');
+        if (noResultsRow) {
+          noResultsRow.remove();
+        }
+      }
+    });
+
+    // Clear search on Escape key
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        this.value = '';
+        this.dispatchEvent(new Event('input'));
+        this.blur();
+      }
+    });
+  }
+
+  // Animate stats on load
+  document.addEventListener('DOMContentLoaded', function () {
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+      setTimeout(() => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 50);
+      }, index * 100);
+    });
+  });
+</script>
 {% endblock %}
-

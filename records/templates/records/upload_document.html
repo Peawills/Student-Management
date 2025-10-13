@@ -1,26 +1,367 @@
 {% extends "records/base.html" %} 
 {% block content %}
+<div class="container py-4">
+  <!-- Header Section -->
+  <div class="d-flex align-items-center mb-4">
+  <a href="{% url 'records:student_detail' student.id %}" 
+       class="btn btn-light btn-sm me-3"
+       data-bs-toggle="tooltip"
+       title="Back to student">
+      <i class="bi bi-arrow-left"></i>
+    </a>
+    <div>
+      <h2 class="mb-1">
+        <i class="bi bi-cloud-upload me-2 text-primary"></i>
+        Document Management
+      </h2>
+      <p class="text-muted mb-0">
+        <i class="bi bi-person-badge me-1"></i>
+        {{ student.surname }} {{ student.other_name }} 
+        <span class="badge bg-light text-dark ms-2">{{ student.admission_no }}</span>
+      </p>
+    </div>
+  </div>
 
-    <h1>Upload Document for {{ student.surname }} {{ student.other_name }}</h1>
+  <div class="row g-4">
+    <!-- Upload Form Section -->
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-file-earmark-plus me-2"></i>
+            Upload New Document
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <form method="post" enctype="multipart/form-data" id="uploadForm">
+            {% csrf_token %}
+            
+            <div class="upload-area mb-3 p-4 text-center border-2 border-dashed rounded-3" id="uploadArea">
+              <i class="bi bi-cloud-arrow-up text-primary mb-3" style="font-size: 3rem;"></i>
+              <h6>Drop files here or click to browse</h6>
+              <p class="text-muted small mb-0">Supported formats: PDF, DOC, DOCX, JPG, PNG</p>
+            </div>
+            
+            {{ form.as_p }}
+            
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg" id="uploadBtn">
+                <i class="bi bi-upload me-2"></i>Upload Document
+              </button>
+            </div>
+          </form>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
-    </form>
+          <!-- Upload Stats -->
+          <div class="mt-4 pt-3 border-top">
+            <div class="row text-center g-3">
+              <div class="col-6">
+                <div class="text-muted small">Total Documents</div>
+                <div class="fs-4 fw-bold text-primary">{{ student.documents.count }}</div>
+              </div>
+              <div class="col-6">
+                <div class="text-muted small">Storage Used</div>
+                <div class="fs-4 fw-bold text-success">
+                  <i class="bi bi-hdd"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <h2>Existing Documents</h2>
-    <ul>
-        {% for doc in student.documents.all %}
-            <li>
-                {{ doc.name }} -
-                <a href="{{ doc.file.url }}" target="_blank">View</a>
-            </li>
-        {% empty %}
-            <li>No documents uploaded yet.</li>
-        {% endfor %}
-    </ul>
+    <!-- Documents List Section -->
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <i class="bi bi-files me-2 text-primary"></i>
+            Existing Documents
+          </h5>
+          <span class="badge bg-primary">{{ student.documents.count }} file{{ student.documents.count|pluralize }}</span>
+        </div>
+        <div class="card-body p-0">
+          {% if student.documents.all %}
+            <div class="list-group list-group-flush">
+              {% for doc in student.documents.all %}
+                <div class="list-group-item list-group-item-action document-item">
+                  <div class="row align-items-center g-3">
+                    <div class="col-auto">
+                      <div class="file-icon">
+                        {% if doc.file.name|slice:"-4:" == ".pdf" or doc.file.name|slice:"-4:" == ".PDF" %}
+                          <i class="bi bi-file-pdf text-danger"></i>
+                        {% elif doc.file.name|slice:"-4:" == ".doc" or doc.file.name|slice:"-5:" == ".docx" %}
+                          <i class="bi bi-file-word text-primary"></i>
+                        {% elif doc.file.name|slice:"-4:" == ".jpg" or doc.file.name|slice:"-4:" == ".png" or doc.file.name|slice:"-5:" == ".jpeg" %}
+                          <i class="bi bi-file-image text-info"></i>
+                        {% else %}
+                          <i class="bi bi-file-earmark text-secondary"></i>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-1 fw-semibold">{{ doc.name }}</h6>
+                      <div class="small text-muted">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        Uploaded {{ doc.uploaded_at|date:"M d, Y"|default:"Recently" }}
+                        {% if doc.file.size %}
+                          <span class="mx-2">•</span>
+                          <i class="bi bi-hdd me-1"></i>
+                          {{ doc.file.size|filesizeformat }}
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="btn-group" role="group">
+                        <a href="{{ doc.file.url }}" 
+                           target="_blank" 
+                           class="btn btn-sm btn-outline-primary"
+                           data-bs-toggle="tooltip"
+                           title="View Document">
+                          <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{{ doc.file.url }}" 
+                           download 
+                           class="btn btn-sm btn-outline-success"
+                           data-bs-toggle="tooltip"
+                           title="Download">
+                          <i class="bi bi-download"></i>
+                        </a>
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-danger"
+                                data-bs-toggle="tooltip"
+                                title="Delete Document"
+                                onclick="confirmDelete('{{ doc.id }}', '{{ doc.name }}')">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="bi bi-inbox text-muted mb-3" style="font-size: 4rem;"></i>
+              <h5 class="text-muted">No Documents Yet</h5>
+              <p class="text-muted mb-4">Upload your first document using the form on the left</p>
+              <button class="btn btn-primary" onclick="document.getElementById('uploadArea').scrollIntoView({behavior: 'smooth'})">
+                <i class="bi bi-upload me-2"></i>Upload Now
+              </button>
+            </div>
+          {% endif %}
+        </div>
+      </div>
 
-    <a class="btn btn-link" href="{% url 'student_detail' student.id %}">Back to student</a>
+      <!-- Quick Actions -->
+      <div class="card border-0 shadow-sm mt-4">
+        <div class="card-body">
+          <h6 class="text-muted mb-3">
+            <i class="bi bi-lightning me-2"></i>Quick Actions
+          </h6>
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'records:student_detail' student.id %}" class="btn btn-outline-secondary">
+              <i class="bi bi-person me-2"></i>View Student Profile
+            </a>
+            <a href="{% url 'records:student_update' student.id %}" class="btn btn-outline-secondary">
+              <i class="bi bi-pencil me-2"></i>Edit Student Info
+            </a>
+            <button class="btn btn-outline-secondary" onclick="window.print()">
+              <i class="bi bi-printer me-2"></i>Print Documents List
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<style>
+  /* File Icon Styling */
+  .file-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(13, 110, 252, 0.05);
+    border-radius: 8px;
+  }
+  
+  .file-icon i {
+    font-size: 1.5rem;
+  }
+
+  /* Upload Area */
+  .upload-area {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .upload-area:hover {
+    background-color: #e9ecef;
+    border-color: #0d6efd;
+    transform: scale(1.02);
+  }
+  
+  .upload-area.drag-over {
+    background-color: rgba(13, 110, 252, 0.1);
+    border-color: #0d6efd;
+    transform: scale(1.05);
+  }
+
+  /* Document Item */
+  .document-item {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border-left: 3px solid transparent;
+  }
+  
+  .document-item:hover {
+    background-color: rgba(13, 110, 252, 0.03);
+    border-left-color: #0d6efd;
+    transform: translateX(2px);
+  }
+
+  /* Cards */
+  .card {
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Buttons */
+  .btn {
+    transition: all 0.2s ease;
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+  
+  .btn-group .btn {
+    transform: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 991px) {
+    .sticky-top {
+      position: relative !important;
+    }
+  }
+
+  @media print {
+    .btn, .card-header, .upload-area {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Add Bootstrap Icons if not already included
+  if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css';
+    document.head.appendChild(link);
+  }
+
+  // Initialize tooltips
+  document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+
+  // Drag and drop functionality
+  const uploadArea = document.getElementById('uploadArea');
+  const fileInput = document.querySelector('input[type="file"]');
+  
+  if (uploadArea && fileInput) {
+    uploadArea.addEventListener('click', () => fileInput.click());
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, () => {
+        uploadArea.classList.add('drag-over');
+      });
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, () => {
+        uploadArea.classList.remove('drag-over');
+      });
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      fileInput.files = files;
+      updateFileName(files[0].name);
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        updateFileName(e.target.files[0].name);
+      }
+    });
+    
+    function updateFileName(name) {
+      const uploadIcon = uploadArea.querySelector('i');
+      const uploadText = uploadArea.querySelector('h6');
+      uploadIcon.className = 'bi bi-check-circle-fill text-success mb-3';
+      uploadText.textContent = name;
+      uploadArea.style.borderColor = '#198754';
+    }
+  }
+
+  // Form submission with loading state
+  const uploadForm = document.getElementById('uploadForm');
+  const uploadBtn = document.getElementById('uploadBtn');
+  
+  if (uploadForm && uploadBtn) {
+    uploadForm.addEventListener('submit', function() {
+      uploadBtn.disabled = true;
+      uploadBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Uploading...';
+    });
+  }
+
+  // Delete confirmation
+  function confirmDelete(docId, docName) {
+    if (confirm(`Are you sure you want to delete "${docName}"? This action cannot be undone.`)) {
+      // Add your delete logic here
+      console.log('Delete document:', docId);
+      // You would typically send a DELETE request to your backend here
+    }
+  }
+
+  // Animate document items on load
+  document.addEventListener('DOMContentLoaded', function() {
+    const docItems = document.querySelectorAll('.document-item');
+    docItems.forEach((item, index) => {
+      setTimeout(() => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+        item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateX(0)';
+        }, 50);
+      }, index * 50);
+    });
+  });
+</script>
 {% endblock %}

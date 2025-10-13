@@ -1,66 +1,512 @@
-{% extends "records/base.html" %}
+{% extends 'records/base.html' %}
+{% load static %}
+
+{% block title %}Student List - Student Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    .search-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stats-bar {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .table-custom {
+        margin-bottom: 0;
+    }
+
+    .table-custom thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .table-custom thead th {
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table-custom tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .table-custom tbody tr:hover {
+        background: #f8f9fa;
+        transform: scale(1.01);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .table-custom tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .student-name {
+        font-weight: 600;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .student-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .admission-badge {
+        background: #e0e7ff;
+        color: #4338ca;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .class-badge {
+        background: #dcfce7;
+        color: #166534;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-action {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+    }
+
+    .btn-view {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-view:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .btn-edit {
+        background: #fbbf24;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #f59e0b;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .btn-delete {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .pagination-wrapper {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .pagination-custom {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        list-style: none;
+        padding: 0;
+    }
+
+    .pagination-custom .page-item {
+        margin: 0;
+    }
+
+    .pagination-custom .page-link {
+        border-radius: 8px;
+        border: 2px solid #667eea;
+        color: #667eea;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .pagination-custom .page-link:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .pagination-custom .page-item.active .page-link {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+
+    .pagination-custom .page-item.disabled .page-link {
+        background: #f3f4f6;
+        border-color: #e5e7eb;
+        color: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    .page-info {
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        color: #667eea;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #999;
+    }
+
+    .no-results i {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    .no-results h4 {
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-reset {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+
+    .filter-reset:hover {
+        color: #764ba2;
+    }
+
+    @media (max-width: 768px) {
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .student-name {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .table-custom {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h3 class="m-0">Students</h3>
-  <a href="{% url 'student_create' %}" class="btn btn-primary">+ Add Student</a>
-  </div>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-people-fill"></i> Students
+            </h2>
+            <p class="text-muted mb-0">Manage all student records</p>
+        </div>
+        <a href="{% url 'records:student_create' %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle"></i> Add New Student
+        </a>
+    </div>
 
-<form class="row g-2 mb-3" method="get">
-  <div class="col-md-5">
-    <input type="text" class="form-control" name="q" value="{{ query }}" placeholder="Search by name or admission no">
-  </div>
-  <div class="col-md-2">
-    <select class="form-select" name="sex">
-      <option value="">Sex</option>
-      <option value="Male" {% if sex == 'Male' %}selected{% endif %}>Male</option>
-      <option value="Female" {% if sex == 'Female' %}selected{% endif %}>Female</option>
-    </select>
-  </div>
-  <div class="col-md-3">
-    <input type="text" class="form-control" name="klass" value="{{ klass }}" placeholder="Class contains...">
-  </div>
-  <div class="col-md-2">
-    <button class="btn btn-outline-secondary w-100" type="submit">Filter</button>
-  </div>
-</form>
-<table class="table table-striped table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Admission No</th>
-        <th>Class</th>
-        <th>Actions</th>
-    </tr>
-    {% for student in page_obj %}
-    <tr>
-        <td>{{ student.surname }} {{ student.other_name }}</td>
-        <td>{{ student.admission_no }}</td>
-        <td>{{ student.class_at_present }}</td>
-        <td>
-          <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-info">View</a>
-          <a href="{% url 'student_update' student.pk %}" class="btn btn-sm btn-warning">Edit</a>
-          <a href="{% url 'student_delete' student.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="4" class="text-center text-muted">No students found.</td>
-    </tr>
-    {% endfor %}
-</table>
+    <!-- Statistics Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-label">Total Students</div>
+            <div class="stat-value">{{ total_results|default:0 }}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Current Page</div>
+            <div class="stat-value">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Showing</div>
+            <div class="stat-value">{{ page_obj.start_index }}-{{ page_obj.end_index }}</div>
+        </div>
+    </div>
 
-<nav aria-label="Page navigation">
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page={{ page_obj.previous_page_number }}">Previous</a></li>
-    {% else %}
-      <li class="page-item disabled"><span class="page-link">Previous</span></li>
+    <!-- Search and Filter Card -->
+    <div class="search-card">
+        <form method="get" action="{% url 'records:student_list' %}" class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label">
+                    <i class="bi bi-search"></i> Search
+                </label>
+                <input type="text" name="q" class="form-control" placeholder="Search by name or admission number..."
+                    value="{{ query }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">
+                    <i class="bi bi-gender-ambiguous"></i> Gender
+                </label>
+                <select name="sex" class="form-select">
+                    <option value="">All Genders</option>
+                    <option value="Male" {% if sex == "Male" %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if sex == "Female" %}selected{% endif %}>Female</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">
+                    <i class="bi bi-book"></i> Class
+                </label>
+                <input type="text" name="klass" class="form-control" placeholder="Filter by class..."
+                    value="{{ klass }}">
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary flex-fill">
+                    <i class="bi bi-funnel"></i> Filter
+                </button>
+                <a href="{% url 'records:student_list' %}" class="btn btn-outline-secondary" title="Clear filters">
+                    <i class="bi bi-x-circle"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Students Table -->
+    <div class="table-container">
+        <table class="table table-custom table-hover">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Admission No</th>
+                    <th>Class</th>
+                    <th>Gender</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in page_obj %}
+                <tr>
+                    <td>
+                        <div class="student-name">
+                            <div class="student-avatar">
+                                {{ student.surname.0|upper }}
+                            </div>
+                            <span>{{ student.full_name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="admission-badge">{{ student.admission_no }}</span>
+                    </td>
+                    <td>
+                        <span class="class-badge">{{ student.class_at_present }}</span>
+                    </td>
+                    <td>
+                        <i class="bi bi-gender-{{ student.sex|lower }}"></i>
+                        {{ student.sex }}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'records:student_detail' student.pk %}" class="btn-action btn-view"
+                                title="View Details">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{% url 'records:student_update' student.pk %}" class="btn-action btn-edit"
+                                title="Edit Student">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a href="{% url 'records:student_delete' student.pk %}" class="btn-action btn-delete"
+                                title="Delete Student"
+                                onclick="return confirm('Are you sure you want to delete {{ student.full_name }}?')">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">
+                        <div class="no-results">
+                            <i class="bi bi-inbox"></i>
+                            <h4>No Students Found</h4>
+                            <p>
+                                {% if query or sex or klass %}
+                                No students match your search criteria.
+                                <a href="{% url 'records:student_list' %}" class="filter-reset">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                    Clear Filters
+                                </a>
+                                {% else %}
+                                There are no students in the system yet.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination-wrapper">
+        <ul class="pagination-custom">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page=1">
+                    <i class="bi bi-chevron-double-left"></i> First
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                    href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page={{ page_obj.previous_page_number }}">
+                    <i class="bi bi-chevron-left"></i> Previous
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="bi bi-chevron-double-left"></i> First
+                </span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">
+                    <i class="bi bi-chevron-left"></i> Previous
+                </span>
+            </li>
+            {% endif %}
+
+            <li class="page-item">
+                <span class="page-info">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page={{ page_obj.next_page_number }}">
+                    Next <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                    href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page={{ page_obj.paginator.num_pages }}">
+                    Last <i class="bi bi-chevron-double-right"></i>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Next <i class="bi bi-chevron-right"></i>
+                </span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Last <i class="bi bi-chevron-double-right"></i>
+                </span>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
     {% endif %}
-    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
-    {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page={{ page_obj.next_page_number }}">Next</a></li>
-    {% else %}
-      <li class="page-item disabled"><span class="page-link">Next</span></li>
-    {% endif %}
-  </ul>
-  </nav>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-submit form on filter change (optional)
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterInputs = document.querySelectorAll('select[name="sex"]');
+
+        filterInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                // Optionally auto-submit on select change
+                // this.form.submit();
+            });
+        });
+    });
+</script>
 {% endblock %}

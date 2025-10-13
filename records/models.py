@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.core.exceptions import ValidationError
 from datetime import date
 import os
@@ -54,8 +55,8 @@ class Student(models.Model):
     mentally_impaired = models.BooleanField(default=False)
     others = models.TextField(blank=True, null=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         indexes = [
@@ -79,6 +80,11 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.full_name} ({self.admission_no})"
+
+    def save(self, *args, **kwargs):
+        """Ensure updated_at auto-updates on every save."""
+        self.updated_at = timezone.now()
+        super().save(*args, **kwargs)
 
 
 class StudentDocument(models.Model):

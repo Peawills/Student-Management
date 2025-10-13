@@ -126,7 +126,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Authentication redirects
 LOGIN_URL = "accounts:login"
-LOGIN_REDIRECT_URL = "student_list"
+LOGIN_REDIRECT_URL = "records:student_list"
 LOGOUT_REDIRECT_URL = "accounts:login"
 
 # Email backend for password reset (console for development)
