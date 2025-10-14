@@ -22,7 +22,8 @@
     <div class="mt-2">
       {% if form.errors %}
       <div><strong>Student form errors:</strong>
-        <ul class="mb-0">{% for field, errors in form.errors.items %}
+        <ul class="mb-0">
+          {% for field, errors in form.errors.items %}
           <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
           {% endfor %}
         </ul>
@@ -30,7 +31,8 @@
       {% endif %}
       {% if document_form.errors %}
       <div class="mt-2"><strong>Document form errors:</strong>
-        <ul class="mb-0">{% for field, errors in document_form.errors.items %}
+        <ul class="mb-0">
+          {% for field, errors in document_form.errors.items %}
           <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
           {% endfor %}
         </ul>
@@ -38,7 +40,8 @@
       {% endif %}
       {% if multiple_docs_form.errors %}
       <div class="mt-2"><strong>Multiple docs form errors:</strong>
-        <ul class="mb-0">{% for field, errors in multiple_docs_form.errors.items %}
+        <ul class="mb-0">
+          {% for field, errors in multiple_docs_form.errors.items %}
           <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
           {% endfor %}
         </ul>
@@ -55,7 +58,7 @@
       <!-- Student Information Section -->
       <div class="col-lg-8">
         <div class="card shadow-sm border-0 h-100">
-          <div class="card-header bg-primary text-white d-flex align-items-center">
+          <div class="card-header bg-gradient-primary text-white d-flex align-items-center">
             <i class="bi bi-person-badge me-2"></i>
             <h5 class="mb-0">Student Information</h5>
             <span class="badge bg-light text-primary ms-auto">Required</span>
@@ -64,12 +67,58 @@
             <!-- Render hidden fields -->
             {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
 
-            <!-- Student fields grouped for clarity -->
+            <!-- Student Image Upload Section -->
+            <div class="mb-4 p-3 bg-light rounded-3 border">
+              <h6 class="mb-3 text-primary d-flex align-items-center">
+                <i class="bi bi-camera me-2"></i>Student Photo
+              </h6>
+              <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                  <div class="position-relative d-inline-block">
+                    {% if student and student.student_image %}
+                    <img id="imagePreview" src="{{ student.student_image.url }}" alt="Student"
+                      class="rounded-circle img-thumbnail shadow-sm"
+                      style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                    <img id="imagePreview"
+                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%23e9ecef' width='120' height='120'/%3E%3Ctext fill='%23adb5bd' font-family='sans-serif' font-size='48' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3E%3F%3C/text%3E%3C/svg%3E"
+                      alt="Preview" class="rounded-circle img-thumbnail shadow-sm"
+                      style="width: 120px; height: 120px; object-fit: cover;">
+                    {% endif %}
+                    <span class="position-absolute bottom-0 end-0 p-1 bg-primary rounded-circle"
+                      style="transform: translate(-10px, -10px);">
+                      <i class="bi bi-camera-fill text-white"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-9">
+                  <label class="form-label fw-semibold">{{ form.student_image.label }}</label>
+                  {{ form.student_image }}
+                  {% if form.student_image.errors %}
+                  <div class="invalid-feedback d-block">{{ form.student_image.errors|join:", " }}</div>
+                  {% endif %}
+                  <small class="text-muted d-block mt-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Upload a clear passport photograph (JPG, PNG - Max 2MB)
+                  </small>
+                  <button type="button" class="btn btn-sm btn-outline-danger mt-2" id="clearImageBtn"
+                    style="display: none;">
+                    <i class="bi bi-x-circle me-1"></i>Clear Image
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Student Details -->
             <div class="mb-4">
-              <h6 class="mb-3 text-primary">Student Details</h6>
+              <h6 class="mb-3 text-primary d-flex align-items-center">
+                <i class="bi bi-person-vcard me-2"></i>Basic Information
+              </h6>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.surname.label }}</label>
+                  <label class="form-label fw-semibold">
+                    {{ form.surname.label }} <span class="text-danger">*</span>
+                  </label>
                   {{ form.surname }}
                   {% if form.surname.errors %}
                   <div class="invalid-feedback d-block">{{ form.surname.errors|join:", " }}</div>
@@ -77,7 +126,9 @@
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.other_name.label }}</label>
+                  <label class="form-label fw-semibold">
+                    {{ form.other_name.label }} <span class="text-danger">*</span>
+                  </label>
                   {{ form.other_name }}
                   {% if form.other_name.errors %}
                   <div class="invalid-feedback d-block">{{ form.other_name.errors|join:", " }}</div>
@@ -85,184 +136,308 @@
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.admission_no.label }}</label>
-                  {{ form.admission_no }}
+                  <label class="form-label fw-semibold">
+                    {{ form.admission_no.label }} <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                    {{ form.admission_no }}
+                  </div>
                   {% if form.admission_no.errors %}
                   <div class="invalid-feedback d-block">{{ form.admission_no.errors|join:", " }}</div>
                   {% endif %}
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.sex.label }}</label>
-                  {{ form.sex }}
+                  <label class="form-label fw-semibold">
+                    {{ form.sex.label }} <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
+                    {{ form.sex }}
+                  </div>
                   {% if form.sex.errors %}
                   <div class="invalid-feedback d-block">{{ form.sex.errors|join:", " }}</div>
                   {% endif %}
                 </div>
 
                 <div class="col-md-4">
-                  <label class="form-label">{{ form.date_of_birth.label }}</label>
-                  {{ form.date_of_birth }}
+                  <label class="form-label fw-semibold">{{ form.date_of_birth.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                    {{ form.date_of_birth }}
+                  </div>
                 </div>
 
                 <div class="col-md-4">
-                  <label class="form-label">{{ form.place_of_birth.label }}</label>
-                  {{ form.place_of_birth }}
+                  <label class="form-label fw-semibold">{{ form.place_of_birth.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                    {{ form.place_of_birth }}
+                  </div>
                 </div>
 
                 <div class="col-md-4">
-                  <label class="form-label">{{ form.nin_no.label }}</label>
-                  {{ form.nin_no }}
+                  <label class="form-label fw-semibold">{{ form.nin_no.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
+                    {{ form.nin_no }}
+                  </div>
                 </div>
 
-                <div class="col-md-6">
-                  <label class="form-label">{{ form.nationality.label }}</label>
-                  {{ form.nationality }}
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">{{ form.nationality.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-flag"></i></span>
+                    {{ form.nationality }}
+                  </div>
                 </div>
 
-                <div class="col-md-6">
-                  <label class="form-label">{{ form.state_of_origin.label }}</label>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">{{ form.state_of_origin.label }}</label>
                   {{ form.state_of_origin }}
                 </div>
 
-                <div class="col-md-6">
-                  <label class="form-label">{{ form.lga.label }}</label>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">{{ form.lga.label }}</label>
                   {{ form.lga }}
                 </div>
 
-                <div class="col-md-6">
-                  <label class="form-label">{{ form.class_at_present.label }}</label>
-                  {{ form.class_at_present }}
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label">{{ form.class_on_entry.label }}</label>
-                  {{ form.class_on_entry }}
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label">{{ form.date_of_entry.label }}</label>
-                  {{ form.date_of_entry }}
-                </div>
-
                 <div class="col-12">
-                  <label class="form-label">{{ form.residential_address.label }}</label>
-                  {{ form.residential_address }}
+                  <label class="form-label fw-semibold">{{ form.residential_address.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-house"></i></span>
+                    {{ form.residential_address }}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <hr>
+            <hr class="my-4">
+
+            <!-- Academic Information -->
+            <div class="mb-4">
+              <h6 class="mb-3 text-primary d-flex align-items-center">
+                <i class="bi bi-mortarboard me-2"></i>Academic Information
+              </h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">{{ form.class_at_present.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-book"></i></span>
+                    {{ form.class_at_present }}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">{{ form.class_on_entry.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-door-open"></i></span>
+                    {{ form.class_on_entry }}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">{{ form.date_of_entry.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                    {{ form.date_of_entry }}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Previous Schools</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-building"></i></span>
+                    {{ form.prev_schools }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-4">
 
             <!-- Father Information -->
             <div class="mb-4">
-              <h6 class="mb-3 text-secondary">Father / Paternal Details</h6>
+              <h6 class="mb-3 text-secondary d-flex align-items-center">
+                <i class="bi bi-person-badge me-2"></i>Father / Paternal Details
+              </h6>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.father_name.label }}</label>
-                  {{ form.father_name }}
+                  <label class="form-label fw-semibold">{{ form.father_name.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    {{ form.father_name }}
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.father_mobile.label }}</label>
-                  {{ form.father_mobile }}
+                  <label class="form-label fw-semibold">{{ form.father_mobile.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                    {{ form.father_mobile }}
+                  </div>
                 </div>
                 <div class="col-12">
-                  <label class="form-label">{{ form.father_address.label }}</label>
-                  {{ form.father_address }}
+                  <label class="form-label fw-semibold">{{ form.father_address.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                    {{ form.father_address }}
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.father_occupation.label }}</label>
-                  {{ form.father_occupation }}
+                  <label class="form-label fw-semibold">{{ form.father_occupation.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                    {{ form.father_occupation }}
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.father_educational_level.label }}</label>
-                  {{ form.father_educational_level }}
+                  <label class="form-label fw-semibold">{{ form.father_educational_level.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-mortarboard"></i></span>
+                    {{ form.father_educational_level }}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <hr>
+            <hr class="my-4">
 
             <!-- Mother Information -->
             <div class="mb-4">
-              <h6 class="mb-3 text-secondary">Mother / Maternal Details</h6>
+              <h6 class="mb-3 text-secondary d-flex align-items-center">
+                <i class="bi bi-person-badge me-2"></i>Mother / Maternal Details
+              </h6>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.mother_name.label }}</label>
-                  {{ form.mother_name }}
+                  <label class="form-label fw-semibold">{{ form.mother_name.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    {{ form.mother_name }}
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.mother_mobile.label }}</label>
-                  {{ form.mother_mobile }}
+                  <label class="form-label fw-semibold">{{ form.mother_mobile.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                    {{ form.mother_mobile }}
+                  </div>
                 </div>
                 <div class="col-12">
-                  <label class="form-label">{{ form.mother_address.label }}</label>
-                  {{ form.mother_address }}
+                  <label class="form-label fw-semibold">{{ form.mother_address.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                    {{ form.mother_address }}
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.mother_occupation.label }}</label>
-                  {{ form.mother_occupation }}
+                  <label class="form-label fw-semibold">{{ form.mother_occupation.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                    {{ form.mother_occupation }}
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.mother_educational_level.label }}</label>
-                  {{ form.mother_educational_level }}
+                  <label class="form-label fw-semibold">{{ form.mother_educational_level.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-mortarboard"></i></span>
+                    {{ form.mother_educational_level }}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <hr>
+            <hr class="my-4">
 
             <!-- Guardian Information -->
             <div class="mb-4">
-              <h6 class="mb-3 text-secondary">Guardian (if applicable)</h6>
+              <h6 class="mb-3 text-secondary d-flex align-items-center">
+                <i class="bi bi-person-check me-2"></i>Guardian (if applicable)
+              </h6>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.guardian_name.label }}</label>
-                  {{ form.guardian_name }}
+                  <label class="form-label fw-semibold">{{ form.guardian_name.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    {{ form.guardian_name }}
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.guardian_mobile.label }}</label>
-                  {{ form.guardian_mobile }}
+                  <label class="form-label fw-semibold">{{ form.guardian_mobile.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                    {{ form.guardian_mobile }}
+                  </div>
                 </div>
                 <div class="col-12">
-                  <label class="form-label">{{ form.guardian_address.label }}</label>
-                  {{ form.guardian_address }}
+                  <label class="form-label fw-semibold">{{ form.guardian_address.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                    {{ form.guardian_address }}
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">{{ form.guardian_occupation.label }}</label>
-                  {{ form.guardian_occupation }}
+                  <label class="form-label fw-semibold">{{ form.guardian_occupation.label }}</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                    {{ form.guardian_occupation }}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <hr>
+            <hr class="my-4">
 
-            <!-- Health & Previous Schools -->
+            <!-- Health & Special Needs -->
             <div class="mb-4">
-              <h6 class="mb-3 text-warning">Health & Previous Schools</h6>
-              <div class="row g-3 align-items-center">
-                <div class="col-md-6">
-                  <label class="form-label">Previous Schools</label>
-                  {{ form.prev_schools }}
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label d-block">Special Needs</label>
-                  <div class="form-check form-check-inline">
-                    {{ form.visually_impaired }} <label class="form-check-label ms-1">Visually Impaired</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    {{ form.deaf }} <label class="form-check-label ms-1">Deaf</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    {{ form.physically_disabled }} <label class="form-check-label ms-1">Physically Disabled</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    {{ form.mentally_impaired }} <label class="form-check-label ms-1">Mentally Impaired</label>
+              <h6 class="mb-3 text-warning d-flex align-items-center">
+                <i class="bi bi-heart-pulse me-2"></i>Health & Special Needs
+              </h6>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label fw-semibold d-block mb-3">Special Needs</label>
+                  <div class="row">
+                    <div class="col-md-6 col-lg-3 mb-2">
+                      <div class="form-check p-3 border rounded-3 bg-light">
+                        {{ form.visually_impaired }}
+                        <label class="form-check-label ms-2">
+                          <i class="bi bi-eye-slash me-1"></i>Visually Impaired
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-2">
+                      <div class="form-check p-3 border rounded-3 bg-light">
+                        {{ form.deaf }}
+                        <label class="form-check-label ms-2">
+                          <i class="bi bi-ear-slash me-1"></i>Deaf
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-2">
+                      <div class="form-check p-3 border rounded-3 bg-light">
+                        {{ form.physically_disabled }}
+                        <label class="form-check-label ms-2">
+                          <i class="bi bi-person-wheelchair me-1"></i>Physically Disabled
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-2">
+                      <div class="form-check p-3 border rounded-3 bg-light">
+                        {{ form.mentally_impaired }}
+                        <label class="form-check-label ms-2">
+                          <i class="bi bi-brain me-1"></i>Mentally Impaired
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="col-12">
-                  <label class="form-label">{{ form.others.label }}</label>
+                  <label class="form-label fw-semibold">{{ form.others.label }}</label>
                   {{ form.others }}
+                  <small class="text-muted d-block mt-1">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Provide any additional health information or special needs
+                  </small>
                 </div>
               </div>
             </div>
@@ -275,45 +450,53 @@
       <div class="col-lg-4">
         <!-- Initial Document -->
         <div class="card shadow-sm border-0 mb-4">
-          <div class="card-header bg-info text-white d-flex align-items-center">
+          <div class="card-header bg-gradient-info text-white d-flex align-items-center">
             <i class="bi bi-file-earmark-arrow-up me-2"></i>
             <h6 class="mb-0">Initial Document</h6>
             <span class="badge bg-light text-info ms-auto" style="font-size: 0.7rem;">Optional</span>
           </div>
           <div class="card-body">
             {{ document_form.as_p }}
-            <small class="text-muted d-block mt-2">
-              <i class="bi bi-info-circle me-1"></i>
-              Upload a primary document (PDF, DOC, or image)
-            </small>
+            <div class="alert alert-info py-2 px-3 mb-0 mt-2" role="alert">
+              <small>
+                <i class="bi bi-info-circle me-1"></i>
+                Upload a primary document (PDF, DOC, or image)
+              </small>
+            </div>
           </div>
         </div>
 
         <!-- Multiple Documents -->
         <div class="card shadow-sm border-0 mb-4">
-          <div class="card-header bg-info text-white d-flex align-items-center">
+          <div class="card-header bg-gradient-info text-white d-flex align-items-center">
             <i class="bi bi-files me-2"></i>
             <h6 class="mb-0">Additional Documents</h6>
             <span class="badge bg-light text-info ms-auto" style="font-size: 0.7rem;">Optional</span>
           </div>
           <div class="card-body">
             {{ multiple_docs_form.as_p }}
-            <small class="text-muted d-block mt-2">
-              <i class="bi bi-info-circle me-1"></i>
-              Upload multiple supporting documents
-            </small>
+            <div class="alert alert-info py-2 px-3 mb-0 mt-2" role="alert">
+              <small>
+                <i class="bi bi-info-circle me-1"></i>
+                Upload multiple supporting documents (Birth certificate, etc.)
+              </small>
+            </div>
           </div>
         </div>
 
         <!-- Help Card -->
-        <div class="card shadow-sm border-0 bg-light">
+        <div class="card shadow-sm border-0 bg-gradient-light">
           <div class="card-body">
-            <h6 class="card-title">
-              <i class="bi bi-question-circle me-2"></i>Need Help?
+            <h6 class="card-title d-flex align-items-center">
+              <i class="bi bi-question-circle me-2 text-primary"></i>
+              <span>Need Help?</span>
             </h6>
-            <p class="card-text small mb-0">
-              Ensure all required fields are filled correctly. Accepted file formats: PDF, DOC, DOCX, JPG, PNG.
-            </p>
+            <ul class="small mb-0 ps-3">
+              <li class="mb-2">Fields marked with <span class="text-danger">*</span> are required</li>
+              <li class="mb-2">Accepted formats: PDF, DOC, DOCX, JPG, PNG</li>
+              <li class="mb-2">Maximum file size: 5MB per file</li>
+              <li>Double-check all information before submitting</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -322,8 +505,8 @@
     <!-- Action Buttons -->
     <div class="row mt-4">
       <div class="col">
-        <div class="d-flex gap-2 justify-content-start">
-          <button type="submit" class="btn btn-success btn-lg px-4">
+        <div class="d-flex gap-2 justify-content-start flex-wrap">
+          <button type="submit" class="btn btn-success btn-lg px-4 shadow-sm">
             <i class="bi bi-check-circle me-2"></i>
             {% if student %}Update Student{% else %}Register Student{% endif %}
           </button>
@@ -337,6 +520,10 @@
             <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
           </button>
           {% endif %}
+
+          <a href="{% url 'records:student_list' %}" class="btn btn-outline-primary btn-lg px-4">
+            <i class="bi bi-arrow-left me-2"></i>Back to List
+          </a>
         </div>
       </div>
     </div>
@@ -344,6 +531,18 @@
 </div>
 
 <style>
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .bg-gradient-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+  }
+
+  .bg-gradient-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  }
+
   .card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
@@ -360,8 +559,24 @@
 
   .form-control:focus,
   .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 252, 0.15);
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.15);
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa;
+    border-right: 0;
+  }
+
+  .input-group .form-control,
+  .input-group .form-select {
+    border-left: 0;
+  }
+
+  .input-group:focus-within .input-group-text {
+    border-color: #667eea;
+    background-color: rgba(102, 126, 234, 0.05);
+    color: #667eea;
   }
 
   .btn {
@@ -377,10 +592,33 @@
     border-left: 4px solid #dc3545;
   }
 
+  .form-check:has(input:checked) {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+    border-color: #667eea !important;
+  }
+
+  hr {
+    opacity: 0.1;
+  }
+
   @media (max-width: 991px) {
     .card {
       margin-bottom: 1rem;
     }
+  }
+
+  /* Image preview styling */
+  #imagePreview {
+    transition: all 0.3s ease;
+  }
+
+  #imagePreview:hover {
+    transform: scale(1.05);
+  }
+
+  /* Progress indicator for form sections */
+  .mb-4 {
+    scroll-margin-top: 100px;
   }
 </style>
 
@@ -393,64 +631,327 @@
     document.head.appendChild(link);
   }
 
-  // Form validation feedback (robust)
+  // Enhanced image preview
+  const studentImageInput = document.querySelector('input[name="student_image"]');
+  const imagePreview = document.getElementById('imagePreview');
+  const clearImageBtn = document.getElementById('clearImageBtn');
+
+  if (studentImageInput && imagePreview) {
+    studentImageInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+          alert('Please upload a valid image file (JPG, PNG)');
+          this.value = '';
+          return;
+        }
+
+        // Validate file size (2MB)
+        if (file.size > 2 * 1024 * 1024) {
+          alert('Image size must be less than 2MB');
+          this.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          imagePreview.src = ev.target.result;
+          imagePreview.style.animation = 'fadeIn 0.3s ease';
+          if (clearImageBtn) clearImageBtn.style.display = 'inline-block';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    if (clearImageBtn) {
+      clearImageBtn.addEventListener('click', function () {
+        studentImageInput.value = '';
+        imagePreview.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%23e9ecef' width='120' height='120'/%3E%3Ctext fill='%23adb5bd' font-family='sans-serif' font-size='48' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3E%3F%3C/text%3E%3C/svg%3E";
+        this.style.display = 'none';
+      });
+    }
+  }
+
+  // Form validation with better UX
   (function () {
     const form = document.getElementById('studentForm');
     if (!form) return;
 
     form.addEventListener('submit', function (e) {
-      try {
-        const requiredFields = this.querySelectorAll('[required]');
-        let isValid = true;
+      let isValid = true;
+      const requiredFields = this.querySelectorAll('[required]');
+      const firstInvalidField = null;
 
-        requiredFields.forEach(field => {
-          let hasValue = false;
+      requiredFields.forEach(field => {
+        let hasValue = false;
 
-          if (field.type === 'file') {
-            hasValue = field.files && field.files.length > 0;
-          } else if (field.type === 'checkbox' || field.type === 'radio') {
-            // For checkboxes/radios, check if any in the same named group is checked
-            const name = field.getAttribute('name');
-            if (name) {
-              hasValue = this.querySelectorAll(`[name="${name}"]:checked`).length > 0;
-            } else {
-              hasValue = !!field.checked;
-            }
+        if (field.type === 'file') {
+          hasValue = field.files && field.files.length > 0;
+        } else if (field.type === 'checkbox' || field.type === 'radio') {
+          const name = field.getAttribute('name');
+          if (name) {
+            hasValue = this.querySelectorAll(`[name="${name}"]:checked`).length > 0;
           } else {
-            const v = field.value || '';
-            hasValue = (v + '').trim().length > 0;
+            hasValue = !!field.checked;
           }
-
-          if (!hasValue) {
-            isValid = false;
-            field.classList.add('is-invalid');
-          } else {
-            field.classList.remove('is-invalid');
-          }
-        });
-
-        if (!isValid) {
-          e.preventDefault();
-          alert('Please fill in all required fields.');
+        } else {
+          const v = field.value || '';
+          hasValue = (v + '').trim().length > 0;
         }
-      } catch (err) {
-        // Log and don't block submit on unexpected JS errors
-        console.error('Form validation error:', err);
+
+        if (!hasValue) {
+          isValid = false;
+          field.classList.add('is-invalid');
+
+          // Store first invalid field for scrolling
+          if (!firstInvalidField) {
+            firstInvalidField = field;
+          }
+        } else {
+          field.classList.remove('is-invalid');
+        }
+      });
+
+      if (!isValid) {
+        e.preventDefault();
+
+        // Scroll to first invalid field
+        if (firstInvalidField) {
+          firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => firstInvalidField.focus(), 500);
+        }
+
+        // Show error message
+        const alertHtml = `
+          <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
+               style="z-index: 9999; min-width: 300px;" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Validation Error!</strong> Please fill in all required fields.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `;
+
+        // Remove existing floating alerts
+        document.querySelectorAll('.position-fixed.alert').forEach(el => el.remove());
+
+        // Add new alert
+        document.body.insertAdjacentHTML('afterbegin', alertHtml);
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+          document.querySelectorAll('.position-fixed.alert').forEach(el => {
+            el.classList.remove('show');
+            setTimeout(() => el.remove(), 150);
+          });
+        }, 5000);
+      } else {
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          const originalText = submitBtn.innerHTML;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+
+          // Re-enable after 10 seconds in case of error
+          setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+          }, 10000);
+        }
       }
+    });
+
+    // Remove invalid class on input
+    form.querySelectorAll('input, select, textarea').forEach(field => {
+      field.addEventListener('input', function () {
+        this.classList.remove('is-invalid');
+      });
     });
   })();
 
-  // File upload preview
-  document.querySelectorAll('input[type="file"]').forEach(input => {
+  // Auto-save to localStorage (draft feature)
+  (function () {
+    const form = document.getElementById('studentForm');
+    if (!form || document.querySelector('[name="student"]')) return; // Skip if editing
+
+    const STORAGE_KEY = 'studentFormDraft';
+
+    // Load draft
+    try {
+      const draft = localStorage.getItem(STORAGE_KEY);
+      if (draft) {
+        const data = JSON.parse(draft);
+        const loadDraft = confirm('A draft of this form was found. Would you like to load it?');
+
+        if (loadDraft) {
+          Object.keys(data).forEach(key => {
+            const field = form.querySelector(`[name="${key}"]`);
+            if (field && field.type !== 'file') {
+              if (field.type === 'checkbox') {
+                field.checked = data[key];
+              } else {
+                field.value = data[key];
+              }
+            }
+          });
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      }
+    } catch (e) {
+      console.error('Error loading draft:', e);
+    }
+
+    // Save draft on input
+    let saveTimeout;
+    form.addEventListener('input', function (e) {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        try {
+          const formData = new FormData(form);
+          const data = {};
+
+          for (let [key, value] of formData.entries()) {
+            if (key !== 'csrfmiddlewaretoken' && !key.includes('file')) {
+              data[key] = value;
+            }
+          }
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {
+          console.error('Error saving draft:', e);
+        }
+      }, 1000);
+    });
+
+    // Clear draft on successful submit
+    form.addEventListener('submit', function () {
+      localStorage.removeItem(STORAGE_KEY);
+    });
+  })();
+
+  // File upload preview for document forms
+  document.querySelectorAll('input[type="file"]:not([name="student_image"])').forEach(input => {
     input.addEventListener('change', function (e) {
-      const fileName = e.target.files[0]?.name;
-      if (fileName) {
-        const label = this.nextElementSibling;
-        if (label && label.classList.contains('form-label')) {
-          label.innerHTML = `<i class="bi bi-check-circle text-success me-1"></i> ${fileName}`;
+      const files = e.target.files;
+      if (files.length > 0) {
+        const fileNames = Array.from(files).map(f => f.name).join(', ');
+        const label = this.closest('.form-group, p')?.querySelector('label');
+
+        if (label) {
+          const icon = '<i class="bi bi-check-circle text-success me-1"></i>';
+          const originalText = label.textContent;
+          label.innerHTML = `${icon}${files.length} file(s) selected`;
+
+          // Show tooltip with file names
+          label.title = fileNames;
         }
       }
     });
   });
+
+  // Smooth scroll for form sections
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Phone number formatting (optional enhancement)
+  document.querySelectorAll('input[name*="mobile"]').forEach(input => {
+    input.addEventListener('input', function (e) {
+      let value = this.value.replace(/\D/g, ''); // Remove non-digits
+      if (value.length > 11) {
+        value = value.slice(0, 11);
+      }
+      // Format as needed (e.g., 0803-456-7890)
+      if (value.length > 4) {
+        value = value.slice(0, 4) + '-' + value.slice(4);
+      }
+      if (value.length > 8) {
+        value = value.slice(0, 9) + '-' + value.slice(9);
+      }
+      this.value = value;
+    });
+  });
+
+  // Character counter for textarea
+  document.querySelectorAll('textarea').forEach(textarea => {
+    const maxLength = textarea.getAttribute('maxlength');
+    if (maxLength) {
+      const counter = document.createElement('small');
+      counter.className = 'text-muted float-end';
+      textarea.parentElement.appendChild(counter);
+
+      const updateCounter = () => {
+        const remaining = maxLength - textarea.value.length;
+        counter.textContent = `${remaining} characters remaining`;
+        counter.style.color = remaining < 50 ? '#dc3545' : '#6c757d';
+      };
+
+      textarea.addEventListener('input', updateCounter);
+      updateCounter();
+    }
+  });
+
+  // Prevent accidental form abandonment
+  let formModified = false;
+  document.getElementById('studentForm').addEventListener('input', function () {
+    formModified = true;
+  });
+
+  window.addEventListener('beforeunload', function (e) {
+    if (formModified) {
+      e.preventDefault();
+      e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+      return e.returnValue;
+    }
+  });
+
+  // Clear flag on submit
+  document.getElementById('studentForm').addEventListener('submit', function () {
+    formModified = false;
+  });
+
+  // Add animation class
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideDown {
+      from { 
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .card {
+      animation: slideDown 0.3s ease;
+    }
+    
+    .form-control.is-invalid {
+      animation: shake 0.5s;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+  `;
+  document.head.appendChild(style);
 </script>
 {% endblock %}

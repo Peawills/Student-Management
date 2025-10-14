@@ -5,46 +5,158 @@
 
 {% block extra_css %}
 <style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .page-header p {
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
+    }
+
     .search-card {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
         margin-bottom: 2rem;
+        border: 1px solid #f0f0f0;
+    }
+
+    .search-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        color: #667eea;
+        font-weight: 600;
+        font-size: 1.1rem;
     }
 
     .stats-bar {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 1rem;
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
+        margin-bottom: 2rem;
     }
 
     .stat-item {
-        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        flex: 1;
-        min-width: 200px;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 2px solid #f0f0f0;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .stat-item:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
     }
 
     .stat-label {
         font-size: 0.85rem;
-        color: #666;
-        margin-bottom: 0.25rem;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .stat-value {
-        font-size: 1.5rem;
+        font-size: 2rem;
         font-weight: 700;
-        color: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-filter {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-clear {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: #6b7280;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-clear:hover {
+        border-color: #ef4444;
+        color: #ef4444;
+        background: #fef2f2;
     }
 
     .table-container {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
         overflow: hidden;
+        border: 1px solid #f0f0f0;
     }
 
     .table-custom {
@@ -58,11 +170,11 @@
 
     .table-custom thead th {
         border: none;
-        padding: 1rem;
+        padding: 1.25rem 1rem;
         font-weight: 600;
         text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
     }
 
     .table-custom tbody tr {
@@ -71,112 +183,144 @@
     }
 
     .table-custom tbody tr:hover {
-        background: #f8f9fa;
-        transform: scale(1.01);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        background: linear-gradient(135deg, #667eea08 0%, #764ba208 100%);
+        transform: scale(1.005);
     }
 
     .table-custom tbody td {
-        padding: 1rem;
+        padding: 1.25rem 1rem;
         vertical-align: middle;
     }
 
     .student-name {
         font-weight: 600;
-        color: #333;
+        color: #1f2937;
         display: flex;
         align-items: center;
         gap: 0.75rem;
     }
 
     .student-avatar {
-        width: 40px;
-        height: 40px;
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-weight: 600;
-        font-size: 1rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        flex-shrink: 0;
     }
 
     .admission-badge {
-        background: #e0e7ff;
+        background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
         color: #4338ca;
-        padding: 0.25rem 0.75rem;
-        border-radius: 6px;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
         font-weight: 600;
         font-size: 0.85rem;
+        border: 1px solid #c7d2fe;
+        display: inline-block;
     }
 
     .class-badge {
-        background: #dcfce7;
+        background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
         color: #166534;
-        padding: 0.25rem 0.75rem;
-        border-radius: 6px;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
         font-weight: 600;
         font-size: 0.85rem;
+        border: 1px solid #bbf7d0;
+        display: inline-block;
+    }
+
+    .gender-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .gender-male {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .gender-female {
+        background: #fce7f3;
+        color: #be185d;
     }
 
     .action-buttons {
         display: flex;
         gap: 0.5rem;
+        justify-content: center;
     }
 
     .btn-action {
-        padding: 0.4rem 0.8rem;
-        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
         font-size: 0.85rem;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         transition: all 0.3s ease;
         border: none;
         text-decoration: none;
+        white-space: nowrap;
     }
 
     .btn-view {
-        background: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
     }
 
     .btn-view:hover {
-        background: #5568d3;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         color: white;
     }
 
     .btn-edit {
-        background: #fbbf24;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
         color: white;
+        box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
     }
 
     .btn-edit:hover {
-        background: #f59e0b;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
         color: white;
     }
 
     .btn-delete {
-        background: #ef4444;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
         color: white;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
     }
 
     .btn-delete:hover {
-        background: #dc2626;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
         color: white;
     }
 
     .pagination-wrapper {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
         margin-top: 2rem;
+        border: 1px solid #f0f0f0;
     }
 
     .pagination-custom {
@@ -187,6 +331,7 @@
         margin: 0;
         list-style: none;
         padding: 0;
+        flex-wrap: wrap;
     }
 
     .pagination-custom .page-item {
@@ -194,29 +339,33 @@
     }
 
     .pagination-custom .page-link {
-        border-radius: 8px;
+        border-radius: 10px;
         border: 2px solid #667eea;
         color: #667eea;
-        padding: 0.6rem 1.2rem;
+        padding: 0.7rem 1.3rem;
         font-weight: 600;
         transition: all 0.3s ease;
         text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .pagination-custom .page-link:hover {
-        background: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     .pagination-custom .page-item.active .page-link {
-        background: #667eea;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border-color: #667eea;
     }
 
     .pagination-custom .page-item.disabled .page-link {
-        background: #f3f4f6;
+        background: #f9fafb;
         border-color: #e5e7eb;
         color: #9ca3af;
         cursor: not-allowed;
@@ -224,46 +373,124 @@
 
     .page-info {
         background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-        padding: 0.6rem 1.2rem;
-        border-radius: 8px;
+        padding: 0.7rem 1.3rem;
+        border-radius: 10px;
         font-weight: 600;
         color: #667eea;
+        border: 2px solid #667eea33;
     }
 
     .no-results {
         text-align: center;
-        padding: 4rem 2rem;
-        color: #999;
+        padding: 5rem 2rem;
+    }
+
+    .no-results-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .no-results i {
-        font-size: 5rem;
-        margin-bottom: 1rem;
-        opacity: 0.3;
+        font-size: 4rem;
+        color: #9ca3af;
     }
 
     .no-results h4 {
-        color: #666;
-        margin-bottom: 0.5rem;
+        color: #4b5563;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .no-results p {
+        color: #6b7280;
+        margin-bottom: 1.5rem;
     }
 
     .filter-reset {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        color: #667eea;
+        color: white;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         text-decoration: none;
         font-weight: 600;
-        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     .filter-reset:hover {
-        color: #764ba2;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .add-student-btn {
+        background: white;
+        color: #667eea;
+        border: 2px solid #667eea;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .add-student-btn:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .active-filters {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .filter-tag {
+        background: #667eea;
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-tag i {
+        cursor: pointer;
     }
 
     @media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem;
+        }
+
+        .search-card {
+            padding: 1.5rem;
+        }
+
+        .stats-bar {
+            grid-template-columns: 1fr;
+        }
+
         .action-buttons {
             flex-direction: column;
+            gap: 0.25rem;
         }
 
         .btn-action {
@@ -277,7 +504,11 @@
         }
 
         .table-custom {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .table-custom tbody td {
+            padding: 0.75rem 0.5rem;
         }
     }
 </style>
@@ -285,16 +516,19 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="mb-1">
-                <i class="bi bi-people-fill"></i> Students
-            </h2>
-            <p class="text-muted mb-0">Manage all student records</p>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>
+                    <i class="bi bi-people-fill"></i> Students
+                </h2>
+                <p>Manage all student records in your system</p>
+            </div>
+            <a href="{% url 'records:student_create' %}" class="add-student-btn">
+                <i class="bi bi-plus-circle-fill"></i> Add New Student
+            </a>
         </div>
-        <a href="{% url 'records:student_create' %}" class="btn btn-primary btn-lg">
-            <i class="bi bi-plus-circle"></i> Add New Student
-        </a>
     </div>
 
     <!-- Statistics Bar -->
@@ -308,49 +542,108 @@
             <div class="stat-value">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">Showing</div>
+            <div class="stat-label">Showing Results</div>
             <div class="stat-value">{{ page_obj.start_index }}-{{ page_obj.end_index }}</div>
         </div>
     </div>
 
     <!-- Search and Filter Card -->
     <div class="search-card">
-        <form method="get" action="{% url 'records:student_list' %}" class="row g-3">
-            <div class="col-md-5">
+        <div class="search-header">
+            <i class="bi bi-funnel-fill"></i>
+            Search & Filter Students
+        </div>
+
+        <form method="get" action="{% url 'records:student_list' %}" class="row g-3" id="searchForm">
+            <div class="col-md-4">
                 <label class="form-label">
                     <i class="bi bi-search"></i> Search
                 </label>
-                <input type="text" name="q" class="form-control" placeholder="Search by name or admission number..."
-                    value="{{ query }}">
+                <input type="text" name="q" class="form-control" placeholder="Search by name, admission no, parents..."
+                    value="{{ query|default:'' }}" id="searchInput">
             </div>
+
             <div class="col-md-2">
                 <label class="form-label">
                     <i class="bi bi-gender-ambiguous"></i> Gender
                 </label>
-                <select name="sex" class="form-select">
+                <select name="sex" class="form-select" id="sexFilter">
                     <option value="">All Genders</option>
                     <option value="Male" {% if sex == "Male" %}selected{% endif %}>Male</option>
                     <option value="Female" {% if sex == "Female" %}selected{% endif %}>Female</option>
                 </select>
             </div>
 
-            <div class="col-md-3">
+                <div class="col-md-2">
                 <label class="form-label">
                     <i class="bi bi-book"></i> Class
                 </label>
-                <input type="text" name="klass" class="form-control" placeholder="Filter by class..."
-                    value="{{ klass }}">
+                <select name="klass" class="form-select" id="classFilter">
+                    <option value="">All Classes</option>
+                    {% for klass_item in classes %}
+                    {% if klass_item %}
+                    <option value="{{ klass_item }}" {% if klass == klass_item %}selected{% endif %}>{{ klass_item }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">
+                    <i class="bi bi-sort-down"></i> Sort By
+                </label>
+                <select name="sort" class="form-select" id="sortFilter">
+                    <option value="-id" {% if sort_by == "-id" %}selected{% endif %}>Newest First</option>
+                    <option value="id" {% if sort_by == "id" %}selected{% endif %}>Oldest First</option>
+                    <option value="surname" {% if sort_by == "surname" %}selected{% endif %}>Name (A-Z)</option>
+                    <option value="-surname" {% if sort_by == "-surname" %}selected{% endif %}>Name (Z-A)</option>
+                    <option value="admission_no" {% if sort_by == "admission_no" %}selected{% endif %}>Admission No (Asc)
+                    </option>
+                    <option value="-admission_no" {% if sort_by == "-admission_no" %}selected{% endif %}>Admission No
+                        (Desc)</option>
+                </select>
             </div>
 
             <div class="col-md-2 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary flex-fill">
-                    <i class="bi bi-funnel"></i> Filter
+                <button type="submit" class="btn btn-filter flex-fill">
+                    <i class="bi bi-funnel"></i> Apply
                 </button>
-                <a href="{% url 'records:student_list' %}" class="btn btn-outline-secondary" title="Clear filters">
+                <button type="button" class="btn btn-clear" onclick="clearFilters()" title="Clear all filters">
                     <i class="bi bi-x-circle"></i>
-                </a>
+                </button>
             </div>
         </form>
+
+        <!-- Active Filters Display -->
+        {% if query or sex or klass or sort_by != "-id" %}
+        <div class="active-filters">
+            <span style="font-weight: 600; color: #667eea;">Active Filters:</span>
+            {% if query %}
+            <span class="filter-tag">
+                Search: "{{ query }}"
+                <i class="bi bi-x" onclick="removeFilter('q')"></i>
+            </span>
+            {% endif %}
+            {% if sex %}
+            <span class="filter-tag">
+                Gender: {{ sex }}
+                <i class="bi bi-x" onclick="removeFilter('sex')"></i>
+            </span>
+            {% endif %}
+            {% if klass %}
+            <span class="filter-tag">
+                Class: {{ klass }}
+                <i class="bi bi-x" onclick="removeFilter('klass')"></i>
+            </span>
+            {% endif %}
+            {% if sort_by != "-id" %}
+            <span class="filter-tag">
+                Sorted
+                <i class="bi bi-x" onclick="removeFilter('sort')"></i>
+            </span>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 
     <!-- Students Table -->
@@ -371,7 +664,7 @@
                     <td>
                         <div class="student-name">
                             <div class="student-avatar">
-                                {{ student.surname.0|upper }}
+                                {{ student.surname|slice:":1"|upper }}{{ student.other_name|default:''|slice:":1"|upper }}
                             </div>
                             <span>{{ student.full_name }}</span>
                         </div>
@@ -383,23 +676,25 @@
                         <span class="class-badge">{{ student.class_at_present }}</span>
                     </td>
                     <td>
-                        <i class="bi bi-gender-{{ student.sex|lower }}"></i>
+                        <span class="gender-icon gender-{{ student.sex|lower }}">
+                            <i class="bi bi-gender-{{ student.sex|lower }}"></i>
+                        </span>
                         {{ student.sex }}
                     </td>
                     <td>
                         <div class="action-buttons">
                             <a href="{% url 'records:student_detail' student.pk %}" class="btn-action btn-view"
                                 title="View Details">
-                                <i class="bi bi-eye"></i> View
+                                <i class="bi bi-eye-fill"></i> View
                             </a>
                             <a href="{% url 'records:student_update' student.pk %}" class="btn-action btn-edit"
                                 title="Edit Student">
-                                <i class="bi bi-pencil"></i> Edit
+                                <i class="bi bi-pencil-fill"></i> Edit
                             </a>
                             <a href="{% url 'records:student_delete' student.pk %}" class="btn-action btn-delete"
                                 title="Delete Student"
                                 onclick="return confirm('Are you sure you want to delete {{ student.full_name }}?')">
-                                <i class="bi bi-trash"></i> Delete
+                                <i class="bi bi-trash-fill"></i> Delete
                             </a>
                         </div>
                     </td>
@@ -408,19 +703,23 @@
                 <tr>
                     <td colspan="5">
                         <div class="no-results">
-                            <i class="bi bi-inbox"></i>
+                            <div class="no-results-icon">
+                                <i class="bi bi-inbox"></i>
+                            </div>
                             <h4>No Students Found</h4>
-                            <p>
-                                {% if query or sex or klass %}
-                                No students match your search criteria.
-                                <a href="{% url 'records:student_list' %}" class="filter-reset">
-                                    <i class="bi bi-arrow-counterclockwise"></i>
-                                    Clear Filters
-                                </a>
-                                {% else %}
-                                There are no students in the system yet.
-                                {% endif %}
-                            </p>
+                            {% if query or sex or klass %}
+                            <p>No students match your search criteria. Try adjusting your filters.</p>
+                            <a href="{% url 'records:student_list' %}" class="filter-reset">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                                Clear All Filters
+                            </a>
+                            {% else %}
+                            <p>There are no students in the system yet. Add your first student to get started!</p>
+                            <a href="{% url 'records:student_create' %}" class="filter-reset">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                Add First Student
+                            </a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -435,13 +734,14 @@
         <ul class="pagination-custom">
             {% if page_obj.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page=1">
+                <a class="page-link"
+                    href="?q={{ query|default:'' }}&sex={{ sex|default:'' }}&klass={{ klass|default:'' }}&sort={{ sort_by|default:'-id' }}&page=1">
                     <i class="bi bi-chevron-double-left"></i> First
                 </a>
             </li>
             <li class="page-item">
                 <a class="page-link"
-                    href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page={{ page_obj.previous_page_number }}">
+                    href="?q={{ query|default:'' }}&sex={{ sex|default:'' }}&klass={{ klass|default:'' }}&sort={{ sort_by|default:'-id' }}&page={{ page_obj.previous_page_number }}">
                     <i class="bi bi-chevron-left"></i> Previous
                 </a>
             </li>
@@ -467,13 +767,13 @@
             {% if page_obj.has_next %}
             <li class="page-item">
                 <a class="page-link"
-                    href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page={{ page_obj.next_page_number }}">
+                    href="?q={{ query|default:'' }}&sex={{ sex|default:'' }}&klass={{ klass|default:'' }}&sort={{ sort_by|default:'-id' }}&page={{ page_obj.next_page_number }}">
                     Next <i class="bi bi-chevron-right"></i>
                 </a>
             </li>
             <li class="page-item">
                 <a class="page-link"
-                    href="?q={{ query }}&sex={{ sex }}&klass={{ klass }}&page={{ page_obj.paginator.num_pages }}">
+                    href="?q={{ query|default:'' }}&sex={{ sex|default:'' }}&klass={{ klass|default:'' }}&sort={{ sort_by|default:'-id' }}&page={{ page_obj.paginator.num_pages }}">
                     Last <i class="bi bi-chevron-double-right"></i>
                 </a>
             </li>
@@ -497,16 +797,62 @@
 
 {% block extra_js %}
 <script>
-    // Auto-submit form on filter change (optional)
-    document.addEventListener('DOMContentLoaded', function () {
-        const filterInputs = document.querySelectorAll('select[name="sex"]');
+    // Clear all filters
+    function clearFilters() {
+        window.location.href = "{% url 'records:student_list' %}";
+    }
 
-        filterInputs.forEach(input => {
-            input.addEventListener('change', function () {
-                // Optionally auto-submit on select change
-                // this.form.submit();
+    // Remove individual filter
+    function removeFilter(filterName) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete(filterName);
+        window.location.href = url.toString();
+    }
+
+    // Live search with debounce
+    let searchTimeout;
+    document.getElementById('searchInput')?.addEventListener('input', function (e) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            // Optional: Auto-submit on search
+            // document.getElementById('searchForm').submit();
+        }, 500);
+    });
+
+    // Highlight search terms in results
+    document.addEventListener('DOMContentLoaded', function () {
+        const query = "{{ query|default:'' }}";
+        if (query) {
+            const studentNames = document.querySelectorAll('.student-name span, .admission-badge');
+            studentNames.forEach(el => {
+                const text = el.textContent;
+                const regex = new RegExp(`(${query})`, 'gi');
+                if (regex.test(text)) {
+                    el.innerHTML = text.replace(regex, '<mark style="background: #fef08a; padding: 0 0.25rem; border-radius: 4px;">$1</mark>');
+                }
             });
-        });
+        }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function (e) {
+        // Ctrl+K or Cmd+K to focus search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            document.getElementById('searchInput')?.focus();
+        }
+
+        // ESC to clear search
+        if (e.key === 'Escape' && document.activeElement.id === 'searchInput') {
+            document.getElementById('searchInput').value = '';
+        }
+    });
+
+    // Show loading state on form submit
+    document.getElementById('searchForm')?.addEventListener('submit', function () {
+        const btn = this.querySelector('.btn-filter');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Filtering...';
+        btn.disabled = true;
     });
 </script>
 {% endblock %}
