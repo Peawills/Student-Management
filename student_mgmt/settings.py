@@ -23,9 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-ct7%1*1f=-)-7qed&579qb1cm=_z_wb$*6r^xqawke1ncc-6h)"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "student-management-production-d598.up.railway.app",
+    "127.0.0.1",
+    "localhost",
+]
 
 
 # Application definition
@@ -145,3 +149,9 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://student-management-production-d598.up.railway.app",
+    "http://127.0.0.1:8000",
+]
