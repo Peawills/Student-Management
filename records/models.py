@@ -20,12 +20,20 @@ class Student(models.Model):
     sex = models.CharField(
         max_length=10, choices=[("Male", "Male"), ("Female", "Female")]
     )
-    admission_no = models.CharField(max_length=50, unique=True)
+    admission_no = models.CharField(
+        max_length=50,
+        unique=True,
+        blank=True,
+        editable=False,
+        help_text="Automatically generated admission number",
+    )
     nin_no = models.CharField(max_length=50, blank=True, null=True)
     class_on_entry = models.CharField(max_length=50)
     date_of_entry = models.DateField()
     class_at_present = models.CharField(max_length=50)
-    student_image = models.ImageField(upload_to="students/images/", blank=True, null=True)
+    student_image = models.ImageField(
+        upload_to="students/images/", blank=True, null=True
+    )
 
     # Parent/Guardian info
     father_name = models.CharField(max_length=100)
@@ -60,17 +68,22 @@ class Student(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['admission_no']),
-            models.Index(fields=['surname', 'other_name']),
-            models.Index(fields=['class_at_present']),
+            models.Index(fields=["admission_no"]),
+            models.Index(fields=["surname", "other_name"]),
+            models.Index(fields=["class_at_present"]),
         ]
 
     @property
     def age(self):
         """Calculate age from date of birth"""
         today = date.today()
-        return today.year - self.date_of_birth.year - (
-            (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
+        return (
+            today.year
+            - self.date_of_birth.year
+            - (
+                (today.month, today.day)
+                < (self.date_of_birth.month, self.date_of_birth.day)
+            )
         )
 
     @property
@@ -81,45 +94,87 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.full_name} ({self.admission_no})"
 
+    def _generate_admission_no(self):
+        """Generate a new admission number with YEAR-XXXX format (e.g., 2025-0001)."""
+        year = timezone.now().year
+        prefix = f"{year}-"
+        # Find the last admission_no for this year; admission_no is zero-padded so lexicographic order works
+        last = (
+            Student.objects.filter(admission_no__startswith=prefix)
+            .order_by("-admission_no")
+            .first()
+        )
+        if last and last.admission_no:
+            try:
+                last_num = int(last.admission_no.split("-")[-1])
+            except Exception:
+                last_num = 0
+        else:
+            last_num = 0
+        next_num = last_num + 1
+        return f"{year}-{next_num:04d}"
+
     def save(self, *args, **kwargs):
-        """Ensure updated_at auto-updates on every save."""
+        """Ensure updated_at auto-updates on every save and auto-generate admission_no on create.
+
+        Admission numbers use YEAR-XXXX (e.g., 2025-0001). We attempt to generate a unique value and
+        retry a few times if a race causes an IntegrityError.
+        """
+        is_create = self._state.adding
         self.updated_at = timezone.now()
-        super().save(*args, **kwargs)
+
+        if is_create and not self.admission_no:
+            # Try a few times in case of a race condition where another process created the same number
+            from django.db import IntegrityError
+
+            for attempt in range(5):
+                self.admission_no = self._generate_admission_no()
+                try:
+                    super().save(*args, **kwargs)
+                    break
+                except IntegrityError:
+                    # Someone else created this admission_no concurrently; try again
+                    if attempt == 4:
+                        raise
+                    continue
+        else:
+            super().save(*args, **kwargs)
 
 
 class StudentDocument(models.Model):
     DOCUMENT_TYPES = [
-        ('birth_certificate', 'Birth Certificate'),
-        ('nin', 'National Identification Number (NIN)'),
-        ('immunization_card', 'Immunization Card'),
-        ('waec_result', 'WAEC Result'),
-        ('neco_result', 'NECO Result'),
-        ('transfer_certificate', 'Transfer Certificate'),
-        ('testimonial', 'Testimonial'),
-        ('passport', 'Passport Photo'),
-        ('medical_report', 'Medical Report'),
-        ('other', 'Other Document'),
+        ("birth_certificate", "Birth Certificate"),
+        ("nin", "National Identification Number (NIN)"),
+        ("immunization_card", "Immunization Card"),
+        ("waec_result", "WAEC Result"),
+        ("neco_result", "NECO Result"),
+        ("transfer_certificate", "Transfer Certificate"),
+        ("testimonial", "Testimonial"),
+        ("passport", "Passport Photo"),
+        ("medical_report", "Medical Report"),
+        ("other", "Other Document"),
     ]
 
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name="documents"
     )
     document_type = models.CharField(
-        max_length=50, 
+        max_length=50,
         choices=DOCUMENT_TYPES,
         help_text="Type of document being uploaded",
-        default='other'
+        default="other",
     )
     name = models.CharField(
-        max_length=100,
-        help_text="Custom name/description for the document"
+        max_length=100, help_text="Custom name/description for the document"
     )
     file = models.FileField(upload_to="students/documents/")
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    notes = models.TextField(blank=True, null=True, help_text="Additional notes about the document")
+    notes = models.TextField(
+        blank=True, null=True, help_text="Additional notes about the document"
+    )
 
     class Meta:
-        ordering = ['-uploaded_at']
+        ordering = ["-uploaded_at"]
 
     def __str__(self):
         return f"{self.name} for {self.student.full_name}"
@@ -132,13 +187,13 @@ class StudentDocument(models.Model):
     @property
     def is_image(self):
         """Check if the file is an image"""
-        image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']
+        image_extensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"]
         return self.file_extension in image_extensions
 
     @property
     def is_pdf(self):
         """Check if the file is a PDF"""
-        return self.file_extension == '.pdf'
+        return self.file_extension == ".pdf"
 
     @property
     def file_size_mb(self):
