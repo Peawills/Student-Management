@@ -40,9 +40,10 @@ if _env_allowed:
     ALLOWED_HOSTS = [h.strip() for h in _env_allowed.split(",") if h.strip()]
 else:
     ALLOWED_HOSTS = [
-        "student-management-production-d598.up.railway.app",
+        "student-management-production-2177.up.railway.app",
         "127.0.0.1",
         "localhost",
+        "*"
     ]
 
 
