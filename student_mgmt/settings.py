@@ -187,7 +187,7 @@ if not DEBUG:
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
-    "https://student-management-production-d598.up.railway.app",
+   'https://student-management-production-2177.up.railway.app',
     "http://127.0.0.1:8000",
     "http://localhost:8000",
 ]
