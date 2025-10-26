@@ -368,12 +368,28 @@
         margin: auto;
         display: block;
         max-width: 90%;
-        max-height: 90%;
+        max-height: 90vh;
+        width: auto;
+        height: auto;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         animation: zoomIn 0.3s;
+        object-fit: contain;
+    }
+
+    @media (max-width: 768px) {
+        .modal-content {
+            max-width: 95%;
+            max-height: 80vh;
+        }
+
+        .close-modal {
+            top: 10px;
+            right: 20px;
+            font-size: 40px;
+        }
     }
 
     @keyframes zoomIn {
@@ -437,26 +453,124 @@
     }
 
     @media (max-width: 768px) {
+        .profile-header {
+            padding: 1.5rem;
+            margin: 0.5rem;
+            border-radius: 12px;
+        }
+
         .profile-header-content {
             flex-direction: column;
             text-align: center;
+            gap: 1rem;
         }
 
         .profile-info h1 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-badges {
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        .badge-custom {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
         }
 
         .action-buttons {
             justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .btn-custom {
+            width: 100%;
+            justify-content: center;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .profile-image,
+        .profile-placeholder {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
         }
 
         .info-grid {
             grid-template-columns: 1fr;
+            gap: 1rem;
         }
 
         .documents-grid {
             grid-template-columns: 1fr;
         }
+
+        .info-section {
+            padding: 1.5rem;
+            margin: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            padding: 0.8rem;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+        }
+
+        .info-value {
+            font-size: 0.9rem;
+        }
+
+        .document-card {
+            margin: 0.5rem 0;
+        }
+
+        .document-preview {
+            height: 160px;
+        }
+
+        .document-actions {
+            flex-direction: column;
+        }
+
+        .btn-doc-action {
+            width: 100%;
+            margin: 0.2rem 0;
+        }
+
+        .back-button {
+            margin: 1rem 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Override grid styles on mobile */
+        .info-item-full {
+            grid-column: auto;
+        }
+    }
+
+    /* Custom classes to replace inline styles */
+    .info-item-full {
+        grid-column: 1 / -1;
+    }
+
+    .parent-heading {
+        color: #667eea;
+        margin-bottom: 1rem;
+    }
+
+    .document-meta-spaced {
+        margin-top: 0.5rem;
     }
 </style>
 {% endblock %}
@@ -464,10 +578,12 @@
 {% block content %}
 <div class="container-fluid">
     <!-- Back Button -->
-    <a href="{% url 'records:student_list' %}" class="back-button">
-        <i class="bi bi-arrow-left-circle"></i>
-        Back to Student List
-    </a>
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        <a href="{% url 'records:student_list' %}" class="back-button mb-0">
+            <i class="bi bi-arrow-left-circle"></i>
+            Back to Student List
+        </a>
+    </div>
 
     <!-- Profile Header -->
     <div class="profile-header">
@@ -597,12 +713,12 @@
                     Contact Information
                 </h3>
                 <div class="info-grid">
-                    <div class="info-item" style="grid-column: 1 / -1;">
+                    <div class="info-item info-item-full">
                         <div class="info-label">Residential Address</div>
                         <div class="info-value">{{ student.residential_address }}</div>
                     </div>
                     {% if student.permanent_home_address %}
-                    <div class="info-item" style="grid-column: 1 / -1;">
+                    <div class="info-item info-item-full">
                         <div class="info-label">Permanent Home Address</div>
                         <div class="info-value">{{ student.permanent_home_address }}</div>
                     </div>
@@ -620,7 +736,7 @@
         </h3>
         <div class="row">
             <div class="col-md-4 mb-3">
-                <h5 style="color: #667eea; margin-bottom: 1rem;">
+                <h5 class="parent-heading">
                     <i class="bi bi-person"></i> Father
                 </h5>
                 <div class="info-grid">
@@ -644,7 +760,7 @@
             </div>
 
             <div class="col-md-4 mb-3">
-                <h5 style="color: #667eea; margin-bottom: 1rem;">
+                <h5 class="parent-heading">
                     <i class="bi bi-person"></i> Mother
                 </h5>
                 <div class="info-grid">
@@ -669,7 +785,7 @@
 
             {% if student.guardian_name %}
             <div class="col-md-4 mb-3">
-                <h5 style="color: #667eea; margin-bottom: 1rem;">
+                <h5 class="parent-heading">
                     <i class="bi bi-person-check"></i> Guardian
                 </h5>
                 <div class="info-grid">
@@ -780,7 +896,7 @@
                             {{ document.file_size_mb }} MB
                         </div>
                         {% if document.notes %}
-                        <div class="document-meta" style="margin-top: 0.5rem;">
+                        <div class="document-meta document-meta-spaced">
                             <i class="bi bi-chat-square-text"></i>
                             {{ document.notes|truncatewords:10 }}
                         </div>

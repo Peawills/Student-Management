@@ -592,6 +592,21 @@
     border-left: 4px solid #dc3545;
   }
 
+  .alert-floating {
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 90%;
+    width: auto;
+  }
+
+  @media (max-width: 768px) {
+    .alert-floating {
+      min-width: unset;
+      width: calc(100% - 2rem);
+      margin: 1rem;
+    }
+  }
+
   .form-check:has(input:checked) {
     background-color: rgba(102, 126, 234, 0.1) !important;
     border-color: #667eea !important;
@@ -725,8 +740,7 @@
 
         // Show error message
         const alertHtml = `
-          <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
-               style="z-index: 9999; min-width: 300px;" role="alert">
+          <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 alert-floating" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             <strong>Validation Error!</strong> Please fill in all required fields.
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
