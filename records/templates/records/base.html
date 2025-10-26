@@ -157,9 +157,50 @@
         }
 
         /* Responsive adjustments */
+        /* Navigation styles */
+        .navbar-nav .nav-link {
+            color: #4a5568;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-color);
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            transform: translateY(-1px);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color);
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            font-weight: 600;
+        }
+
+        .navbar-nav .nav-link i {
+            font-size: 1.1rem;
+        }
+
         @media (max-width: 768px) {
             .navbar-custom {
                 padding: 1rem;
+            }
+
+            .navbar-nav {
+                margin: 1rem 0;
+                padding: 1rem;
+                background: #f8f9fa;
+                border-radius: 8px;
+            }
+
+            .navbar-nav .nav-link {
+                padding: 0.8rem 1rem;
+                margin: 0.2rem 0;
             }
 
             .user-info {
@@ -249,6 +290,32 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if request.user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'records:student_list' %}">
+                                    <i class="bi bi-people-fill"></i> View Students
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'records:student_create' %}">
+                                    <i class="bi bi-person-plus-fill"></i> Add Student
+                                </a>
+                            </li>
+                            {% if request.user.is_superuser %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'accounts:user_list' %}">
+                                    <i class="bi bi-person-lines-fill"></i> Manage Users
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'accounts:user_create' %}">
+                                    <i class="bi bi-person-plus"></i> Create User
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
                     <div class="ms-auto user-info">
                         {% if request.user.is_authenticated %}
                         <!-- User Badge -->
