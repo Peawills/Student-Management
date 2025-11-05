@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "records",
     "accounts",
+    "committee",
 ]
 
 MIDDLEWARE = [
@@ -154,7 +155,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Authentication redirects
 LOGIN_URL = "accounts:login"
-LOGIN_REDIRECT_URL = "records:student_list"
+LOGIN_REDIRECT_URL = "records:home"
 LOGOUT_REDIRECT_URL = "accounts:login"
 
 # Email backend for password reset (console for development)

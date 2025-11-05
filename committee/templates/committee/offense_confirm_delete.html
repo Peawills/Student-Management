@@ -1,0 +1,244 @@
+{% extends 'records/base.html' %}
+
+{% block title %}Delete Offense Record{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-container {
+        max-width: 600px;
+        margin: 3rem auto;
+        padding: 1.5rem;
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 16px;
+        padding: 3rem 2.5rem;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+        border: 2px solid #fee2e2;
+        text-align: center;
+    }
+
+    .delete-icon {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 2rem;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+        color: #dc2626;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+        }
+
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 20px rgba(220, 38, 38, 0);
+        }
+    }
+
+    .delete-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin-bottom: 1rem;
+    }
+
+    .delete-message {
+        font-size: 1.05rem;
+        color: #6b7280;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .offense-info {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 2px solid #e5e7eb;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .info-value {
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .warning-box {
+        background: #fef3c7;
+        border: 2px solid #fde68a;
+        border-radius: 10px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: start;
+        gap: 0.75rem;
+        text-align: left;
+    }
+
+    .warning-box i {
+        color: #92400e;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .warning-text {
+        color: #92400e;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .btn-delete-confirm {
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 10px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-delete-confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+    }
+
+    .btn-cancel {
+        background: white;
+        color: #6b7280;
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        border: 2px solid #e5e7eb;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        border-color: #1f2937;
+        color: #1f2937;
+        background: #f9fafb;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .delete-container {
+            padding: 1rem;
+            margin: 1.5rem auto;
+        }
+
+        .delete-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .delete-actions {
+            flex-direction: column;
+        }
+
+        .btn-delete-confirm,
+        .btn-cancel {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="delete-container">
+    <div class="delete-card">
+        <div class="delete-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <h1 class="delete-title">Delete Offense Record?</h1>
+        <p class="delete-message">
+            You are about to permanently delete this disciplinary record. This action cannot be undone.
+        </p>
+
+        <div class="offense-info">
+            <div class="info-item">
+                <span class="info-label">Student Name</span>
+                <span class="info-value">{{ offense.student_name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Class</span>
+                <span class="info-value">{{ offense.student_class }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Event Type</span>
+                <span class="info-value">{{ offense.event_type }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date</span>
+                <span class="info-value">{{ offense.offense_date|date:"M d, Y" }}</span>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <div>
+                <div class="warning-text">
+                    <strong>Warning:</strong> All associated teacher reports will also be permanently deleted.
+                </div>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="delete-actions">
+                <button type="submit" class="btn-delete-confirm">
+                    <i class="bi bi-trash-fill"></i>
+                    Yes, Delete Record
+                </button>
+                <a href="{% url 'committee:offense_detail' offense.id %}" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -342,23 +342,13 @@
         });
     })();
 
-    // Form validation feedback
+    // Form submission handling
     document.querySelector('form').addEventListener('submit', function (e) {
-        const form = this;
-        const inputs = form.querySelectorAll('input[required], input[type="email"]');
-        let isValid = true;
-
-        inputs.forEach(input => {
-            if (!input.value.trim()) {
-                isValid = false;
-                input.classList.add('is-invalid');
-            } else {
-                input.classList.remove('is-invalid');
-            }
-        });
-
-        // Don't prevent default - let Django handle validation
-        console.log('Form submitting...');
+        const submitBtn = this.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+        }
     });
 </script>
 {% endblock %}

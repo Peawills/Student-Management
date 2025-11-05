@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disciplinary Record - {{ offense.student_name }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 4px solid #dc2626;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            color: #dc2626;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        .header .subtitle {
+            font-size: 14pt;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .meta-info {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: table;
+            width: 100%;
+        }
+
+        .meta-row {
+            display: table-row;
+        }
+
+        .meta-label {
+            display: table-cell;
+            font-weight: 700;
+            color: #6b7280;
+            padding: 8px 15px 8px 0;
+            width: 35%;
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            display: table-cell;
+            color: #1f2937;
+            font-weight: 600;
+            padding: 8px 0;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            font-size: 14pt;
+            font-weight: 800;
+            color: #1f2937;
+            border-bottom: 3px solid #dc2626;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background: #dc2626;
+            margin-right: 10px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .field-label {
+            font-weight: 700;
+            color: #6b7280;
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .field-value {
+            color: #1f2937;
+            font-size: 11pt;
+            line-height: 1.8;
+        }
+
+        .field-value-large {
+            background: #f9fafb;
+            border-left: 4px solid #dc2626;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 10pt;
+        }
+
+        .badge-discipline {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #fde68a;
+        }
+
+        .badge-bullying {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fecaca;
+        }
+
+        .badge-incident {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #bfdbfe;
+        }
+
+        .badge-accident {
+            background: #f3e8ff;
+            color: #6b21a8;
+            border: 2px solid #e9d5ff;
+        }
+
+        .status-yes {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #a7f3d0;
+        }
+
+        .status-no {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fecaca;
+        }
+
+        .grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .grid-row {
+            display: table-row;
+        }
+
+        .grid-col {
+            display: table-cell;
+            padding: 10px;
+            vertical-align: top;
+            border: 1px solid #e5e7eb;
+        }
+
+        .grid-col:first-child {
+            width: 30%;
+            background: #f9fafb;
+            font-weight: 700;
+            color: #6b7280;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 20px;
+            border-top: 2px solid #e5e7eb;
+            font-size: 9pt;
+            color: #9ca3af;
+            background: white;
+        }
+
+        .signature-section {
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+
+        .signature-line {
+            border-top: 2px solid #1f2937;
+            width: 250px;
+            margin: 40px auto 10px;
+        }
+
+        .signature-label {
+            text-align: center;
+            font-weight: 700;
+            color: #6b7280;
+            font-size: 10pt;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>DISCIPLINARY RECORD</h1>
+        <div class="subtitle">Behavioral Incident Report</div>
+    </div>
+
+    <!-- Meta Information -->
+    <div class="meta-info">
+        <div class="meta-row">
+            <div class="meta-label">Report Generated:</div>
+            <div class="meta-value">{% now "F d, Y g:i A" %}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">Incident Date:</div>
+            <div class="meta-value">{{ offense.offense_date|date:"F d, Y" }}</div>
+        </div>
+        <div class="meta-row">
+            <div class="meta-label">Location:</div>
+            <div class="meta-value">{{ offense.location }}</div>
+        </div>
+    </div>
+
+    <!-- Student Information -->
+    <div class="section">
+        <h2 class="section-title">Student Information</h2>
+        <table class="grid">
+            <tr class="grid-row">
+                <td class="grid-col">Student Name</td>
+                <td class="grid-col">{{ offense.student_name }}</td>
+            </tr>
+            <tr class="grid-row">
+                <td class="grid-col">Class</td>
+                <td class="grid-col">{{ offense.student_class }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Offense Details -->
+    <div class="section">
+        <h2 class="section-title">Offense Details</h2>
+        <div class="field">
+            <div class="field-label">Event Type</div>
+            <div class="field-value">
+                <span class="badge badge-{{ offense.event_type|lower }}">{{ offense.event_type }}</span>
+            </div>
+        </div>
+        <div class="field">
+            <div class="field-label">Description of Incident</div>
+            <div class="field-value field-value-large">
+                {{ offense.offense_description }}
+            </div>
+        </div>
+        <div class="field">
+            <div class="field-label">Sanction Applied</div>
+            <div class="field-value field-value-large">
+                {{ offense.sanction }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Involved Parties -->
+    <div class="section">
+        <h2 class="section-title">Involved Parties</h2>
+        <table class="grid">
+            <tr class="grid-row">
+                <td class="grid-col">Witness Name</td>
+                <td class="grid-col">{{ offense.witness_name }}</td>
+            </tr>
+            <tr class="grid-row">
+                <td class="grid-col">Victim Name</td>
+                <td class="grid-col">{{ offense.victim_name }}</td>
+            </tr>
+            {% if offense.victim_class %}
+            <tr class="grid-row">
+                <td class="grid-col">Victim Class</td>
+                <td class="grid-col">{{ offense.victim_class }}</td>
+            </tr>
+            {% endif %}
+        </table>
+        <div class="field">
+            <div class="field-label">Care Provided to Victim</div>
+            <div class="field-value field-value-large">
+                {{ offense.care_given_to_victim }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Parent Notification -->
+    <div class="section">
+        <h2 class="section-title">Parent/Guardian Notification</h2>
+        <div class="field">
+            <div class="field-label">Notification Status</div>
+            <div class="field-value">
+                {% if offense.parent_notified %}
+                <span class="badge status-yes">✓ Parent/Guardian Notified</span>
+                {% else %}
+                <span class="badge status-no">✗ Pending Notification</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Comments -->
+    {% if offense.other_comments %}
+    <div class="section">
+        <h2 class="section-title">Additional Comments</h2>
+        <div class="field">
+            <div class="field-value field-value-large">
+                {{ offense.other_comments }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Signature Section -->
+    <div class="signature-section">
+        <table style="width: 100%; margin-top: 60px;">
+            <tr>
+                <td style="width: 50%; text-align: center;">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Committee Member Signature</div>
+                </td>
+                <td style="width: 50%; text-align: center;">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Date</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>This is an official disciplinary record. For internal use only.</p>
+        <p>Student Management System - Disciplinary Committee</p>
+    </div>
+</body>
+
+</html>

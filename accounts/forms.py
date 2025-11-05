@@ -4,14 +4,27 @@ from django.contrib.auth.models import User
 
 
 class UserCreateForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    first_name = forms.CharField(required=True)
-    last_name = forms.CharField(required=True)
+    email = forms.EmailField(
+        required=True, widget=forms.EmailInput(attrs={"class": "form-control"})
+    )
+    first_name = forms.CharField(
+        required=True, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    last_name = forms.CharField(
+        required=True, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
     is_staff = forms.BooleanField(
         required=False,
         initial=True,
         help_text="Designates whether this user can access the admin site.",
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs.update({"class": "form-control"})
+        self.fields["password1"].widget.attrs.update({"class": "form-control"})
+        self.fields["password2"].widget.attrs.update({"class": "form-control"})
 
     class Meta:
         model = User

@@ -207,3 +207,39 @@ class StudentDocument(models.Model):
         if self.file:
             if self.file.size > 5 * 1024 * 1024:  # 5MB
                 raise ValidationError("File size cannot exceed 5MB")
+
+
+class StudentOffense(models.Model):
+    OFFENSE_TYPES = [
+        ("minor", "Minor"),
+        ("major", "Major"),
+        ("critical", "Critical"),
+    ]
+
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="record_offenses",
+        blank=True,
+        null=True,
+    )
+    offense_type = models.CharField(
+        max_length=20, choices=OFFENSE_TYPES, default="minor"
+    )
+    description = models.TextField()
+    date_committed = models.DateField()
+    action_taken = models.TextField()
+    witness = models.CharField(max_length=200, blank=True, null=True)
+    documented_by = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-date_committed"]
+        verbose_name = "Student Offense"
+        verbose_name_plural = "Student Offenses"
+
+    def __str__(self):
+        if self.student:
+            return f"{self.student.full_name} - {self.get_offense_type_display()} Offense on {self.date_committed}"
+        return f"Unassigned - {self.get_offense_type_display()} Offense on {self.date_committed}"

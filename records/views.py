@@ -17,6 +17,33 @@ def _is_staff(user):
     """Check if user is authenticated and staff"""
     return user.is_authenticated and user.is_staff
 
+@login_required
+def home(request):
+    """
+    Home page with overview statistics
+    """
+    # Get statistics
+    total_students = Student.objects.count()
+    male_count = Student.objects.filter(sex='Male').count()
+    female_count = Student.objects.filter(sex='Female').count()
+    
+    # Get offense count if committee app exists
+    try:
+        from committee.models import StudentOffense
+        offense_count = StudentOffense.objects.count()
+    except:
+        offense_count = 0
+    
+    context = {
+        'total_students': total_students,
+        'male_count': male_count,
+        'female_count': female_count,
+        'offense_count': offense_count,
+    }
+    
+    return render(request, 'records/homepage.html', context)
+
+
 
 @login_required
 @user_passes_test(_is_staff)

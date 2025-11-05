@@ -67,11 +67,18 @@ def user_create(request):
     if request.method == "POST":
         form = UserCreateForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            messages.success(
-                request, f"User '{user.username}' was created successfully!"
-            )
-            return redirect("accounts:user_list")
+            try:
+                user = form.save()
+                messages.success(
+                    request, f"User '{user.username}' was created successfully!"
+                )
+                return redirect("accounts:user_list")
+            except Exception as e:
+                messages.error(request, f"Error creating user: {str(e)}")
+        else:
+            # Add form-level errors to messages
+            for field in form.errors:
+                messages.error(request, f"{field}: {' '.join(form.errors[field])}")
     else:
         form = UserCreateForm()
 
