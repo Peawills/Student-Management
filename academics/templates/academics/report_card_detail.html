@@ -1,0 +1,121 @@
+{% extends 'records/base.html' %}
+{% block title %}Report Card - {{ report_card.student.full_name }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="mb-4">
+        <a href="{% url 'academics:report_card_list' %}" class="btn btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>{{ report_card.student.full_name }}</h2>
+                <p class="text-muted mb-0">{{ report_card.classroom }} - {{ report_card.term }}</p>
+            </div>
+            <a href="{% url 'academics:report_card_pdf' report_card.pk %}" class="btn btn-danger">
+                <i class="bi bi-file-pdf"></i> Download PDF
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Summary Card -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Average Score</small>
+                        <h3 class="mb-0">{{ report_card.average_score|floatformat:2 }}</h3>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Position</small>
+                        <h4 class="mb-0">{{ report_card.position }} / {{ report_card.out_of }}</h4>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Total Score</small>
+                        <h4 class="mb-0">{{ report_card.total_score|floatformat:2 }}</h4>
+                    </div>
+                    <hr>
+                    <div class="mb-2">
+                        <small class="text-muted">Days Present:</small>
+                        <strong>{{ report_card.days_present }}</strong>
+                    </div>
+                    <div>
+                        <small class="text-muted">Days Absent:</small>
+                        <strong>{{ report_card.days_absent }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects Performance -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Subject Performance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>CA</th>
+                                    <th>Exam</th>
+                                    <th>Total</th>
+                                    <th>Grade</th>
+                                    <th>Position</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in term_results %}
+                                <tr>
+                                    <td>{{ result.subject.name }}</td>
+                                    <td>{{ result.ca_total }}</td>
+                                    <td>{{ result.exam_score }}</td>
+                                    <td><strong>{{ result.total_score }}</strong></td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if result.grade == 'A' %}bg-success
+                                            {% elif result.grade == 'B' %}bg-primary
+                                            {% elif result.grade == 'C' %}bg-info
+                                            {% elif result.grade == 'D' %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ result.grade }}
+                                        </span>
+                                    </td>
+                                    <td>{{ result.position }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-3 text-muted">No results available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remarks -->
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Remarks</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Class Teacher:</strong>
+                        <p class="mb-0">{{ report_card.class_teacher_remarks|default:"No remarks" }}</p>
+                    </div>
+                    <div>
+                        <strong>Principal:</strong>
+                        <p class="mb-0">{{ report_card.principal_remarks|default:"No remarks" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

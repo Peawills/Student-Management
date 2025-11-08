@@ -1,0 +1,59 @@
+{% extends 'records/base.html' %}
+{% block title %}{{ action }} Subject{% endblock %}
+{% block content %}
+<div class="container py-4" style="max-width: 700px;">
+    <h2 class="mb-4">{{ action }} Subject</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Subject Name *</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Subject Code *</label>
+                    {{ form.code }}
+                    {% if form.code.errors %}
+                    <div class="text-danger small">{{ form.code.errors.0 }}</div>
+                    {% endif %}
+                    <small class="text-muted">e.g., MATH101, ENG201</small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                    <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        {{ form.is_core }}
+                        <label class="form-check-label">Core Subject</label>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> {{ action }}
+                    </button>
+                    <a href="{% url 'academics:subject_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => el.classList.add('form-control'));
+    document.querySelectorAll('input[type="checkbox"]').forEach(el => el.classList.add('form-check-input'));
+</script>
+{% endblock %}

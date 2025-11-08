@@ -31,6 +31,14 @@ class Student(models.Model):
     class_on_entry = models.CharField(max_length=50)
     date_of_entry = models.DateField()
     class_at_present = models.CharField(max_length=50)
+    classroom = models.ForeignKey(
+        "academics.ClassRoom",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="students",
+        help_text="Select the student's current class",
+    )
     student_image = models.ImageField(
         upload_to="students/images/", blank=True, null=True
     )
@@ -121,6 +129,11 @@ class Student(models.Model):
         retry a few times if a race causes an IntegrityError.
         """
         is_create = self._state.adding
+
+        # Sync class_at_present with the classroom foreign key
+        if self.classroom:
+            self.class_at_present = str(self.classroom)
+
         self.updated_at = timezone.now()
 
         if is_create and not self.admission_no:

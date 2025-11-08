@@ -1,0 +1,315 @@
+{% extends 'records/base.html' %}
+{% load static %}
+
+{% block title %}Enter Scores - {{ assessment.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .score-entry-container {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .assessment-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+
+    .score-table {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .score-table th {
+        background: #f8f9fa;
+        padding: 1rem;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .score-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+
+    .score-input {
+        width: 100px;
+        padding: 0.5rem;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .score-input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .score-input.has-value {
+        background: #f0f9ff;
+        border-color: #3b82f6;
+    }
+
+    .remarks-input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .remarks-input:focus {
+        border-color: #667eea;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .student-row {
+        transition: background 0.2s ease;
+    }
+
+    .student-row:hover {
+        background: #f8f9fa;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .existing-score-badge {
+        background: #dcfce7;
+        color: #166534;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .table-container {
+        max-height: 600px;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 100;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="mb-4">
+        <a href="{% url 'academics:assessment_detail' assessment.pk %}" class="btn btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Back to Assessment
+        </a>
+        <h2><i class="bi bi-pencil-square"></i> Enter Scores</h2>
+    </div>
+
+    <!-- Assessment Info Card -->
+    <div class="assessment-info">
+        <div class="row">
+            <div class="col-md-8">
+                <h4 class="mb-2">{{ assessment.title }}</h4>
+                <p class="mb-1">
+                    <i class="bi bi-book"></i> <strong>Subject:</strong> {{ assessment.assignment.subject.name }}
+                </p>
+                <p class="mb-1">
+                    <i class="bi bi-people"></i> <strong>Class:</strong> {{ assessment.assignment.classroom }}
+                </p>
+                <p class="mb-0">
+                    <i class="bi bi-calendar"></i> <strong>Date:</strong> {{ assessment.date|date:"M d, Y" }}
+                </p>
+            </div>
+            <div class="col-md-4 text-end">
+                <h2 class="mb-0">Max Score: {{ assessment.max_score|floatformat:0 }}</h2>
+                <p class="mb-0">{{ assessment.assessment_type.name }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Score Entry Form -->
+    <div class="score-entry-container">
+        <form method="post" id="scoreForm">
+            {% csrf_token %}
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Student List ({{ students|length }} students)</h5>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary" onclick="clearAllScores()">
+                        <i class="bi bi-x-circle"></i> Clear All
+                    </button>
+                    <button type="submit" class="btn btn-save">
+                        <i class="bi bi-check-circle"></i> Save Scores
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="table score-table table-hover">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th style="width: 250px;">Student Name</th>
+                            <th style="width: 150px;">Admission No</th>
+                            <th style="width: 120px;">Score ({{ assessment.max_score|floatformat:0 }})</th>
+                            <th>Remarks</th>
+                            <th style="width: 100px;">Current</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr class="student-row">
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <strong>{{ student.surname }} {{ student.other_name }}</strong>
+                            </td>
+                            <td>{{ student.admission_no }}</td>
+                            <td>
+                                <input 
+                                    type="number" 
+                                    name="score_{{ student.id }}" 
+                                    class="score-input" 
+                                    min="0" 
+                                    max="{{ assessment.max_score }}"
+                                    step="1"
+                                    {% if student.existing_score %}value="{{ student.existing_score.score|floatformat:0 }}"{% endif %}
+                                    placeholder="0"
+                                    onchange="this.classList.add('has-value')"
+                                >
+                            </td>
+                            <td>
+                                <input 
+                                    type="text" 
+                                    name="remarks_{{ student.id }}" 
+                                    class="remarks-input"
+                                    {% if student.existing_score %}value="{{ student.existing_score.remarks }}"{% endif %}
+                                    placeholder="Optional remarks"
+                                    maxlength="200"
+                                >
+                            </td>
+                            <td>
+                                {% if student.existing_score %}
+                                    <span class="existing-score-badge">
+                                        {{ student.existing_score.score|floatformat:0 }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                                <p class="mt-2 mb-0">No students found in this class.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between align-items-center">
+                <div class="text-muted">
+                    <i class="bi bi-info-circle"></i> 
+                    Scores must be between 0 and {{ assessment.max_score|floatformat:0 }}
+                </div>
+                <button type="submit" class="btn btn-save btn-lg">
+                    <i class="bi bi-check-circle"></i> Save All Scores
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add 'has-value' class to inputs with values on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const scoreInputs = document.querySelectorAll('.score-input');
+        scoreInputs.forEach(input => {
+            if (input.value && input.value !== '') {
+                input.classList.add('has-value');
+            }
+        });
+    });
+
+    // Clear all scores
+    function clearAllScores() {
+        if (confirm('Are you sure you want to clear all scores? This will not delete saved scores.')) {
+            const scoreInputs = document.querySelectorAll('.score-input');
+            const remarksInputs = document.querySelectorAll('.remarks-input');
+            
+            scoreInputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('has-value');
+            });
+            
+            remarksInputs.forEach(input => {
+                input.value = '';
+            });
+        }
+    }
+
+    // Form validation
+    document.getElementById('scoreForm').addEventListener('submit', function(e) {
+        const scoreInputs = document.querySelectorAll('.score-input');
+        let hasScores = false;
+        let invalidScores = [];
+        const maxScore = {{ assessment.max_score }};
+
+        scoreInputs.forEach(input => {
+            const value = parseFloat(input.value);
+            if (input.value !== '') {
+                hasScores = true;
+                if (isNaN(value) || value < 0 || value > maxScore) {
+                    invalidScores.push(input.name);
+                }
+            }
+        });
+
+        if (!hasScores) {
+            e.preventDefault();
+            alert('Please enter at least one score before submitting.');
+            return false;
+        }
+
+        if (invalidScores.length > 0) {
+            e.preventDefault();
+            alert(`Invalid scores detected. Scores must be between 0 and ${maxScore}.`);
+            return false;
+        }
+    });
+</script>
+{% endblock %}

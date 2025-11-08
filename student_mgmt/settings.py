@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,9 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY", "django-insecure-ct7%1*1f=-)-7qed&579qb1cm=_z_wb$*6r^xqawke1ncc-6h)"
-)
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True").lower() in ("1", "true", "yes")
@@ -43,7 +45,7 @@ else:
         "student-management-production-2177.up.railway.app",
         "127.0.0.1",
         "localhost",
-        "*"
+       
     ]
 
 
@@ -59,7 +61,12 @@ INSTALLED_APPS = [
     "records",
     "accounts",
     "committee",
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "academics",
 ]
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

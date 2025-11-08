@@ -1,0 +1,14 @@
+{% extends 'records/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Performance Comments</h1>
+  <p>Placeholder list view for performance comments.</p>
+  {% if comments %}
+    <ul class="list-group">{% for c in comments %}<li class="list-group-item">{{ c.text }}</li>{% endfor %}</ul>
+  {% else %}
+    <p class="text-muted">No comments yet.</p>
+  {% endif %}
+  <a class="btn btn-primary mt-3" href="{% url 'academics:comment_create' %}">Create Comment</a>
+</div>
+{% endblock %}

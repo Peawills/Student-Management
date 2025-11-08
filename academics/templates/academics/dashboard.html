@@ -1,0 +1,142 @@
+{% extends 'records/base.html' %}
+{% load static %}
+
+{% block title %}Academics Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+.kpi-card { padding: 1.25rem; border-radius: 12px; background: white; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+.kpi-value { font-size: 1.75rem; font-weight: 800; color: #333; }
+.kpi-label { color: #6b7280; font-weight: 600; font-size: .9rem; }
+.section-title { font-weight: 800; font-size: 1.25rem; margin-bottom: .75rem; }
+.table-responsive { margin-top: 1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-3">
+        <h2 class="section-title">Academics Dashboard</h2>
+        <p class="text-muted">Overview of sessions, terms, classes, subjects and recent assessments.</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">{{ total_sessions|default:0 }}</div>
+                <div class="kpi-label">Academic Sessions</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ current_term_name|default:'-' }}</div>
+                <div class="kpi-label">Current Term</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ total_classes|default:0 }}</div>
+                <div class="kpi-label">Classes</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ total_subjects|default:0 }}</div>
+                <div class="kpi-label">Subjects</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">{{ pending_assessments|default:0 }}</div>
+                <div class="kpi-label">Upcoming Assessments</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card p-3 mb-3">
+            <h3 class="section-title">Recent Assessments</h3>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Subject</th>
+                            <th>Class</th>
+                            <th>Date</th>
+                            <th>Max</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in recent_assessments %}
+                        <tr>
+                            <td>{{ a.title }}</td>
+                            <td>{{ a.assignment.subject.name }}</td>
+                            <td>{{ a.assignment.classroom }}</td>
+                            <td>{{ a.date }}</td>
+                            <td>{{ a.max_score }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-muted">No assessments found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card p-3 mb-3">
+            <h3 class="section-title">Recent Student Scores</h3>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Assessment</th>
+                            <th>Score</th>
+                            <th>Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in recent_scores %}
+                        <tr>
+                            <td>{{ s.student.full_name }}</td>
+                            <td>{{ s.assessment.title }}</td>
+                            <td>{{ s.score }}</td>
+                            <td>{{ s.submitted_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-muted">No recent scores.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card p-3 mb-3">
+            <h3 class="section-title">Classes Snapshot</h3>
+            <ul class="list-group list-group-flush">
+                {% for c in classes_snapshot %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ c.classroom }}</strong><br>
+                        <small class="text-muted">Teacher: {{ c.class_teacher_name|default:"-" }}</small>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">{{ c.student_count|default:0 }}</span>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No classes found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card p-3 mb-3">
+            <h3 class="section-title">Quick Actions</h3>
+            <div class="d-grid gap-2">
+                <a href="{% url 'academics:session_list' %}" class="btn btn-outline-primary">Manage Sessions</a>
+                <a href="{% url 'academics:classroom_list' %}" class="btn btn-outline-secondary">Manage Classes</a>
+                <a href="{% url 'academics:subject_list' %}" class="btn btn-outline-success">Manage Subjects</a>
+                <a href="{% url 'academics:assessment_create' %}" class="btn btn-primary">Create Assessment</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

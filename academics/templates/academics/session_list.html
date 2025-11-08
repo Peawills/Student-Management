@@ -1,0 +1,48 @@
+{% extends 'records/base.html' %}
+{% block title %}Academic Sessions{% endblock %}
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-calendar-range"></i> Academic Sessions</h2>
+        <a href="{% url 'academics:session_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Session
+        </a>
+    </div>
+
+    <div class="row g-3">
+        {% for session in sessions %}
+        <div class="col-md-4">
+            <div class="card shadow-sm {% if session.is_current %}border-primary{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h4 class="card-title">{{ session.name }}</h4>
+                        {% if session.is_current %}
+                        <span class="badge bg-primary">Current</span>
+                        {% endif %}
+                    </div>
+                    <p class="mb-2">
+                        <i class="bi bi-calendar-check"></i>
+                        {{ session.start_date|date:"M d, Y" }} - {{ session.end_date|date:"M d, Y" }}
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'academics:session_update' session.pk %}"
+                            class="btn btn-sm btn-outline-warning">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a href="{% url 'academics:session_delete' session.pk %}" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Delete this session?')">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+            <p class="text-muted mt-2">No sessions found</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

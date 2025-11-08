@@ -7,6 +7,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include(("accounts.urls", "accounts"), namespace="accounts")),
     path("committee/", include("committee.urls")),
+    path("academics/", include("academics.urls", namespace="academics")),
     path("", include(("records.urls", "records"), namespace="records")),
 ]
 

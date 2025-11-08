@@ -1,0 +1,19 @@
+{% extends 'records/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ action|default:'Create' }} Assessment{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h3 class="card-title">{{ action|default:'Create' }} Assessment</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'academics:assessment_list' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

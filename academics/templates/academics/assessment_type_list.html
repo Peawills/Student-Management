@@ -1,0 +1,14 @@
+{% extends 'records/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Assessment Types</h1>
+  <p>This is a placeholder list view for assessment types.</p>
+  {% if assessment_types %}
+    <ul class="list-group">{% for at in assessment_types %}<li class="list-group-item">{{ at.name }}</li>{% endfor %}</ul>
+  {% else %}
+    <p class="text-muted">No assessment types yet.</p>
+  {% endif %}
+  <a class="btn btn-primary mt-3" href="{% url 'academics:assessment_type_create' %}">Create Assessment Type</a>
+</div>
+{% endblock %}

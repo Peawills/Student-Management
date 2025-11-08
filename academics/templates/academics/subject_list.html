@@ -1,0 +1,84 @@
+{% extends 'records/base.html' %}
+{% block title %}Subjects{% endblock %}
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-book"></i> Subjects</h2>
+        {% if user.is_superuser %}
+        <a href="{% url 'academics:subject_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Subject
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="get" class="mb-3">
+                <div class="row g-2">
+                    <div class="col-md-8">
+                        <input type="text" name="q" class="form-control" placeholder="Search subjects..."
+                            value="{{ query|default:'' }}">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-secondary w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            {% if user.is_superuser %}
+                            <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subject in subjects %}
+                        <tr>
+                            <td><strong>{{ subject.name }}</strong></td>
+                            <td><span class="badge bg-primary">{{ subject.code }}</span></td>
+                            <td>
+                                {% if subject.is_core %}
+                                <span class="badge bg-success">Core</span>
+                                {% else %}
+                                <span class="badge bg-info">Elective</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ subject.description|truncatewords:10 }}</td>
+                            {% if user.is_superuser %}
+                            <td>
+                                <a href="{% url 'academics:subject_update' subject.pk %}"
+                                    class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'academics:subject_delete' subject.pk %}"
+                                    class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Delete this subject?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-2">No subjects found</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

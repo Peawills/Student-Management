@@ -754,11 +754,9 @@
                 </label>
                 <select name="klass" class="form-select" id="classFilter">
                     <option value="">All</option>
-                    {% for klass_item in classes %}
-                    {% if klass_item %}
-                    <option value="{{ klass_item }}" {% if klass == klass_item %}selected{% endif %}>{{ klass_item }}
-                    </option>
-                    {% endif %}
+                    {% for classroom in classrooms %}
+                    <option value="{{ classroom.id }}"
+                        {% if klass == classroom.id|stringformat:"s" %}selected{% endif %}>{{ classroom }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -808,7 +806,7 @@
             {% endif %}
             {% if klass %}
             <span class="filter-tag">
-                {{ klass }}
+                {{ selected_class_label }}
                 <i class="bi bi-x" onclick="removeFilter('klass')"></i>
             </span>
             {% endif %}

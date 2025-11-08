@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Report Card - {{ report_card.student.full_name }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-size: 14pt;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .student-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            width: 150px;
+            color: #666;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #333;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .results-table th {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .results-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .results-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .grade-a {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .grade-b {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .grade-c {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+
+        .grade-d {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .grade-f {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .summary-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 3px;
+        }
+
+        .summary-label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .summary-value {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 13pt;
+        }
+
+        .remarks-section {
+            margin-bottom: 20px;
+        }
+
+        .remark-box {
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            min-height: 60px;
+        }
+
+        .remark-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .signature {
+            text-align: center;
+            width: 45%;
+        }
+
+        .signature-line {
+            border-top: 2px solid #333;
+            margin-top: 50px;
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 9pt;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>STUDENT REPORT CARD</h1>
+        <h2>{{ report_card.term }}</h2>
+    </div>
+
+    <div class="student-info">
+        <div class="info-row">
+            <div class="info-label">Student Name:</div>
+            <div class="info-value">{{ report_card.student.full_name }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Admission Number:</div>
+            <div class="info-value">{{ report_card.student.admission_no }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Class:</div>
+            <div class="info-value">{{ report_card.classroom }}</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Session:</div>
+            <div class="info-value">{{ report_card.term.session.name }}</div>
+        </div>
+    </div>
+
+    <h3 style="color: #667eea; margin-bottom: 15px;">Academic Performance</h3>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>CA (40)</th>
+                <th>Exam (60)</th>
+                <th>Total (100)</th>
+                <th>Grade</th>
+                <th>Position</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in term_results %}
+            <tr>
+                <td>{{ result.subject.name }}</td>
+                <td>{{ result.ca_total }}</td>
+                <td>{{ result.exam_score }}</td>
+                <td><strong>{{ result.total_score }}</strong></td>
+                <td class="grade-{{ result.grade|lower }}">{{ result.grade }}</td>
+                <td>{{ result.position }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="summary-section">
+        <h3 style="color: #667eea; margin-bottom: 15px;">Summary</h3>
+        <div class="summary-row">
+            <span class="summary-label">Total Score:</span>
+            <span class="summary-value">{{ report_card.total_score|floatformat:2 }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Average Score:</span>
+            <span class="summary-value">{{ report_card.average_score|floatformat:2 }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Position in Class:</span>
+            <span class="summary-value">{{ report_card.position }} out of {{ report_card.out_of }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Days Present:</span>
+            <span class="summary-value">{{ report_card.days_present }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Days Absent:</span>
+            <span class="summary-value">{{ report_card.days_absent }}
+            </div>
+        </div>
+    
+        <div class="remarks-section">
+            <h3 style="color: #667eea; margin-bottom: 15px;">Remarks</h3>
+            
+            <div class="remark-box">
+                <div class="remark-title">Class Teacher's Remarks:</div>
+                <div>{{ report_card.class_teacher_remarks|default:"No remarks provided" }}</div>
+            </div>
+            
+            <div class="remark-box">
+                <div class="remark-title">Principal's Remarks:</div>
+                <div>{{ report_card.principal_remarks|default:"No remarks provided" }}</div>
+            </div>
+        </div>
+    
+        <div class="signatures">
+            <div class="signature">
+                <div class="signature-line"></div>
+                <div>Class Teacher's Signature</div>
+            </div>
+            <div class="signature">
+                <div class="signature-line"></div>
+                <div>Principal's Signature</div>
+            </div>
+        </div>
+    
+        <div class="footer">
+            <p>Generated on {% now "F d, Y" %}</p>
+            <p>Student Management System</p>
+        </div>
+    </body>
+    </html>

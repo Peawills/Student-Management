@@ -1,0 +1,313 @@
+{% extends 'records/base.html' %}
+{% block title %}Performance Analytics{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        border-left: 4px solid;
+        transition: transform 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card.primary {
+        border-left-color: #667eea;
+    }
+
+    .stat-card.success {
+        border-left-color: #28a745;
+    }
+
+    .stat-card.warning {
+        border-left-color: #ffc107;
+    }
+
+    .stat-card.info {
+        border-left-color: #17a2b8;
+    }
+
+    .analytics-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="analytics-header">
+        <h2 class="mb-2"><i class="bi bi-graph-up"></i> Performance Analytics</h2>
+        <p class="mb-0">Comprehensive academic performance insights and statistics</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters</h5>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Session</label>
+                        {{ form.session }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Term</label>
+                        {{ form.term }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Class</label>
+                        {{ form.classroom }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Subject</label>
+                        {{ form.subject }}
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-funnel"></i> Apply Filters
+                        </button>
+                        <a href="{% url 'academics:performance_analytics' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Clear
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center stat-card primary">
+                <div class="card-body">
+                    <i class="bi bi-bar-chart-fill text-primary" style="font-size: 2rem;"></i>
+                    <h6 class="text-muted mt-2">Average Score</h6>
+                    <h2 class="mb-0 text-primary">{{ stats.avg_score|floatformat:0|default:"N/A" }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center stat-card success">
+                <div class="card-body">
+                    <i class="bi bi-trophy-fill text-success" style="font-size: 2rem;"></i>
+                    <h6 class="text-muted mt-2">Highest Score</h6>
+                    <h2 class="mb-0 text-success">{{ stats.highest_score|floatformat:0|default:"N/A" }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center stat-card warning">
+                <div class="card-body">
+                    <i class="bi bi-arrow-down-circle-fill text-warning" style="font-size: 2rem;"></i>
+                    <h6 class="text-muted mt-2">Lowest Score</h6>
+                    <h2 class="mb-0 text-warning">{{ stats.lowest_score|floatformat:0|default:"N/A" }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center stat-card info">
+                <div class="card-body">
+                    <i class="bi bi-people-fill text-info" style="font-size: 2rem;"></i>
+                    <h6 class="text-muted mt-2">Total Students</h6>
+                    <h2 class="mb-0 text-info">{{ stats.total_students|default:"0" }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Subject Performance -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-book"></i> Subject Performance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Subject</th>
+                                    <th class="text-center">Avg Score</th>
+                                    <th class="text-center">Students</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for perf in subject_performance %}
+                                <tr>
+                                    <td><strong>{{ perf.subject__name }}</strong></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary">{{ perf.avg_score|floatformat:0 }}</span>
+                                    </td>
+                                    <td class="text-center">{{ perf.student_count }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-muted">
+                                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                        <p class="mt-2 mb-0">No data available</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grade Distribution -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Grade Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="gradeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Performers -->
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-star-fill"></i> Top 10 Performers</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 80px;">Rank</th>
+                                    <th>Student</th>
+                                    <th>Class</th>
+                                    <th class="text-center">Average Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for performer in top_performers %}
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">#{{ forloop.counter }}</strong>
+                                        {% if forloop.counter == 1 %}
+                                        <i class="bi bi-trophy-fill text-warning ms-2"></i>
+                                        {% elif forloop.counter == 2 %}
+                                        <i class="bi bi-trophy-fill text-secondary ms-2"></i>
+                                        {% elif forloop.counter == 3 %}
+                                        <i class="bi bi-trophy-fill text-info ms-2"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td><strong>{{ performer.student.full_name }}</strong></td>
+                                    <td>{{ performer.classroom }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success fs-6">{{ performer.total_score|floatformat:0
+                                            }}</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                        <p class="mt-2 mb-0">No performance data available</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Add form-select class to all selects
+    document.querySelectorAll('select').forEach(el => {
+        el.classList.add('form-select');
+    });
+
+    // Grade Distribution Chart
+    const ctx = document.getElementById('gradeChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['A', 'B', 'C', 'D', 'E', 'F'],
+                datasets: [{
+                    label: 'Number of Students',
+                    data: [
+                        {% if grade_distribution.A %}{{ grade_distribution.A }}{% else %} 0{% endif %},
+    {% if grade_distribution.B %} { { grade_distribution.B } } {% else %} 0{% endif %},
+    {% if grade_distribution.C %} { { grade_distribution.C } } {% else %} 0{% endif %},
+    {% if grade_distribution.D %} { { grade_distribution.D } } {% else %} 0{% endif %},
+    {% if grade_distribution.E %} { { grade_distribution.E } } {% else %} 0{% endif %},
+    {% if grade_distribution.F %} { { grade_distribution.F } } {% else %} 0{% endif %}
+                    ],
+    backgroundColor: [
+        'rgba(40, 167, 69, 0.8)',
+        'rgba(0, 123, 255, 0.8)',
+        'rgba(23, 162, 184, 0.8)',
+        'rgba(255, 193, 7, 0.8)',
+        'rgba(255, 152, 0, 0.8)',
+        'rgba(220, 53, 69, 0.8)'
+    ],
+        borderColor: [
+            'rgba(40, 167, 69, 1)',
+            'rgba(0, 123, 255, 1)',
+            'rgba(23, 162, 184, 1)',
+            'rgba(255, 193, 7, 1)',
+            'rgba(255, 152, 0, 1)',
+            'rgba(220, 53, 69, 1)'
+        ],
+            borderWidth: 2
+                }]
+            },
+    options: {
+        responsive: true,
+            maintainAspectRatio: false,
+                plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.parsed.y + ' students';
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                    ticks: {
+                    stepSize: 1,
+                        precision: 0
+                }
+            }
+        }
+    }
+        });
+    }
+</script>
+{% endblock %}

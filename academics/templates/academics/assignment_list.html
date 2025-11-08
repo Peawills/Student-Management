@@ -1,0 +1,58 @@
+{% extends 'records/base.html' %}
+{% block title %}Subject Assignments{% endblock %}
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-clipboard-check"></i> Subject Assignments</h2>
+            {% if current_term %}
+            <p class="text-muted mb-0">{{ current_term }}</p>
+            {% endif %}
+        </div>
+        <a href="{% url 'academics:assignment_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New Assignment
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Teacher</th>
+                            <th>Term</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assignment in assignments %}
+                        <tr>
+                            <td><strong>{{ assignment.classroom }}</strong></td>
+                            <td>{{ assignment.subject.name }}</td>
+                            <td>{{ assignment.teacher.get_full_name }}</td>
+                            <td>{{ assignment.term }}</td>
+                            <td>
+                                <a href="{% url 'academics:assignment_update' assignment.pk %}"
+                                    class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-2">No subject assignments found</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
