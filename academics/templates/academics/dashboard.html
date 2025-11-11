@@ -5,136 +5,439 @@
 
 {% block extra_css %}
 <style>
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
-.kpi-card { padding: 1.25rem; border-radius: 12px; background: white; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-.kpi-value { font-size: 1.75rem; font-weight: 800; color: #333; }
-.kpi-label { color: #6b7280; font-weight: 600; font-size: .9rem; }
-.section-title { font-weight: 800; font-size: 1.25rem; margin-bottom: .75rem; }
-.table-responsive { margin-top: 1rem; }
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .dashboard-header h2 {
+        font-weight: 800;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.75rem 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border-radius: 50%;
+        transform: translate(30%, -30%);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card.blue {
+        border-left-color: #667eea;
+    }
+
+    .stat-card.purple {
+        border-left-color: #764ba2;
+    }
+
+    .stat-card.green {
+        border-left-color: #10b981;
+    }
+
+    .stat-card.orange {
+        border-left-color: #f59e0b;
+    }
+
+    .stat-card.red {
+        border-left-color: #ef4444;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        opacity: 0.8;
+    }
+
+    .stat-value {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: #1f2937;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        padding: 1.75rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .section-card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .section-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #1f2937;
+    }
+
+    .section-title i {
+        font-size: 1.5rem;
+        color: #667eea;
+    }
+
+    .table-modern {
+        margin: 0;
+    }
+
+    .table-modern thead {
+        background: #f9fafb;
+        border-radius: 8px;
+    }
+
+    .table-modern th {
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 1rem;
+    }
+
+    .table-modern td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .table-modern tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .table-modern tbody tr:hover {
+        background: #f9fafb;
+    }
+
+    .table-modern tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .class-item {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 0.75rem;
+        background: #f9fafb;
+        transition: all 0.2s ease;
+        border-left: 3px solid #667eea;
+    }
+
+    .class-item:hover {
+        background: #f3f4f6;
+        transform: translateX(5px);
+    }
+
+    .badge-count {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .quick-action-btn {
+        padding: 1rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+    .quick-action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .quick-action-btn i {
+        font-size: 1.25rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #9ca3af;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .score-badge {
+        background: #10b981;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dashboard-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12 mb-3">
-        <h2 class="section-title">Academics Dashboard</h2>
-        <p class="text-muted">Overview of sessions, terms, classes, subjects and recent assessments.</p>
-    </div>
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+    <h2><i class="bi bi-speedometer2"></i> Academics Dashboard</h2>
+    <p class="mb-0" style="opacity: 0.95;">
+        Welcome back! Here's an overview of your academic activities and performance.
+    </p>
 </div>
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card-grid">
-            <div class="kpi-card">
-                <div class="kpi-value">{{ total_sessions|default:0 }}</div>
-                <div class="kpi-label">Academic Sessions</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-value">{{ current_term_name|default:'-' }}</div>
-                <div class="kpi-label">Current Term</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-value">{{ total_classes|default:0 }}</div>
-                <div class="kpi-label">Classes</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-value">{{ total_subjects|default:0 }}</div>
-                <div class="kpi-label">Subjects</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-value">{{ pending_assessments|default:0 }}</div>
-                <div class="kpi-label">Upcoming Assessments</div>
-            </div>
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card blue">
+        <div class="stat-icon">
+            <i class="bi bi-calendar3"></i>
         </div>
+        <div class="stat-value">{{ total_sessions|default:0 }}</div>
+        <div class="stat-label">Sessions</div>
+    </div>
+
+    <div class="stat-card purple">
+        <div class="stat-icon">
+            <i class="bi bi-clock-history"></i>
+        </div>
+        <div class="stat-value">{{ current_term_name|default:'-' }}</div>
+        <div class="stat-label">Current Term</div>
+    </div>
+
+    <div class="stat-card green">
+        <div class="stat-icon">
+            <i class="bi bi-door-open"></i>
+        </div>
+        <div class="stat-value">{{ total_classes|default:0 }}</div>
+        <div class="stat-label">Classes</div>
+    </div>
+
+    <div class="stat-card orange">
+        <div class="stat-icon">
+            <i class="bi bi-book"></i>
+        </div>
+        <div class="stat-value">{{ total_subjects|default:0 }}</div>
+        <div class="stat-label">Subjects</div>
+    </div>
+
+    <div class="stat-card red">
+        <div class="stat-icon">
+            <i class="bi bi-clipboard-check"></i>
+        </div>
+        <div class="stat-value">{{ pending_assessments|default:0 }}</div>
+        <div class="stat-label">Pending</div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-6">
-        <div class="card p-3 mb-3">
-            <h3 class="section-title">Recent Assessments</h3>
+<!-- Main Content Grid -->
+<div class="row g-4">
+    <!-- Recent Assessments -->
+    <div class="col-lg-7">
+        <div class="section-card">
+            <h3 class="section-title">
+                <i class="bi bi-clipboard-data"></i>
+                Recent Assessments
+            </h3>
+            {% if recent_assessments %}
             <div class="table-responsive">
-                <table class="table table-sm table-hover">
+                <table class="table table-modern">
                     <thead>
                         <tr>
-                            <th>Title</th>
+                            <th>Assessment</th>
                             <th>Subject</th>
                             <th>Class</th>
                             <th>Date</th>
-                            <th>Max</th>
+                            <th class="text-center">Max</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for a in recent_assessments %}
                         <tr>
-                            <td>{{ a.title }}</td>
+                            <td><strong>{{ a.title }}</strong></td>
                             <td>{{ a.assignment.subject.name }}</td>
-                            <td>{{ a.assignment.classroom }}</td>
-                            <td>{{ a.date }}</td>
-                            <td>{{ a.max_score }}</td>
+                            <td><span class="badge bg-primary">{{ a.assignment.classroom }}</span></td>
+                            <td>{{ a.date|date:"M d, Y" }}</td>
+                            <td class="text-center"><span class="score-badge">{{ a.max_score|floatformat:0 }}</span>
+                            </td>
                         </tr>
-                        {% empty %}
-                        <tr><td colspan="5" class="text-muted">No assessments found.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p class="mb-0">No assessments found</p>
+            </div>
+            {% endif %}
         </div>
 
-        <div class="card p-3 mb-3">
-            <h3 class="section-title">Recent Student Scores</h3>
+        <!-- Recent Scores -->
+        <div class="section-card">
+            <h3 class="section-title">
+                <i class="bi bi-graph-up-arrow"></i>
+                Recent Student Scores
+            </h3>
+            {% if recent_scores %}
             <div class="table-responsive">
-                <table class="table table-sm table-hover">
+                <table class="table table-modern">
                     <thead>
                         <tr>
                             <th>Student</th>
                             <th>Assessment</th>
-                            <th>Score</th>
+                            <th class="text-center">Score</th>
                             <th>Submitted</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for s in recent_scores %}
                         <tr>
-                            <td>{{ s.student.full_name }}</td>
+                            <td><strong>{{ s.student.full_name }}</strong></td>
                             <td>{{ s.assessment.title }}</td>
-                            <td>{{ s.score }}</td>
-                            <td>{{ s.submitted_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+                            <td class="text-center"><span class="score-badge">{{ s.score|floatformat:0 }}</span></td>
+                            <td><small class="text-muted">{{ s.submitted_at|date:"M d, h:i A" }}</small></td>
                         </tr>
-                        {% empty %}
-                        <tr><td colspan="4" class="text-muted">No recent scores.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p class="mb-0">No recent scores</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 
-    <div class="col-lg-6">
-        <div class="card p-3 mb-3">
-            <h3 class="section-title">Classes Snapshot</h3>
-            <ul class="list-group list-group-flush">
-                {% for c in classes_snapshot %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
+    <!-- Sidebar -->
+    <div class="col-lg-5">
+        <!-- Classes Snapshot -->
+        <div class="section-card">
+            <h3 class="section-title">
+                <i class="bi bi-people"></i>
+                Classes Overview
+            </h3>
+            {% if classes_snapshot %}
+            {% for c in classes_snapshot %}
+            <div class="class-item">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>{{ c.classroom }}</strong><br>
-                        <small class="text-muted">Teacher: {{ c.class_teacher_name|default:"-" }}</small>
+                        <strong style="font-size: 1.1rem;">{{ c.classroom }}</strong>
+                        <br>
+                        <small class="text-muted">
+                            <i class="bi bi-person-badge"></i> {{ c.class_teacher_name|default:"No Teacher" }}
+                        </small>
                     </div>
-                    <span class="badge bg-primary rounded-pill">{{ c.student_count|default:0 }}</span>
-                </li>
-                {% empty %}
-                <li class="list-group-item text-muted">No classes found.</li>
-                {% endfor %}
-            </ul>
+                    <span class="badge-count">{{ c.student_count|default:0 }} <i class="bi bi-people-fill"></i></span>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p class="mb-0">No classes found</p>
+            </div>
+            {% endif %}
         </div>
 
-        <div class="card p-3 mb-3">
-            <h3 class="section-title">Quick Actions</h3>
-            <div class="d-grid gap-2">
-                <a href="{% url 'academics:session_list' %}" class="btn btn-outline-primary">Manage Sessions</a>
-                <a href="{% url 'academics:classroom_list' %}" class="btn btn-outline-secondary">Manage Classes</a>
-                <a href="{% url 'academics:subject_list' %}" class="btn btn-outline-success">Manage Subjects</a>
-                <a href="{% url 'academics:assessment_create' %}" class="btn btn-primary">Create Assessment</a>
+        <!-- Quick Actions -->
+        <div class="section-card">
+            <h3 class="section-title">
+                <i class="bi bi-lightning"></i>
+                Quick Actions
+            </h3>
+            <div class="d-grid gap-3">
+                <a href="{% url 'academics:assessment_create' %}" class="quick-action-btn btn-primary">
+                    <i class="bi bi-plus-circle-fill"></i>
+                    <span>Create Assessment</span>
+                </a>
+                <a href="{% url 'academics:session_list' %}" class="quick-action-btn btn-outline-primary">
+                    <i class="bi bi-calendar3"></i>
+                    <span>Manage Sessions</span>
+                </a>
+                <a href="{% url 'academics:classroom_list' %}" class="quick-action-btn btn-outline-secondary">
+                    <i class="bi bi-door-open"></i>
+                    <span>Manage Classes</span>
+                </a>
+                <a href="{% url 'academics:subject_list' %}" class="quick-action-btn btn-outline-success">
+                    <i class="bi bi-book"></i>
+                    <span>Manage Subjects</span>
+                </a>
+                <a href="{% url 'academics:performance_analytics' %}" class="quick-action-btn btn-outline-info">
+                    <i class="bi bi-graph-up"></i>
+                    <span>View Analytics</span>
+                </a>
             </div>
         </div>
     </div>

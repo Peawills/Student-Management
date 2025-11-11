@@ -300,6 +300,21 @@ class ReportCard(models.Model):
     class_teacher_remarks = models.TextField(blank=True)
     principal_remarks = models.TextField(blank=True)
 
+    # --- New: Affective & Psychomotor Domains ---
+    SKILL_RATING_CHOICES = [
+        (5, 'Excellent'), (4, 'Good'), (3, 'Average'),
+        (2, 'Fair'), (1, 'Poor'), (0, 'N/A')
+    ]
+    # Affective
+    punctuality = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
+    attendance_in_class = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
+    honesty = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
+    neatness = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
+    
+    # Psychomotor
+    handwriting = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
+    sports_and_games = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
+
     # Dates
     generated_at = models.DateTimeField(auto_now_add=True)
     published_at = models.DateTimeField(null=True, blank=True)

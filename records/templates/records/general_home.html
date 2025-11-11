@@ -1,0 +1,34 @@
+{% extends "records/base.html" %}
+{% load static %}
+
+{% block title %}Welcome to Our School{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        text-align: center;
+        border-radius: 12px;
+    }
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+    }
+    .hero-section p {
+        font-size: 1.25rem;
+        max-width: 600px;
+        margin: 1rem auto 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1>Welcome to SchoolAdmin</h1>
+        <p>Your all-in-one solution for managing student records, academics, and school communication. Please select your portal from the navigation bar to log in.</p>
+    </div>
+</div>
+{% endblock %}

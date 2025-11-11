@@ -1,8 +1,7 @@
 {% extends "records/base.html" %}
 {% load static %}
 
-{% block title %}Staff Login - Student Management{% endblock %}
-
+{% block title %}{{ page_title|default:"Login" }} - Student Management{% endblock %}
 {% block extra_css %}
 <style>
     body {
@@ -283,9 +282,8 @@
             <div class="login-icon">
                 <i class="bi bi-shield-lock-fill"></i>
             </div>
-            <h3>Staff Login</h3>
+            <h3>{{ page_title|default:"Portal Login" }}</h3>
             <p>Welcome back! Please login to continue</p>
-        </div>
 
         <!-- Body -->
         <div class="login-body">
@@ -313,6 +311,7 @@
                            placeholder="Username"
                            value="{{ form.username.value|default:'' }}"
                            required
+                           autocomplete="username"
                            autofocus>
                     <label for="id_username">
                         <i class="bi bi-person me-2"></i>Username
@@ -333,6 +332,7 @@
                            id="id_password" 
                            name="password" 
                            placeholder="Password"
+                           autocomplete="current-password"
                            required>
                     <label for="id_password">
                         <i class="bi bi-lock me-2"></i>Password

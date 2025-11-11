@@ -1,0 +1,82 @@
+{% extends "records/base.html" %}
+
+{% block title %}Fee Payments{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-cash-stack"></i> Fee Payments
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:parent_dashboard' %}">Parent Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Fee Payments</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Payment Summary</h6>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <h5>Total Due</h5>
+                    <p class="h4 text-danger">${{ total_due|floatformat:2 }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Total Paid</h5>
+                    <p class="h4 text-success">${{ total_paid|floatformat:2 }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Balance</h5>
+                    <p class="h4 text-warning">${{ total_balance|floatformat:2 }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detailed Payment Records</h6>
+        </div>
+        <div class="card-body">
+            {% if fee_payments %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Term</th>
+                                <th>Type</th>
+                                <th>Amount Due</th>
+                                <th>Amount Paid</th>
+                                <th>Balance</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in fee_payments %}
+                                <tr>
+                                    <td>{{ payment.student.full_name }}</td>
+                                    <td>{{ payment.term }}</td>
+                                    <td>{{ payment.payment_type }}</td>
+                                    <td>${{ payment.amount_due|floatformat:2 }}</td>
+                                    <td>${{ payment.amount_paid|floatformat:2 }}</td>
+                                    <td>${{ payment.balance|floatformat:2 }}</td>
+                                    <td>{{ payment.due_date|date:"M d, Y" }}</td>
+                                    <td><span class="badge bg-{{ payment.status|lower }}">{{ payment.status }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">No fee payment records found for your children.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

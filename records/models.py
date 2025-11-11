@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from datetime import date
 import os
@@ -7,6 +8,13 @@ import os
 
 class Student(models.Model):
     surname = models.CharField(max_length=100)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="student_record",
+    )
     other_name = models.CharField(max_length=100, blank=True, null=True)
     residential_address = models.TextField()
     permanent_home_address = models.TextField(blank=True, null=True)
@@ -41,6 +49,16 @@ class Student(models.Model):
     )
     student_image = models.ImageField(
         upload_to="students/images/", blank=True, null=True
+    )
+    is_active = models.BooleanField(
+        default=True, help_text="Active students are shown in lists. Unselect this to archive a student."
+    )
+    graduation_session = models.ForeignKey(
+        "academics.AcademicSession",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="The academic session the student graduated/was archived in.",
     )
 
     # Parent/Guardian info
@@ -129,7 +147,7 @@ class Student(models.Model):
         retry a few times if a race causes an IntegrityError.
         """
         is_create = self._state.adding
-
+        
         # Sync class_at_present with the classroom foreign key
         if self.classroom:
             self.class_at_present = str(self.classroom)

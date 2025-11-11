@@ -161,7 +161,7 @@
     <div class="score-entry-container">
         <form method="post" id="scoreForm">
             {% csrf_token %}
-            
+
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5>Student List ({{ students|length }} students)</h5>
                 <div class="d-flex gap-2">
@@ -195,35 +195,23 @@
                             </td>
                             <td>{{ student.admission_no }}</td>
                             <td>
-                                <input 
-                                    type="number" 
-                                    name="score_{{ student.id }}" 
-                                    class="score-input" 
-                                    min="0" 
-                                    max="{{ assessment.max_score }}"
-                                    step="1"
-                                    {% if student.existing_score %}value="{{ student.existing_score.score|floatformat:0 }}"{% endif %}
-                                    placeholder="0"
-                                    onchange="this.classList.add('has-value')"
-                                >
+                                <input type="number" name="score_{{ student.id }}" class="score-input" min="0"
+                                    max="{{ assessment.max_score }}" step="1" {% if student.existing_score
+                                    %}value="{{ student.existing_score.score|floatformat:0 }}" {% endif %}
+                                    placeholder="0" onchange="this.classList.add('has-value')">
                             </td>
                             <td>
-                                <input 
-                                    type="text" 
-                                    name="remarks_{{ student.id }}" 
-                                    class="remarks-input"
-                                    {% if student.existing_score %}value="{{ student.existing_score.remarks }}"{% endif %}
-                                    placeholder="Optional remarks"
-                                    maxlength="200"
-                                >
+                                <input type="text" name="remarks_{{ student.id }}" class="remarks-input" {% if
+                                    student.existing_score %}value="{{ student.existing_score.remarks }}" {% endif %}
+                                    placeholder="Optional remarks" maxlength="200">
                             </td>
                             <td>
                                 {% if student.existing_score %}
-                                    <span class="existing-score-badge">
-                                        {{ student.existing_score.score|floatformat:0 }}
-                                    </span>
+                                <span class="existing-score-badge">
+                                    {{ student.existing_score.score|floatformat:0 }}
+                                </span>
                                 {% else %}
-                                    <span class="text-muted">-</span>
+                                <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
                         </tr>
@@ -241,7 +229,7 @@
 
             <div class="mt-4 d-flex justify-content-between align-items-center">
                 <div class="text-muted">
-                    <i class="bi bi-info-circle"></i> 
+                    <i class="bi bi-info-circle"></i>
                     Scores must be between 0 and {{ assessment.max_score|floatformat:0 }}
                 </div>
                 <button type="submit" class="btn btn-save btn-lg">
@@ -256,7 +244,7 @@
 {% block extra_js %}
 <script>
     // Add 'has-value' class to inputs with values on page load
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const scoreInputs = document.querySelectorAll('.score-input');
         scoreInputs.forEach(input => {
             if (input.value && input.value !== '') {
@@ -270,12 +258,12 @@
         if (confirm('Are you sure you want to clear all scores? This will not delete saved scores.')) {
             const scoreInputs = document.querySelectorAll('.score-input');
             const remarksInputs = document.querySelectorAll('.remarks-input');
-            
+
             scoreInputs.forEach(input => {
                 input.value = '';
                 input.classList.remove('has-value');
             });
-            
+
             remarksInputs.forEach(input => {
                 input.value = '';
             });
@@ -283,33 +271,34 @@
     }
 
     // Form validation
-    document.getElementById('scoreForm').addEventListener('submit', function(e) {
+    document.getElementById('scoreForm').addEventListener('submit', function (e) {
         const scoreInputs = document.querySelectorAll('.score-input');
         let hasScores = false;
         let invalidScores = [];
-        const maxScore = {{ assessment.max_score }};
+        const maxScore = {{ assessment.max_score }
+    };
 
-        scoreInputs.forEach(input => {
-            const value = parseFloat(input.value);
-            if (input.value !== '') {
-                hasScores = true;
-                if (isNaN(value) || value < 0 || value > maxScore) {
-                    invalidScores.push(input.name);
-                }
+    scoreInputs.forEach(input => {
+        const value = parseFloat(input.value);
+        if (input.value !== '') {
+            hasScores = true;
+            if (isNaN(value) || value < 0 || value > maxScore) {
+                invalidScores.push(input.name);
             }
-        });
-
-        if (!hasScores) {
-            e.preventDefault();
-            alert('Please enter at least one score before submitting.');
-            return false;
         }
+    });
 
-        if (invalidScores.length > 0) {
-            e.preventDefault();
-            alert(`Invalid scores detected. Scores must be between 0 and ${maxScore}.`);
-            return false;
-        }
+    if (!hasScores) {
+        e.preventDefault();
+        alert('Please enter at least one score before submitting.');
+        return false;
+    }
+
+    if (invalidScores.length > 0) {
+        e.preventDefault();
+        alert(`Invalid scores detected. Scores must be between 0 and ${maxScore}.`);
+        return false;
+    }
     });
 </script>
 {% endblock %}

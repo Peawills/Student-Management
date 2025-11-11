@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -43,9 +44,9 @@ if _env_allowed:
 else:
     ALLOWED_HOSTS = [
         "student-management-production-2177.up.railway.app",
+        "*.railway.app",
         "127.0.0.1",
         "localhost",
-       
     ]
 
 
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "academics",
+    "portal",
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -101,14 +103,19 @@ WSGI_APPLICATION = "student_mgmt.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    "default": {
+# Prefer DATABASE_URL if provided, fallback to SQLite
+DATABASES = {}
+if os.getenv("DATABASE_URL"):
+    DATABASES["default"] = dj_database_url.parse(
+        os.getenv("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=not DEBUG,
+    )
+else:
+    DATABASES["default"] = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-}
 
 
 # Password validation

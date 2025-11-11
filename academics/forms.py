@@ -308,25 +308,27 @@ class BulkScoreEntryForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        
+
         # Manually process each student's score and remarkas from the submitted data
         for student in self.students:
             score_field_name = f"score_{student.id}"
             remarks_field_name = f"remarks_{student.id}"
 
             score_val = self.data.get(score_field_name)
-            
-            if score_val is not None and score_val != '':
+
+            if score_val is not None and score_val != "":
                 try:
-                    score = forms.DecimalField(max_value=self.assessment.max_score, min_value=0).clean(score_val)
+                    score = forms.DecimalField(
+                        max_value=self.assessment.max_score, min_value=0
+                    ).clean(score_val)
                     cleaned_data[score_field_name] = score
                 except ValidationError as e:
                     self.add_error(score_field_name, e)
-            
+
             # Remarks are optional and don't need strict validation here
-            remarks_val = self.data.get(remarks_field_name, '')
+            remarks_val = self.data.get(remarks_field_name, "")
             cleaned_data[remarks_field_name] = remarks_val
-            
+
         return cleaned_data
 
 
@@ -459,15 +461,20 @@ class BulkReportCardGenerationForm(forms.Form):
         required=False,
     )
 
+    # --- New: Add fields for domain skills ---
+    punctuality = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
+    attendance_in_class = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
+    honesty = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
+    neatness = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
+    handwriting = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
+    sports_and_games = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
+
 
 # ============================================
 # Filter & Search Forms
 # ============================================
 
-
 class PerformanceFilterForm(forms.Form):
-    """Form for filtering performance analytics"""
-
     session = forms.ModelChoiceField(
         queryset=AcademicSession.objects.all(),
         required=False,
@@ -492,17 +499,23 @@ class PerformanceFilterForm(forms.Form):
         empty_label="All Subjects",
         widget=forms.Select(attrs={"class": "form-select"}),
     )
+    student = forms.ModelChoiceField(
+        queryset=Student.objects.all().order_by('surname', 'other_name'),
+        required=False,
+        empty_label="All Students",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
     min_score = forms.DecimalField(
         required=False,
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Min Score"}
-        ),
+        min_value=0,
+        max_value=100,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "0"}),
     )
     max_score = forms.DecimalField(
         required=False,
-        widget=forms.NumberInput(
-            attrs={"class": "form-control", "placeholder": "Max Score"}
-        ),
+        min_value=0,
+        max_value=100,
+        widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "100"}),
     )
 
 

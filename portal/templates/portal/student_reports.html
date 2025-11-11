@@ -1,0 +1,60 @@
+{% extends "records/base.html" %}
+
+{% block title %}My Report Cards{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-file-earmark-bar-graph"></i> My Report Cards
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:student_dashboard' %}">Student Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Report Cards</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Available Report Cards</h6>
+        </div>
+        <div class="card-body">
+            {% if report_cards %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Term</th>
+                                <th>Class</th>
+                                <th>Average Score</th>
+                                <th>Position</th>
+                                <th>Generated On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rc in report_cards %}
+                                <tr>
+                                    <td>{{ rc.term }}</td>
+                                    <td>{{ rc.classroom }}</td>
+                                    <td>{{ rc.average_score|floatformat:1 }}</td>
+                                    <td>{{ rc.position }}/{{ rc.out_of }}</td>
+                                    <td>{{ rc.generated_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'academics:report_card_pdf' rc.id %}" class="btn btn-sm btn-outline-primary" target="_blank" title="Download PDF">
+                                            <i class="bi bi-file-earmark-pdf"></i> PDF
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">No published report cards found for you.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

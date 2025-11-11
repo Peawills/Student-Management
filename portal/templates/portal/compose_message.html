@@ -1,0 +1,35 @@
+{% extends "records/base.html" %}
+
+{% block title %}Compose Message{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-pencil-square"></i> Compose New Message
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'portal:messages_inbox' %}">Inbox</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Compose</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">New Message</h6>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Send Message</button>
+                    <a href="{% url 'portal:messages_inbox' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

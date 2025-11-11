@@ -197,100 +197,6 @@
             opacity: 0.3;
         }
 
-        /* Alert styles */
-        .alert {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            animation: slideDown 0.3s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Card enhancements */
-        .card {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Footer styles */
-        footer {
-            margin-top: auto;
-            padding: 2rem 0;
-            background: white;
-            border-top: 1px solid #e9ecef;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        footer a {
-            color: var(--primary-color);
-            transition: all 0.3s ease;
-        }
-
-        footer a:hover {
-            color: var(--secondary-color);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .main-navbar {
-                padding: 1rem;
-            }
-
-            .navbar-nav {
-                margin: 1rem 0;
-                padding: 1rem;
-                background: #f8f9fa;
-                border-radius: 8px;
-            }
-
-            .navbar-nav .nav-link {
-                padding: 0.8rem 1rem;
-                margin: 0.2rem 0;
-            }
-
-            .user-info {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.5rem;
-                width: 100%;
-                margin-top: 1rem;
-            }
-
-            .user-badge {
-                justify-content: center;
-            }
-
-            .btn-custom {
-                width: 100%;
-            }
-
-            .academics-nav {
-                padding: 0.5rem 1rem;
-            }
-
-            .academics-nav .nav-link {
-                font-size: 0.85rem;
-                padding: 0.4rem 0.8rem;
-            }
-        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -299,111 +205,178 @@
 <body>
     <div class="container mt-4 mb-5">
         <!-- Main Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light main-navbar">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white rounded-3 shadow-sm mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">
+                <a class="navbar-brand" href="{% url 'records:home' %}">
                     <i class="bi bi-mortarboard-fill"></i>
                     SchoolAdmin
                 </a>
-
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
                     aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                {% if request.user.is_authenticated %}
+                <div class="collapse navbar-collapse" id="navbarContent">
+
+                    <!-- Role-Specific Navigation -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if request.user.is_staff %}
+                            <!-- Staff/Admin Links -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'records:admin_dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                            </li>
+                            
+                            {% if not request.user.is_teacher %}
+                                <!-- Student Management Dropdown (for Admins, not Teachers) -->
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="studentMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-people-fill"></i> Students
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="studentMenu">
+                                        <li><a class="dropdown-item" href="{% url 'records:student_list' %}">All Students</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'committee:offense_list' %}">Disciplinary Records</a></li>
+                                        {% if request.user.is_superuser %}
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{% url 'records:alumni_list' %}">Alumni Records</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'committee:analytics_dashboard' %}">Disciplinary Analytics</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+                             <li class="nav-item">
+                                 <a class="nav-link" href="{% url 'academics:dashboard' %}"><i class="bi bi-journal-bookmark-fill"></i> Academics</a>
+                             </li>
+
+                            {% if request.user.is_superuser %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userManagementMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-gear"></i> Manage Users
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="userManagementMenu">
+                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}">All Users</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}?type=admin">Admins</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}?type=staff">Staff</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}?type=parent">Parents</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}?type=student">Students</a></li>
+                                </ul>
+                            </li>
+                            {% endif %}
+
+                        {% elif request.user.parent_profile %}
+                            <!-- Parent Links -->
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'portal:parent_dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="childrenMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-people-fill"></i> My Children
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="childrenMenu">
+                                    {% for student in request.user.parent_profile.students.all %}
+                                    <li><a class="dropdown-item" href="{% url 'portal:parent_student_detail' student.id %}">{{ student.full_name }}</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'portal:parent_fees' %}"><i class="bi bi-cash-coin"></i> Fees</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'portal:announcements_list' %}"><i class="bi bi-megaphone"></i> Announcements</a>
+                            </li>
+
+
+                        {% elif request.user.student_profile %}
+                            <!-- Student Links -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'portal:student_dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'portal:student_scores' %}"><i class="bi bi-journal-check"></i> My Scores</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'portal:student_attendance' %}"><i class="bi bi-calendar-check"></i> My Attendance</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'portal:student_timetable' %}"><i class="bi bi-table"></i> My Timetable</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'portal:student_reports' %}"><i class="bi bi-file-earmark-text"></i> My Reports</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+
 
                 <div class="collapse navbar-collapse" id="navbarContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        {% if request.user.is_authenticated %}
-                        <!-- Students -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'records:student_list' %}">
-                                <i class="bi bi-people-fill"></i> Students
-                            </a>
-                        </li>
-
-                        <!-- Academics -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'academics:dashboard' %}">
-                                <i class="bi bi-mortarboard"></i> Academics
-                            </a>
-                        </li>
-
-                        <!-- Committee / Disciplinary -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'committee:offense_list' %}">
-                                <i class="bi bi-exclamation-triangle"></i> Disciplinary
-                            </a>
-                        </li>
-
-                        {% if request.user.is_superuser %}
-                        <!-- Admin / User Management Dropdown -->
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        {% if not request.user.is_authenticated %}
+                        <!-- Portal Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="adminMenu" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-gear-fill"></i> Admin
+                                <i class="bi bi-box-arrow-in-right"></i> Portal Login
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="adminMenu">
-                                <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}">
-                                        <i class="bi bi-people me-2"></i>Manage Users
+                                <li><a class="dropdown-item" href="{% url 'accounts:login' %}?type=student">
+                                        <i class="bi bi-person me-2"></i>Student Portal
                                     </a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:user_create' %}">
-                                        <i class="bi bi-person-plus me-2"></i>Create User
+                                <li><a class="dropdown-item" href="{% url 'accounts:login' %}?type=parent">
+                                        <i class="bi bi-people me-2"></i>Parent Portal
                                     </a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                <li><a class="dropdown-item" href="{% url 'accounts:login' %}?type=staff">
+                                        <i class="bi bi-person-workspace me-2"></i>Staff Portal
+                                    </a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:login' %}?type=admin">
+                                        <i class="bi bi-shield-lock me-2"></i>Admin Portal
                                     </a></li>
                             </ul>
                         </li>
                         {% endif %}
+                        {% if request.user.is_authenticated %}
+                        <!-- Common Authenticated User Links (Profile, Messages, Logout) -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> {{ request.user.get_full_name|default:request.user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                                <li><a class="dropdown-item" href="{% url 'portal:profile' %}">
+                                    <i class="bi bi-person-vcard me-2"></i>My Profile
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'portal:messages_inbox' %}">
+                                    <i class="bi bi-envelope me-2"></i>Messages
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'portal:change_password' %}">
+                                    <i class="bi bi-key me-2"></i>Change Password
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a href="{% url 'accounts:logout' %}" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         {% endif %}
                     </ul>
-
-                    <div class="ms-auto user-info">
-                        {% if request.user.is_authenticated %}
-                        <!-- User Badge -->
-                        <div class="user-badge">
-                            <i class="bi bi-person-circle"></i>
-                            <span>{{ request.user.get_full_name|default:request.user.username }}</span>
-                            {% if request.user.is_staff %}
-                            <span class="badge bg-primary ms-1">Staff</span>
-                            {% endif %}
-                        </div>
-
-                        <!-- User Dropdown -->
-                        <div class="dropdown">
-                            <button class="btn btn-custom btn-logout dropdown-toggle" type="button" id="userDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-gear-fill"></i> Account
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="#">
-                                        <i class="bi bi-person-circle me-2"></i>My Profile
-                                    </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                        <i class="bi bi-key me-2"></i>Change Password
-                                    </a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </a></li>
-                            </ul>
-                        </div>
-                        {% else %}
-                        <a href="{% url 'accounts:login' %}" class="btn btn-custom btn-logout">
-                            <i class="bi bi-box-arrow-in-right"></i> Login
-                        </a>
-                        {% endif %}
-                    </div>
                 </div>
             </div>
         </nav>
 
-        <!-- Secondary Academics Navbar -->
+        <!-- Secondary Academics Navbar (for Staff) -->
+        {% if request.user.is_staff %}
         <nav class="nav academics-nav" id="academics-subnav">
             <a class="nav-link" href="{% url 'academics:dashboard' %}">
                 <i class="bi bi-speedometer2"></i> Dashboard
@@ -422,10 +395,13 @@
             <a class="nav-link" href="{% url 'academics:report_card_list' %}">Report Cards</a>
             <a class="nav-link" href="{% url 'academics:performance_analytics' %}">Analytics</a>
             <a class="nav-link" href="{% url 'academics:comment_list' %}">Comments</a>
+          
         </nav>
+        {% endif %}
 
         <!-- Messages/Alerts -->
         {% if messages %}
+
         <div class="messages-container mb-4">
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -447,7 +423,7 @@
     <!-- Footer -->
     <footer>
         <div class="container text-center text-muted">
-            <p class="mb-2">
+            <p class="mb-2" style="color: var(--primary-color);">
                 <i class="bi bi-mortarboard-fill text-primary"></i>
                 <strong>Student Management System</strong>
             </p>
@@ -478,22 +454,8 @@
             // Set active navigation links
             setActiveNav();
 
-            // Handle academics sub-navigation
+            // Show/hide academics sub-navigation
             handleAcademicsNav();
-
-            // Smooth scroll for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    if (href !== '#') {
-                        e.preventDefault();
-                        const target = document.querySelector(href);
-                        if (target) {
-                            target.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                });
-            });
         });
 
         // Set active class to current page navigation
@@ -518,10 +480,7 @@
             academicsNavLinks.forEach(link => {
                 if (link.href) {
                     const linkPath = new URL(link.href).pathname;
-
-                    // Exact match or starts with for subnav
-                    if (currentPath === linkPath ||
-                        (linkPath !== '/' && currentPath.startsWith(linkPath))) {
+                    if (currentPath === linkPath || (linkPath !== '/' && currentPath.startsWith(linkPath))) {
                         link.classList.add('active');
                     }
                 }
@@ -531,10 +490,7 @@
         // Show/hide academics sub-navigation
         function handleAcademicsNav() {
             const academicsSubnav = document.getElementById('academics-subnav');
-            const currentPath = window.location.pathname;
-
-            // Show subnav if we're on an academics page
-            if (currentPath.startsWith('/academics/')) {
+            if (academicsSubnav && window.location.pathname.startsWith('/academics/')) {
                 academicsSubnav.classList.add('show');
             }
         }

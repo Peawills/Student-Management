@@ -1,0 +1,59 @@
+{% extends "records/base.html" %}
+
+{% block title %}My Scores{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-journal-check"></i> My Scores
+        {% if current_term %}<small class="text-muted">({{ current_term }})</small>{% endif %}
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:student_dashboard' %}">Student Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Scores</li>
+        </ol>
+    </nav>
+
+    {% if scores_by_subject %}
+        {% for subject_name, scores_list in scores_by_subject.items %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{{ subject_name }}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Assessment</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Score</th>
+                                    <th>Max Score</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for score in scores_list %}
+                                    <tr>
+                                        <td>{{ score.assessment.title }}</td>
+                                        <td>{{ score.assessment.assessment_type.name }}</td>
+                                        <td>{{ score.assessment.date|date:"M d, Y" }}</td>
+                                        <td>{{ score.score|floatformat:1 }}</td>
+                                        <td>{{ score.assessment.max_score|floatformat:0 }}</td>
+                                        <td>{{ score.remarks|default:"-" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info" role="alert">No scores found for you in the current term.</div>
+    {% endif %}
+</div>
+{% endblock %}

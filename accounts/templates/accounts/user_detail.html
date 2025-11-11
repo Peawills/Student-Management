@@ -369,7 +369,7 @@
                             <i class="bi bi-pencil"></i>
                             Edit User
                         </a>
-                        {% if not user_detail.is_superuser or request.user == user_detail %}
+                        {% if request.user.pk != user_detail.pk %}
                         <a href="{% url 'accounts:user_delete' user_detail.pk %}" class="btn-action btn-delete">
                             <i class="bi bi-trash"></i>
                             Delete User

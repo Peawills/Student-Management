@@ -1,0 +1,45 @@
+{% extends "records/base.html" %}
+
+{% block title %}{{ announcement.title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-megaphone"></i> Announcement Details
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'portal:announcements_list' %}">Announcements</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ announcement.title|truncatechars:30 }}</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h5 class="m-0 font-weight-bold text-primary">{{ announcement.title }}</h5>
+            {% if announcement.is_urgent %}
+                <span class="badge bg-danger fs-6">URGENT</span>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <p class="text-muted">
+                <i class="bi bi-calendar"></i> Published: {{ announcement.created_at|date:"F d, Y H:i" }}
+                {% if announcement.expires_at %}
+                    | <i class="bi bi-calendar-x"></i> Expires: {{ announcement.expires_at|date:"F d, Y H:i" }}
+                {% endif %}
+                | <i class="bi bi-tag"></i> Category: {{ announcement.category }}
+                | <i class="bi bi-people"></i> Target: {{ announcement.target_audience }}
+            </p>
+            <hr>
+            <div class="announcement-content">
+                {{ announcement.content|linebreaksbr }}
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'portal:announcements_list' %}" class="btn btn-secondary">Back to Announcements</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "records/base.html" %}
+
+{% block title %}Timetable for {{ student.full_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-calendar3"></i> Timetable for {{ student.full_name }}
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:parent_dashboard' %}">Parent Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'portal:parent_student_detail' student.id %}">{{ student.full_name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Timetable</li>
+        </ol>
+    </nav>
+
+    {% if timetable_by_day %}
+        <div class="row">
+            {% for day in days %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">{{ day }}</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if timetable_by_day|get_item:day %}
+                                <ul class="list-group list-group-flush">
+                                    {% for entry in timetable_by_day|get_item:day %}
+                                        <li class="list-group-item">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <strong>{{ entry.subject.name }}</strong>
+                                                    <br>
+                                                    <small class="text-muted">{{ entry.start_time|time:"H:i" }} - {{ entry.end_time|time:"H:i" }}</small>
+                                                </div>
+                                                <span class="badge bg-secondary">{{ entry.teacher.get_full_name|default:entry.teacher.username }}</span>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-muted">No classes scheduled for {{ day }}.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">No timetable available for {{ student.full_name }} in the current term.</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% comment %}
+    Custom filter to get item from dictionary in template
+    You might need to add this to a custom template tags file (e.g., records/templatetags/custom_filters.py)
+    and load it in the template: {% load custom_filters %}
+
+    # records/templatetags/custom_filters.py
+    from django import template
+    register = template.Library()
+
+    @register.filter
+    def get_item(dictionary, key):
+        return dictionary.get(key)
+{% endcomment %}

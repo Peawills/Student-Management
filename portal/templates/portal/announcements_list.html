@@ -1,0 +1,48 @@
+{% extends "records/base.html" %}
+
+{% block title %}Announcements{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-megaphone"></i> School Announcements
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Announcements</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Latest Announcements</h6>
+        </div>
+        <div class="card-body">
+            {% if announcements %}
+                <div class="list-group">
+                    {% for announcement in announcements %}
+                        <a href="{% url 'portal:announcement_detail' announcement.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">
+                                    {% if announcement.is_urgent %}<span class="badge bg-danger me-2">URGENT</span>{% endif %}
+                                    {{ announcement.title }}
+                                </h5>
+                                <small class="text-muted">{{ announcement.created_at|date:"M d, Y" }}</small>
+                            </div>
+                            <p class="mb-1">{{ announcement.content|truncatechars:150 }}</p>
+                            <small class="text-muted">Category: {{ announcement.category }}</small>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    <h4 class="alert-heading">No Announcements Yet!</h4>
+                    <p>There are no active announcements to display at this time. Please check back later.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

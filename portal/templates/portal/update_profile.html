@@ -1,0 +1,51 @@
+{% extends "records/base.html" %}
+
+{% block title %}Update Profile{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-pencil"></i> Update Profile
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'portal:profile' %}">My Profile</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Update</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Edit Your Information</h6>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <h5 class="mb-3">Basic Information</h5>
+                <div class="row g-3">
+                    <div class="col-md-6 mb-3">{{ user_form.first_name.label_tag }} {{ user_form.first_name }}</div>
+                    <div class="col-md-6 mb-3">{{ user_form.last_name.label_tag }} {{ user_form.last_name }}</div>
+                    <div class="col-12 mb-3">{{ user_form.email.label_tag }} {{ user_form.email }}</div>
+                </div>
+
+                {% if parent_form %}
+                <hr class="my-4">
+                <h5 class="mb-3">Parent Information</h5>
+                <div class="row g-3">
+                    <div class="col-md-6 mb-3">{{ parent_form.phone_number.label_tag }} {{ parent_form.phone_number }}</div>
+                    <div class="col-md-6 mb-3">{{ parent_form.occupation.label_tag }} {{ parent_form.occupation }}</div>
+                    <div class="col-12 mb-3">{{ parent_form.address.label_tag }} {{ parent_form.address }}</div>
+                </div>
+                {% endif %}
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Save Changes</button>
+                    <a href="{% url 'portal:profile' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

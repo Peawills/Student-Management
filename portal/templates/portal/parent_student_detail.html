@@ -1,0 +1,51 @@
+{% extends "records/base.html" %}
+
+{% block title %}Student Details - {{ student.full_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-person-vcard"></i> {{ student.full_name }} ({{ student.admission_no }})
+    </h1>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Student Information</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Class:</strong> {{ student.classroom }}</p>
+                    <p><strong>Date of Birth:</strong> {{ student.date_of_birth|date:"F d, Y" }}</p>
+                    <p><strong>Gender:</strong> {{ student.sex }}</p>
+                    <p><strong>Admission Date:</strong> {{ student.date_of_entry|date:"F d, Y" }}</p>
+                    <p><strong>Residential Address:</strong> {{ student.residential_address }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Academic Overview</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Latest Report Card:</strong> {% if latest_report %}{{ latest_report.term }} (Avg: {{ latest_report.average_score|floatformat:1 }}){% else %}N/A{% endif %}</p>
+                    <p><strong>Recent Scores:</strong></p>
+                    {% if recent_scores %}
+                        <ul>
+                            {% for score in recent_scores %}
+                                <li>{{ score.assessment.title }} ({{ score.assessment.assignment.subject.name }}): {{ score.score|floatformat:1 }}/{{ score.assessment.max_score|floatformat:0 }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No recent scores available.</p>
+                    {% endif %}
+                    <a href="{% url 'portal:parent_student_scores' student.id %}" class="btn btn-sm btn-primary">View All Scores</a>
+                    <a href="{% url 'portal:parent_student_attendance' student.id %}" class="btn btn-sm btn-info ms-2">View Attendance</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -238,28 +238,32 @@
                 <!-- Password -->
                 <div class="col-md-6 form-group">
                     <label for="{{ form.password1.id_for_label }}" class="form-label">
-                        Password*
+                        {% if form.instance.pk %}New Password{% else %}Password*{% endif %}
                     </label>
                     {{ form.password1 }}
                     {% if form.password1.errors %}
                     <div class="invalid-feedback">{{ form.password1.errors.0 }}</div>
                     {% endif %}
-                    {% if form.password1.help_text %}
-                    <small class="help-text">{{ form.password1.help_text }}</small>
+                    {% if form.instance.pk %}
+                        <small class="help-text">Leave blank to keep the current password.</small>
+                    {% else %}
+                        {% if form.password1.help_text %}
+                        <small class="help-text">{{ form.password1.help_text }}</small>
+                        {% endif %}
                     {% endif %}
                 </div>
 
                 <!-- Confirm Password -->
                 <div class="col-md-6 form-group">
                     <label for="{{ form.password2.id_for_label }}" class="form-label">
-                        Confirm Password*
+                        {% if form.instance.pk %}Confirm New Password{% else %}Confirm Password*{% endif %}
                     </label>
                     {{ form.password2 }}
                     {% if form.password2.errors %}
                     <div class="invalid-feedback">{{ form.password2.errors.0 }}</div>
                     {% endif %}
-                    {% if form.password2.help_text %}
-                    <small class="help-text">{{ form.password2.help_text }}</small>
+                    {% if form.instance.pk %}
+                        <small class="help-text">Enter the same password as above, for verification.</small>
                     {% endif %}
                 </div>
 
@@ -290,22 +294,6 @@
 </div>
 
 <script>
-    // Add form-control class to all inputs
-    document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]')
-        .forEach(input => {
-            if (!input.classList.contains('form-control')) {
-                input.classList.add('form-control');
-            }
-        });
-
-    // Add form-check-input class to checkboxes
-    document.querySelectorAll('input[type="checkbox"]')
-        .forEach(input => {
-            if (!input.classList.contains('form-check-input')) {
-                input.classList.add('form-check-input');
-            }
-        });
-
     // Password visibility toggle
     (function attachPasswordToggles() {
         const pwFields = document.querySelectorAll('input[type="password"]');

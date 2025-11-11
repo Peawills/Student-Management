@@ -1,0 +1,126 @@
+{% extends "records/base.html" %}
+
+{% block title %}Parent Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .dashboard-header h2 {
+        font-weight: 800;
+        font-size: 2rem;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1.5rem;
+    }
+
+    .info-card-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #1f2937;
+    }
+
+    .info-card-title i {
+        font-size: 1.5rem;
+        color: #667eea;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .badge-class {
+        background: #667eea;
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2><i class="bi bi-person-circle"></i> Welcome, {{ request.user.get_full_name|default:request.user.username }}</h2>
+    <p class="mb-0" style="opacity: 0.95;">
+        This is your Parent Portal dashboard. Here you can find information about your children.
+    </p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-12">
+        <div class="info-card">
+            <h3 class="info-card-title"><i class="bi bi-people"></i> Your Children</h3>
+            {% if students %}
+                <ul class="list-group list-group-flush">
+                    {% for student in students %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{% url 'portal:parent_student_detail' student.id %}" class="text-decoration-none fw-bold">{{ student.full_name }} ({{ student.admission_no }})</a>
+                            <span class="badge bg-primary rounded-pill">{{ student.classroom }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No children linked to your account.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="info-card">
+            <h3 class="info-card-title"><i class="bi bi-megaphone"></i> Latest Announcements</h3>
+            {% if announcements %}
+                <div class="list-group list-group-flush">
+                    {% for announcement in announcements %}
+                        <a href="{% url 'portal:announcement_detail' announcement.id %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">
+                                    {% if announcement.is_urgent %}<span class="badge bg-danger me-2">URGENT</span>{% endif %}
+                                    {{ announcement.title }}
+                                </h5>
+                                <small class="text-muted">{{ announcement.created_at|date:"M d, Y" }}</small>
+                            </div>
+                            <p class="mb-1 text-muted">{{ announcement.content|truncatechars:120 }}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No recent announcements.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

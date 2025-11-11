@@ -1,353 +1,122 @@
 {% extends "records/base.html" %}
-{% load static %}
 
-{% block title %}Staff Users - Student Management{% endblock %}
+{% block title %}{{ page_title }}{% endblock %}
 
 {% block extra_css %}
 <style>
-    .user-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+    .nav-tabs .nav-link {
+        color: var(--primary-color);
+        font-weight: 500;
     }
-
-    .page-title {
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 2rem;
-        font-weight: 700;
+    .nav-tabs .nav-link.active {
+        color: #495057;
+        background-color: #fff;
+        border-color: #dee2e6 #dee2e6 #fff;
+        border-bottom: 3px solid var(--primary-color);
     }
-
-    .add-user-btn {
-        background: white;
-        color: #667eea;
-        border: 2px solid white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .add-user-btn:hover {
-        background: transparent;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .users-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .user-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .user-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
-
-    .user-card-header {
-        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-        padding: 1.5rem;
-        border-bottom: 2px solid #f0f0f0;
-    }
-
-    .user-avatar {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .user-name {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 0.25rem;
-    }
-
-    .user-username {
-        color: #6b7280;
-        font-size: 0.9rem;
-    }
-
-    .user-card-body {
-        padding: 1.5rem;
-    }
-
-    .user-info {
-        display: grid;
-        gap: 0.75rem;
-    }
-
-    .info-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #4b5563;
-        font-size: 0.9rem;
-    }
-
-    .info-item i {
-        color: #667eea;
-        font-size: 1rem;
-    }
-
-    .user-badges {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .badge {
-        padding: 0.4rem 0.8rem;
-        border-radius: 8px;
+    .user-role-badge {
         font-size: 0.8rem;
         font-weight: 600;
-    }
-
-    .badge-admin {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .badge-staff {
-        background: #e0e7ff;
-        color: #4338ca;
-    }
-
-    .badge-active {
-        background: #d1fae5;
-        color: #065f46;
-    }
-
-    .user-actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1.5rem;
-    }
-
-    .btn-action {
-        flex: 1;
-        padding: 0.6rem;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .btn-view {
-        background: #667eea;
-        color: white;
-    }
-
-    .btn-view:hover {
-        background: #5a6eea;
-        transform: translateY(-2px);
-        color: white;
-    }
-
-    .btn-delete {
-        background: #ef4444;
-        color: white;
-    }
-
-    .btn-delete:hover {
-        background: #dc2626;
-        transform: translateY(-2px);
-        color: white;
-    }
-
-    .no-users {
-        text-align: center;
-        padding: 4rem 2rem;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .no-users i {
-        font-size: 4rem;
-        color: #d1d5db;
-        margin-bottom: 1rem;
-    }
-
-    .no-users h3 {
-        color: #374151;
-        margin-bottom: 0.5rem;
-    }
-
-    .no-users p {
-        color: #6b7280;
-        margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 768px) {
-        .user-header {
-            padding: 1.5rem;
-            margin: 0.5rem;
-            text-align: center;
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-
-        .add-user-btn {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .users-container {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            padding: 0.5rem;
-        }
-
-        .user-card {
-            margin: 0;
-        }
-
-        .user-actions {
-            flex-direction: column;
-        }
-
-        .btn-action {
-            width: 100%;
-        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <!-- Header -->
-    <div class="user-header">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <h1 class="page-title">
-                <i class="bi bi-people-fill"></i>
-                Staff Users
-            </h1>
-            <a href="{% url 'accounts:user_create' %}" class="add-user-btn">
-                <i class="bi bi-person-plus-fill"></i>
-                Add New User
-            </a>
-        </div>
-    </div>
-
-    {% if messages %}
-    <div class="messages mb-4">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            <i class="bi bi-info-circle-fill me-2"></i>
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    {% if users %}
-    <div class="users-container">
-        {% for user in users %}
-        <div class="user-card">
-            <div class="user-card-header">
-                <div class="user-avatar">
-                    {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
-                </div>
-                <h2 class="user-name">{{ user.get_full_name }}</h2>
-                <div class="user-username">@{{ user.username }}</div>
-            </div>
-            <div class="user-card-body">
-                <div class="user-info">
-                    <div class="info-item">
-                        <i class="bi bi-envelope"></i>
-                        {{ user.email|default:"No email provided" }}
-                    </div>
-                    <div class="info-item">
-                        <i class="bi bi-calendar"></i>
-                        Joined {{ user.date_joined|date:"M d, Y" }}
-                    </div>
-                    <div class="info-item">
-                        <i class="bi bi-clock"></i>
-                        Last login: {{ user.last_login|date:"M d, Y H:i"|default:"Never" }}
-                    </div>
-                </div>
-
-                <div class="user-badges">
-                    {% if user.is_superuser %}
-                    <span class="badge badge-admin">
-                        <i class="bi bi-shield-fill-check"></i> Admin
-                    </span>
-                    {% endif %}
-                    {% if user.is_staff %}
-                    <span class="badge badge-staff">
-                        <i class="bi bi-person-badge"></i> Staff
-                    </span>
-                    {% endif %}
-                    {% if user.is_active %}
-                    <span class="badge badge-active">
-                        <i class="bi bi-check-circle"></i> Active
-                    </span>
-                    {% endif %}
-                </div>
-
-                <div class="user-actions">
-                    <a href="{% url 'accounts:user_detail' user.pk %}" class="btn-action btn-view">
-                        <i class="bi bi-eye"></i> View
-                    </a>
-                    {% if not user.is_superuser or request.user.is_superuser %}
-                    <a href="{% url 'accounts:user_delete' user.pk %}" class="btn-action btn-delete">
-                        <i class="bi bi-trash"></i> Delete
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="no-users">
-        <i class="bi bi-people"></i>
-        <h3>No Users Found</h3>
-        <p>There are no staff users in the system yet.</p>
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">{{ page_title }}</h2>
         <a href="{% url 'accounts:user_create' %}" class="btn btn-primary">
-            <i class="bi bi-person-plus"></i>
-            Add First User
+            <i class="bi bi-plus-circle me-2"></i>Create New User
         </a>
     </div>
-    {% endif %}
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link {% if current_filter == 'all' %}active{% endif %}" href="{% url 'accounts:user_list' %}">All Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_filter == 'admin' %}active{% endif %}" href="{% url 'accounts:user_list' %}?type=admin">Admins</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_filter == 'staff' %}active{% endif %}" href="{% url 'accounts:user_list' %}?type=staff">Staff</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_filter == 'parent' %}active{% endif %}" href="{% url 'accounts:user_list' %}?type=parent">Parents</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_filter == 'student' %}active{% endif %}" href="{% url 'accounts:user_list' %}?type=student">Students</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Date Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td><strong>{{ user.username }}</strong></td>
+                            <td>{{ user.get_full_name|default:"N/A" }}</td>
+                            <td>{{ user.email|default:"N/A" }}</td>
+                            <td>
+                                {% if user.is_superuser %}
+                                    <span class="badge bg-danger user-role-badge">Admin</span>
+                                {% elif user.is_staff %}
+                                    <span class="badge bg-warning text-dark user-role-badge">Staff</span>
+                                {% elif user.parent_profile %}
+                                    <span class="badge bg-info user-role-badge">Parent</span>
+                                {% elif user.student_profile %}
+                                    <span class="badge bg-success user-role-badge">Student</span>
+                                {% else %}
+                                    <span class="badge bg-secondary user-role-badge">User</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.date_joined|date:"Y-m-d" }}</td>
+                            <td>
+                                <a href="{% url 'accounts:user_detail' user.pk %}" class="btn btn-sm btn-outline-primary" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'accounts:user_update' user.pk %}" class="btn btn-sm btn-outline-secondary" title="Edit User">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% if user.pk != request.user.pk %}
+                                <a href="{% url 'accounts:user_delete' user.pk %}" class="btn btn-sm btn-outline-danger" title="Delete User">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                No users found in this category.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

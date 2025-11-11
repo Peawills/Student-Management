@@ -1,0 +1,48 @@
+{% extends "records/base.html" %}
+
+{% block title %}Message: {{ message.subject }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-envelope-open"></i> Message Details
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'portal:messages_inbox' %}">Inbox</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ message.subject|truncatechars:30 }}</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h5 class="m-0 font-weight-bold text-primary">{{ message.subject }}</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>From:</strong> {{ message.sender.get_full_name|default:message.sender.username }}</p>
+            <p><strong>To:</strong> {{ message.recipient.get_full_name|default:message.recipient.username }}</p>
+            {% if message.student %}
+                <p><strong>Regarding Student:</strong> <a href="{% url 'records:student_detail' message.student.id %}">{{ message.student.full_name }}</a></p>
+            {% endif %}
+            <p><strong>Sent:</strong> {{ message.created_at|date:"F d, Y H:i" }}</p>
+            {% if message.is_read %}
+                <p class="text-muted"><strong>Read:</strong> {{ message.read_at|date:"F d, Y H:i" }}</p>
+            {% else %}
+                <p class="text-info"><strong>Status:</strong> Unread</p>
+            {% endif %}
+            <hr>
+            <div class="message-content">
+                {{ message.message|linebreaksbr }}
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'portal:messages_inbox' %}" class="btn btn-secondary">Back to Inbox</a>
+            <a href="{% url 'portal:reply_message' message.id %}" class="btn btn-primary ms-2">
+                <i class="bi bi-reply"></i> Reply
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

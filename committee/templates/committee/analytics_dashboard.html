@@ -1,0 +1,215 @@
+{% extends 'records/base.html' %}
+{% block title %}Disciplinary Analytics{% endblock %}
+
+{% block extra_css %}
+<style>
+    .analytics-header {
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 350px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="analytics-header">
+        <h2 class="mb-2"><i class="bi bi-bar-chart-line-fill"></i> Disciplinary Analytics Dashboard</h2>
+        <p class="mb-0">Insights into student behavior and incident trends</p>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Offenses by Type -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-pie-chart-fill"></i> Offenses by Type</h5>
+                </div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <div class="chart-container" style="height: 300px; width: 300px;">
+                        <canvas id="offensesByTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offenses Over Time -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Monthly Incident Trend</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="offensesOverTimeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables Row -->
+    <div class="row g-4">
+        <!-- Hotspots -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-geo-alt-fill"></i> Incident Hotspots</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Location</th>
+                                    <th class="text-center">Incident Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for spot in hotspots %}
+                                <tr>
+                                    <td><strong>{{ spot.location }}</strong></td>
+                                    <td class="text-center"><span class="badge bg-info">{{ spot.count }}</span></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted py-4">No location data available.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Repeat Offenders -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-exclamation"></i> Repeat Offenders</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Class</th>
+                                    <th class="text-center">Offense Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for offender in repeat_offenders %}
+                                <tr>
+                                    <td><strong>{{ offender.student_name }}</strong></td>
+                                    <td>{{ offender.student_class }}</td>
+                                    <td class="text-center"><span class="badge bg-danger">{{ offender.count }}</span></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">No repeat offenders found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Offenses by Type Chart (Pie Chart)
+        const typeCtx = document.getElementById('offensesByTypeChart');
+        if (typeCtx) {
+            const typeData = {{ offenses_by_type|safe }};
+            new Chart(typeCtx, {
+                type: 'pie',
+                data: {
+                    labels: typeData.map(d => d.event_type),
+                    datasets: [{
+                        label: 'Offenses',
+                        data: typeData.map(d => d.count),
+                        backgroundColor: [
+                            'rgba(220, 53, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(23, 162, 184, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(108, 117, 125, 0.8)'
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Offenses Over Time Chart (Bar Chart)
+        const timeCtx = document.getElementById('offensesOverTimeChart');
+        if (timeCtx) {
+            const timeData = {{ offenses_over_time|safe }};
+            // Format date for labels
+            const labels = timeData.map(d => {
+                const date = new Date(d.month);
+                return date.toLocaleString('default', { month: 'short', year: 'numeric' });
+            });
+
+            new Chart(timeCtx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Incidents',
+                        data: timeData.map(d => d.count),
+                        backgroundColor: 'rgba(255, 193, 7, 0.7)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 2,
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

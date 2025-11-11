@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.http import require_POST
 from django.db.models import Q, Count
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views.decorators.http import require_http_methods
 from django.db import transaction
+from django.contrib.auth.models import User
+from portal.models import ParentProfile, ParentInvitation
 from .models import Student, StudentDocument
 from .forms import StudentForm, StudentDocumentForm, MultipleStudentDocumentForm
 import logging
@@ -17,32 +20,33 @@ def _is_staff(user):
     """Check if user is authenticated and staff"""
     return user.is_authenticated and user.is_staff
 
-@login_required
+
 def home(request):
     """
-    Home page with overview statistics
+    The main public-facing homepage for the entire school website.
     """
-    # Get statistics
-    total_students = Student.objects.count()
-    male_count = Student.objects.filter(sex='Male').count()
-    female_count = Student.objects.filter(sex='Female').count()
-    
-    # Get offense count if committee app exists
-    try:
-        from committee.models import StudentOffense
-        offense_count = StudentOffense.objects.count()
-    except:
-        offense_count = 0
-    
-    context = {
-        'total_students': total_students,
-        'male_count': male_count,
-        'female_count': female_count,
-        'offense_count': offense_count,
-    }
-    
-    return render(request, 'records/homepage.html', context)
-
+    # Smart landing:
+    # - Staff go to admin dashboard
+    # - Parents go to parent dashboard
+    # - Students go to student dashboard
+    # - Everyone else sees the public general home
+    user = request.user
+    if user.is_authenticated:
+        if user.is_staff:
+            return redirect("records:admin_dashboard")
+        try:
+            parent_profile = getattr(user, "parent_profile", None)
+            if parent_profile:
+                return redirect("portal:parent_dashboard")
+        except Exception:
+            pass
+        try:
+            student_profile = getattr(user, "student_profile", None)
+            if student_profile:
+                return redirect("portal:student_dashboard")
+        except Exception:
+            pass
+    return render(request, "records/general_home.html", {})
 
 
 @login_required
@@ -54,8 +58,12 @@ def student_list(request):
     klass = request.GET.get("klass", "").strip()
     sort_by = request.GET.get("sort", "-id")  # Default to newest first
 
-    # Base queryset with optimization
-    students_qs = Student.objects.select_related().prefetch_related("documents")
+    # Base queryset for active students
+    students_qs = (
+        Student.objects.filter(is_active=True)
+        .select_related()
+        .prefetch_related("documents")
+    )
 
     # Apply search filter
     if query:
@@ -114,6 +122,95 @@ def student_list(request):
     }
 
     return render(request, "records/student_list.html", context)
+
+
+@login_required
+@user_passes_test(_is_staff)
+def alumni_list(request):
+    """Display paginated list of archived students (alumni)"""
+    query = request.GET.get("q", "").strip()
+    sort_by = request.GET.get("sort", "-id")
+    session_id = request.GET.get("session", "")
+
+    # Base queryset for inactive (archived) students
+    students_qs = (
+        Student.objects.filter(is_active=False)
+        .select_related("graduation_session")
+        .order_by("-graduation_session__start_date", "surname")
+    )
+
+    # Apply search filter
+    if query:
+        students_qs = students_qs.filter(
+            Q(surname__icontains=query)
+            | Q(other_name__icontains=query)
+            | Q(admission_no__icontains=query)
+        )
+
+    # Apply session filter
+    if session_id:
+        students_qs = students_qs.filter(graduation_session_id=session_id)
+
+    # Apply sorting
+    allowed_sorts = ["-id", "id", "surname", "-surname"]
+    if sort_by in allowed_sorts:
+        students_qs = students_qs.order_by(sort_by)
+    else:
+        students_qs = students_qs.order_by("-id")
+
+    # Pagination
+    paginator = Paginator(students_qs, 15)
+    page_number = request.GET.get("page", 1)
+
+    try:
+        page_obj = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.get_page(1)
+    except EmptyPage:
+        page_obj = paginator.get_page(paginator.num_pages)
+
+    # Get distinct graduation sessions for the filter dropdown
+    graduation_sessions = (
+        Student.objects.filter(is_active=False, graduation_session__isnull=False)
+        .values("graduation_session__id", "graduation_session__name")
+        .distinct()
+        .order_by("-graduation_session__name")
+    )
+
+    context = {
+        "page_obj": page_obj,
+        "query": query,
+        "sort_by": sort_by,
+        "graduation_sessions": graduation_sessions,
+        "selected_session": int(session_id) if session_id.isdigit() else None,
+        "total_results": paginator.count,
+    }
+
+    return render(request, "records/alumni_list.html", context)
+
+
+@login_required
+@user_passes_test(_is_staff)
+@require_POST
+def toggle_student_status(request, pk):
+    from academics.models import AcademicSession  # Avoid circular import
+
+    student = get_object_or_404(Student, pk=pk)
+    student.is_active = not student.is_active
+
+    # If student is being archived (is_active is now False)
+    if not student.is_active:
+        # Find the current academic session
+        current_session = AcademicSession.objects.filter(is_current=True).first()
+        if current_session:
+            student.graduation_session = current_session
+    else:
+        # If student is being reactivated, clear the graduation session
+        student.graduation_session = None
+
+    student.save()
+    messages.success(request, f"Status for {student.full_name} has been updated.")
+    return redirect("records:student_detail", pk=student.pk)
 
 
 @login_required
@@ -247,11 +344,46 @@ def student_create(request):
                                 file=f,
                             )
 
-                messages.success(
-                    request,
-                    f"Student {student.full_name} ({student.admission_no}) created successfully!",
-                )
-                return redirect("records:student_detail", pk=student.pk)
+                    # Find existing parent or create an invitation
+                    try:
+                        # Use email as the primary contact, fallback to mobile
+                        parent_contact = student.father_email or student.father_mobile
+
+                        if parent_contact and student.father_name:
+                            # Check if a parent with this contact already exists
+                            parent_profile = ParentProfile.objects.filter(
+                                Q(user__email=parent_contact) | Q(phone_number=parent_contact)
+                            ).first()
+
+                            if parent_profile:
+                                # If parent exists, link the new student to them
+                                parent_profile.students.add(student)
+                                messages.info(
+                                    request,
+                                    f"Student linked to existing parent account for {parent_profile.user.get_full_name()}.",
+                                )
+                            else:
+                                # If parent does not exist, create an invitation
+                                invitation, created = ParentInvitation.objects.update_or_create(
+                                    parent_contact=parent_contact,
+                                    defaults={
+                                        'student': student,
+                                        'parent_name': student.father_name,
+                                    }
+                                )
+                                # Store token in session to display on success page
+                                request.session['parent_invitation_token'] = str(invitation.token)
+                                messages.success(request, f"Parent invitation created for {student.father_name}.")
+
+                    except Exception as e:
+                        logger.error(f"Error in parent linking/invitation for student {student.id}: {str(e)}")
+                        messages.warning(request, "Could not automatically link or create an invitation for the parent account.")
+
+                    messages.success(
+                        request,
+                        f"Student {student.full_name} ({student.admission_no}) created successfully!",
+                    )
+                    return redirect("records:student_creation_success", pk=student.pk)
 
             except Exception as e:
                 logger.error(f"Error creating student: {str(e)}")
@@ -557,3 +689,30 @@ def student_search_ajax(request):
     ]
 
     return JsonResponse({"results": results})
+
+
+@login_required
+@user_passes_test(_is_staff)
+def student_creation_success(request, pk):
+    """
+    Display a success page with login details after creating a new student.
+    """
+    student = get_object_or_404(Student, pk=pk)
+
+    student_login = {
+        "username": student.admission_no,
+        "password": student.surname.lower(),
+    }
+
+    # Get the invitation token from the session and then clear it
+    parent_invitation_token = request.session.pop('parent_invitation_token', None)
+    parent_invitation_url = None
+    if parent_invitation_token:
+        parent_invitation_url = request.build_absolute_uri(reverse('portal:accept_invitation', args=[parent_invitation_token]))
+
+    context = {
+        "student": student,
+        "student_login": student_login,
+        "parent_invitation_url": parent_invitation_url,
+    }
+    return render(request, "records/student_creation_success.html", context)

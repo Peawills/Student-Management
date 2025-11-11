@@ -1,0 +1,79 @@
+{% extends "records/base.html" %}
+
+{% block title %}My Attendance{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-calendar-check"></i> My Attendance
+        {% if current_term %}<small class="text-muted">({{ current_term }})</small>{% endif %}
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:student_dashboard' %}">Student Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">My Attendance</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Attendance Summary</h6>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <h5>Total Days</h5>
+                    <p class="h4 text-primary">{{ stats.total_days }}</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Present</h5>
+                    <p class="h4 text-success">{{ stats.present_days }}</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Absent</h5>
+                    <p class="h4 text-danger">{{ stats.absent_days }}</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Late</h5>
+                    <p class="h4 text-warning">{{ stats.late_days }}</p>
+                </div>
+            </div>
+            <hr>
+            <p class="text-center h5">Attendance Rate: <span class="text-info">{{ stats.attendance_rate|floatformat:1 }}%</span></p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Detailed Records</h6>
+        </div>
+        <div class="card-body">
+            {% if attendance_records %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in attendance_records %}
+                                <tr>
+                                    <td>{{ record.date|date:"M d, Y" }}</td>
+                                    <td><span class="badge bg-{{ record.status|lower }}">{{ record.status }}</span></td>
+                                    <td>{{ record.remarks|default:"-" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">No attendance records found for you in the current term.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

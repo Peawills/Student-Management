@@ -1,0 +1,270 @@
+{% extends "records/base.html" %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: white;
+    }
+
+    .icon-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .icon-success { background: linear-gradient(135deg, #34d399 0%, #10b981 100%); }
+    .icon-info { background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+        margin-top: 2rem;
+    }
+
+    .section-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .section-body {
+        padding: 1.5rem;
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .list-group-item .actions {
+        display: none;
+        gap: 0.5rem;
+    }
+
+    .list-group-item:hover .actions {
+        display: flex;
+    }
+
+    .list-group-item:hover .item-content {
+        display: none;
+    }
+
+
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+    .schedule-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .schedule-time {
+        background: #eef2ff;
+        color: #4f46e5;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .schedule-details {
+        flex: 1;
+    }
+
+    .schedule-subject {
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .schedule-class {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: #6b7280;
+    }
+
+    .empty-state i {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: block;
+        color: #d1d5db;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 font-weight-bold">Teacher Dashboard</h1>
+            <p class="text-muted">Welcome back, {{ teacher.get_full_name }}!</p>
+        </div>
+        <div>
+            <a href="{% url 'academics:take_attendance' %}" class="btn btn-outline-primary">
+                <i class="bi bi-check2-circle me-2"></i>Take Attendance
+            </a>
+            <a href="{{ attendance_report_url }}" class="btn btn-primary">
+                <i class="bi bi-graph-up me-2"></i>View Attendance Report
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="dashboard-grid mb-4">
+        <div class="stat-card">
+            <div class="stat-icon icon-primary"><i class="bi bi-person-workspace"></i></div>
+            <div>
+                <div class="stat-label">Homeroom Classes</div>
+                <div class="stat-value">{{ homeroom_classes.count }}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon icon-success"><i class="bi bi-journal-bookmark"></i></div>
+            <div>
+                <div class="stat-label">Subjects Taught</div>
+                <div class="stat-value">{{ subject_assignments.count }}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon icon-info"><i class="bi bi-people-fill"></i></div>
+            <div>
+                <div class="stat-label">Total Students</div>
+                <div class="stat-value">{{ total_students_taught }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Today's Schedule -->
+        <div class="col-lg-6">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="bi bi-calendar-day text-primary"></i>
+                    <h2 class="section-title">Today's Schedule ({{ today_str }})</h2>
+                </div>
+                <div class="section-body">
+                    <ul class="list-group list-group-flush">
+                        {% for entry in todays_schedule %}
+                        <li class="list-group-item schedule-item">
+                            <div class="schedule-time">
+                                {{ entry.start_time|time:"g:i A" }}
+                            </div>
+                            <div class="schedule-details">
+                                <div class="schedule-subject">{{ entry.subject.name }}</div>
+                                <div class="schedule-class">Class: {{ entry.classroom }}</div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="bi bi-cup-hot"></i>
+                            <p>No classes scheduled for today. Enjoy your break!</p>
+                        </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Classes & Subjects -->
+        <div class="col-lg-6">
+            <div class="section-card">
+                <div class="section-header">
+                    <i class="bi bi-collection text-primary"></i>
+                    <h2 class="section-title">My Classes & Subjects</h2>
+                </div>
+                <div class="section-body">
+                    {% if homeroom_classes %}
+                        <h6 class="text-muted small text-uppercase mb-2">Homeroom Teacher For:</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for classroom in homeroom_classes %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="item-content">{{ classroom }}</span>
+                                    <div class="actions">
+                                        <a href="{% url 'academics:take_attendance' %}?classroom={{ classroom.id }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-check2-circle"></i> Attendance
+                                        </a>
+                                        <a href="{% url 'academics:classroom_detail' classroom.id %}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-people"></i> Students
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <h6 class="text-muted small text-uppercase mb-2">Subjects Taught This Term:</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for assignment in subject_assignments %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ assignment.subject.name }}
+                            <span class="badge bg-light text-dark">{{ assignment.classroom }}</span>
+                        </li>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="bi bi-journal-x"></i>
+                            <p>You are not assigned to any subjects for the current term.</p>
+                        </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

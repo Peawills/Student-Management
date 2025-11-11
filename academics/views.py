@@ -1,16 +1,18 @@
 # academics/views.py
-
+from django.views.generic import TemplateView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.db.models import Q, Count, Avg, Sum, Max, Min
 from django.http import HttpResponse, JsonResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from django.db import transaction
 import pandas as pd
 from datetime import datetime
+import json
 
 from .models import (
     AcademicSession,
@@ -43,6 +45,7 @@ from .forms import (
     PerformanceCommentForm,
 )
 from records.models import Student
+from portal.models import Attendance
 
 
 # ============================================
@@ -407,22 +410,147 @@ def classroom_update(request, pk):
 
 @login_required
 def classroom_detail(request, pk):
-    """View classroom details with students"""
-    classroom = get_object_or_404(ClassRoom.objects.prefetch_related("students"), pk=pk)
-    students = classroom.students.all().order_by("surname", "other_name")
+    """Enhanced classroom detail with student management"""
+    classroom = get_object_or_404(ClassRoom, pk=pk)
 
-    # Get assignments for this class
-    assignments = SubjectAssignment.objects.filter(
+    # Get students in this classroom
+    students = Student.objects.filter(classroom=classroom).order_by(
+        "surname", "other_name"
+    )
+
+    # Get gender counts
+    male_count = students.filter(sex="M").count()
+    female_count = students.filter(sex="F").count()
+
+    # Get subjects assigned to this class
+    subjects = SubjectAssignment.objects.filter(
         classroom=classroom, term__is_current=True
+    ).select_related("subject", "teacher")
+
+    # Get available students (not in any class or in current session classes)
+    available_students = Student.objects.filter(
+        Q(classroom__isnull=True) | ~Q(classroom__session=classroom.session)
+    ).order_by("surname", "other_name")
+
+    # Get all classrooms for the 'Move Student' modal, excluding the current one
+    all_classrooms = (
+        ClassRoom.objects.filter(session=classroom.session)
+        .exclude(pk=pk)
+        .order_by("level", "arm")
     )
 
     context = {
         "classroom": classroom,
         "students": students,
-        "assignments": assignments,
+        "male_count": male_count,
+        "female_count": female_count,
+        "subjects": subjects,
+        "available_students": available_students,
+        "all_classrooms": all_classrooms,
     }
 
     return render(request, "academics/classroom_detail.html", context)
+
+
+@login_required
+def add_students_to_class(request, pk):
+    """Add selected students to a classroom"""
+    classroom = get_object_or_404(ClassRoom, pk=pk)
+
+    if request.method == "POST":
+        student_ids = request.POST.getlist("students")
+
+        if student_ids:
+            added_count = 0
+            updated_count = 0
+
+            for student_id in student_ids:
+                try:
+                    student = Student.objects.get(id=student_id)
+
+                    # Check if student is already in another class
+                    if student.classroom and student.classroom != classroom:
+                        # Student is moving from another class
+                        old_class = student.classroom
+                        student.classroom = classroom
+                        student.class_at_present = str(classroom)
+                        student.save()
+                        updated_count += 1
+                        messages.info(
+                            request,
+                            f"{student.full_name} moved from {old_class} to {classroom}",
+                        )
+                    else:
+                        # New assignment
+                        student.classroom = classroom
+                        student.class_at_present = str(classroom)
+                        student.save()
+                        added_count += 1
+
+                except Student.DoesNotExist:
+                    continue
+
+            if added_count > 0:
+                messages.success(
+                    request,
+                    f"Successfully added {added_count} student(s) to {classroom}",
+                )
+
+            if updated_count > 0:
+                messages.success(
+                    request,
+                    f"Successfully moved {updated_count} student(s) to {classroom}",
+                )
+        else:
+            messages.warning(request, "No students selected.")
+
+    return redirect("academics:classroom_detail", pk=pk)
+
+
+@login_required
+def remove_student_from_class(request, classroom_pk, student_pk):
+    """Remove a student from a classroom"""
+    classroom = get_object_or_404(ClassRoom, pk=classroom_pk)
+    student = get_object_or_404(Student, pk=student_pk)
+
+    if request.method == "POST":
+        if student.classroom == classroom:
+            student.classroom = None
+            student.class_at_present = ""
+            student.save()
+            messages.success(request, f"{student.full_name} removed from {classroom}")
+        else:
+            messages.error(request, f"{student.full_name} is not in {classroom}")
+
+    return redirect("academics:classroom_detail", pk=classroom_pk)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def move_student_to_class(request):
+    """Move a student to a different class."""
+    student_id = request.POST.get("student_id")
+    new_classroom_id = request.POST.get("new_classroom_id")
+    origin_classroom_pk = request.POST.get("origin_classroom_pk")
+
+    if not all([student_id, new_classroom_id, origin_classroom_pk]):
+        messages.error(request, "Invalid request. Missing required data.")
+        return redirect("academics:classroom_list")
+
+    student = get_object_or_404(Student, id=student_id)
+    new_classroom = get_object_or_404(ClassRoom, id=new_classroom_id)
+    old_classroom_name = str(student.classroom)
+
+    student.classroom = new_classroom
+    student.class_at_present = str(new_classroom)
+    student.save()
+
+    messages.success(
+        request,
+        f"Moved {student.full_name} from {old_classroom_name} to {new_classroom}.",
+    )
+    return redirect("academics:classroom_detail", pk=origin_classroom_pk)
 
 
 # ============================================
@@ -659,8 +787,6 @@ def bulk_score_entry(request, assessment_id):
                 "surname", "other_name"
             )
         except AttributeError:
-            from records.models import Student
-
             students = Student.objects.filter(
                 classroom=assessment.assignment.classroom
             ).order_by("surname", "other_name")
@@ -686,30 +812,14 @@ def bulk_score_entry(request, assessment_id):
                         )
                         continue
 
-                    percentage = (score_float / assessment.max_score) * 100
-
-                    # Calculate grade
-                    if percentage >= 80:
-                        grade = "A"
-                    elif percentage >= 70:
-                        grade = "B"
-                    elif percentage >= 60:
-                        grade = "C"
-                    elif percentage >= 50:
-                        grade = "D"
-                    elif percentage >= 40:
-                        grade = "E"
-                    else:
-                        grade = "F"
-
+                    # Create or update score - let the model calculate percentage and grade
                     score_obj, created = StudentScore.objects.update_or_create(
                         assessment=assessment,
                         student=student,
                         defaults={
                             "score": score_float,
-                            "percentage": percentage,
-                            "grade": grade,
                             "remarks": remarks_value,
+                            "submitted_by": request.user,
                         },
                     )
                     saved_count += 1
@@ -888,25 +998,40 @@ def generate_report_cards(request):
             students = classroom.students.all()
 
             generated_count = 0
+            
+            # --- Start of new ranking logic ---
+            # First, calculate all student averages for the term
+            student_averages = []
+            for student in students:
+                avg = TermResult.objects.filter(student=student, term=term).aggregate(avg_score=Avg('total_score'))['avg_score']
+                if avg is not None:
+                    student_averages.append({'student_id': student.id, 'average': avg})
+
+            # Sort students by average score in descending order
+            sorted_students = sorted(student_averages, key=lambda x: x['average'], reverse=True)
+
+            # Build a rank map that handles ties
+            rank_map = {}
+            last_score = -1
+            last_rank = 0
+            for i, data in enumerate(sorted_students, 1):
+                if data['average'] != last_score:
+                    last_rank = i
+                    last_score = data['average']
+                rank_map[data['student_id']] = last_rank
+            # --- End of new ranking logic ---
+
             with transaction.atomic():
                 for student in students:
                     # Get all term results for this student
                     term_results = TermResult.objects.filter(
                         student=student, term=term, classroom=classroom
                     )
-
+                    
                     if term_results.exists():
                         # Calculate overall stats
-                        total_score = (
-                            term_results.aggregate(Sum("total_score"))[
-                                "total_score__sum"
-                            ]
-                            or 0
-                        )
                         average_score = (
-                            term_results.aggregate(Avg("total_score"))[
-                                "total_score__avg"
-                            ]
+                            term_results.aggregate(avg=Avg("total_score"))["avg"]
                             or 0
                         )
 
@@ -920,9 +1045,8 @@ def generate_report_cards(request):
                             term=term,
                             classroom=classroom,
                             defaults={
-                                "total_score": total_score,
                                 "average_score": average_score,
-                                "position": 1,  # Replace with actual calculation
+                                "position": rank_map.get(student.id, 0),
                                 "out_of": all_students.count(),
                                 "class_teacher_remarks": class_teacher_remarks,
                                 "principal_remarks": principal_remarks,
@@ -945,82 +1069,162 @@ def generate_report_cards(request):
 # ============================================
 
 
-@login_required
-def performance_analytics(request):
-    """Performance analytics dashboard"""
-    form = PerformanceFilterForm(request.GET or None)
+class PerformanceAnalyticsView(TemplateView):
+    template_name = "academics/performance_analytics.html"
 
-    # Get current term
-    current_term = Term.objects.filter(is_current=True).first()
+    def get_queryset(self, form):
+        """Build filtered queryset based on form data"""
+        queryset = TermResult.objects.select_related(
+            "student", "classroom", "subject", "term", "term__session"
+        )
 
-    # Base queryset
-    term_results = TermResult.objects.all()
+        if not form.is_bound or not form.is_valid():
+            return queryset  # Return unfiltered queryset if no filters are applied
 
-    # Apply filters
-    if form.is_valid():
-        if form.cleaned_data.get("session"):
-            term_results = term_results.filter(
-                term__session=form.cleaned_data["session"]
+        # Apply filters
+        session = form.cleaned_data.get("session")
+        if session:
+            queryset = queryset.filter(term__session=session)
+
+        term = form.cleaned_data.get("term")
+        if term:
+            queryset = queryset.filter(term=term)
+
+        classroom = form.cleaned_data.get("classroom")
+        if classroom:
+            queryset = queryset.filter(classroom=classroom)
+
+        subject = form.cleaned_data.get("subject")
+        if subject:
+            queryset = queryset.filter(subject=subject)
+
+        student = form.cleaned_data.get("student")
+        if student:
+            queryset = queryset.filter(student=student)
+
+        # Apply score range filters
+        min_score = form.cleaned_data.get("min_score")
+        max_score = form.cleaned_data.get("max_score")
+
+        if min_score is not None:
+            queryset = queryset.filter(total_score__gte=min_score)
+
+        if max_score is not None:
+            queryset = queryset.filter(total_score__lte=max_score)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Initialize form with GET data
+        form = PerformanceFilterForm(self.request.GET or None)
+        context["form"] = form
+
+        # Get filtered queryset
+        queryset = self.get_queryset(form)
+
+        # Calculate statistics
+        stats = queryset.aggregate(
+            avg_score=Avg("total_score"),
+            highest_score=Max("total_score"),
+            lowest_score=Min("total_score"),
+            total_students=Count("student", distinct=True),
+        )
+
+        # Handle None values in stats
+        context["stats"] = {
+            "avg_score": stats["avg_score"] or 0,
+            "highest_score": stats["highest_score"] or 0,
+            "lowest_score": stats["lowest_score"] or 0,
+            "total_students": stats["total_students"] or 0,
+        }
+
+        # Subject Performance
+        subject_performance = (
+            queryset.values("subject__name")
+            .annotate(
+                avg_score=Avg("total_score"),
+                student_count=Count("student", distinct=True),
             )
-        if form.cleaned_data.get("term"):
-            term_results = term_results.filter(term=form.cleaned_data["term"])
-        if form.cleaned_data.get("classroom"):
-            term_results = term_results.filter(classroom=form.cleaned_data["classroom"])
-        if form.cleaned_data.get("subject"):
-            term_results = term_results.filter(subject=form.cleaned_data["subject"])
-    elif current_term:
-        term_results = term_results.filter(term=current_term)
-
-    # Calculate statistics
-    stats = term_results.aggregate(
-        avg_score=Avg("total_score"),
-        highest_score=Max("total_score"),
-        lowest_score=Min("total_score"),
-        total_students=Count("student", distinct=True),
-    )
-
-    # Subject-wise performance
-    subject_performance = (
-        term_results.values("subject__name")
-        .annotate(
-            avg_score=Avg("total_score"), student_count=Count("student", distinct=True)
+            .order_by("-avg_score")
         )
-        .order_by("-avg_score")
-    )
+        context["subject_performance"] = subject_performance
 
-    # Class-wise performance
-    class_performance = (
-        term_results.values("classroom__level", "classroom__arm")
-        .annotate(
-            avg_score=Avg("total_score"), student_count=Count("student", distinct=True)
+        # Class Performance
+        class_performance = (
+            queryset.values("classroom__level", "classroom__arm")
+            .annotate(avg_score=Avg("total_score"))
+            .order_by("classroom__level", "classroom__arm")
         )
-        .order_by("classroom__level", "classroom__arm")
-    )
+        context["class_performance"] = class_performance
 
-    # Grade distribution
-    grade_distribution = {
-        "A": term_results.filter(grade="A").count(),
-        "B": term_results.filter(grade="B").count(),
-        "C": term_results.filter(grade="C").count(),
-        "D": term_results.filter(grade="D").count(),
-        "E": term_results.filter(grade="E").count(),
-        "F": term_results.filter(grade="F").count(),
-    }
+        # Grade Distribution (customize these ranges based on your grading system)
+        grade_distribution = {
+            "A": queryset.filter(total_score__gte=70).count(),
+            "B": queryset.filter(total_score__gte=60, total_score__lt=70).count(),
+            "C": queryset.filter(total_score__gte=50, total_score__lt=60).count(),
+            "D": queryset.filter(total_score__gte=45, total_score__lt=50).count(),
+            "E": queryset.filter(total_score__gte=40, total_score__lt=45).count(),
+            "F": queryset.filter(total_score__lt=40).count(),
+        }
+        context["grade_distribution"] = grade_distribution
 
-    # Top performers
-    top_performers = term_results.order_by("-total_score")[:10]
+        # Pass/Fail Statistics (assuming 40 is pass mark)
+        pass_fail_stats = {
+            "pass_count": queryset.filter(total_score__gte=40).count(),
+            "fail_count": queryset.filter(total_score__lt=40).count(),
+        }
+        context["pass_fail_stats"] = pass_fail_stats
 
-    context = {
-        "form": form,
-        "stats": stats,
-        "subject_performance": subject_performance,
-        "class_performance": class_performance,
-        "grade_distribution": grade_distribution,
-        "top_performers": top_performers,
-        "current_term": current_term,
-    }
+        # Performance Trend Over Time
+        performance_trend = list(
+            queryset.values("term__name", "term__id")
+            .annotate(avg_score=Avg("total_score"))
+            .order_by("term__id")
+        )
 
-    return render(request, "academics/performance_analytics.html", context)
+        # Convert Decimal to float for JSON serialization
+        for item in performance_trend:
+            if item.get("avg_score"):
+                item["avg_score"] = float(item["avg_score"])
+
+        context["performance_trend"] = json.dumps(performance_trend)
+
+        # Top 10 Performers - Better approach
+        top_performers_qs = (
+            queryset.values(
+                "student__id",
+                "student__surname",
+                "student__other_name",
+                "classroom__level",
+                "classroom__arm",
+            )
+            .annotate(total_score=Avg("total_score"))
+            .order_by("-total_score")[:10]
+        )
+
+        # Format the data properly
+        top_performers = []
+        for performer in top_performers_qs:
+            # Create a simple object to match template expectations
+            class StudentObj:
+                def __init__(self, surname, other_name):
+                    self.full_name = f"{surname} {other_name}"
+
+            top_performers.append(
+                {
+                    "student": StudentObj(
+                        performer["student__surname"], performer["student__other_name"]
+                    ),
+                    "classroom": f"{performer['classroom__level']}{performer['classroom__arm']}",
+                    "total_score": performer["total_score"],
+                }
+            )
+
+        context["top_performers"] = top_performers
+
+        return context
 
 
 # ============================================
@@ -1618,3 +1822,132 @@ def teacher_performance(request):
     }
 
     return render(request, "academics/teacher_performance.html", context)
+
+
+@login_required
+def take_attendance(request):
+    """View for taking daily attendance for a class."""
+    selected_classroom = None
+    students = []
+    records_exist_for_date = False
+    attendance_date = timezone.now().date()
+
+    # Handle form submission for saving attendance
+    if request.method == "POST":
+        classroom_id = request.POST.get("classroom_id")
+        date_str = request.POST.get("date")
+        classroom = get_object_or_404(ClassRoom, id=classroom_id)
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
+
+        with transaction.atomic():
+            for student in classroom.students.all():
+                status = request.POST.get(f"status_{student.id}")
+                remarks = request.POST.get(f"remarks_{student.id}", "")
+
+                if status:
+                    Attendance.objects.update_or_create(
+                        student=student,
+                        date=date,
+                        defaults={
+                            "status": status,
+                            "remarks": remarks,
+                            "marked_by": request.user,
+                        },
+                    )
+        messages.success(
+            request, f"Attendance for {classroom} on {date} saved successfully."
+        )
+        return redirect(
+            f"{reverse('academics:take_attendance')}?classroom={classroom_id}&date={date_str}"
+        )
+
+    # Handle GET request to display students
+    classroom_id = request.GET.get("classroom")
+    date_str = request.GET.get("date")
+
+    if date_str:
+        attendance_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+
+    if classroom_id:
+        selected_classroom = get_object_or_404(ClassRoom, id=classroom_id)
+        students = selected_classroom.students.all().order_by("surname", "other_name")
+
+        # Attach existing attendance records for the selected date
+        # Use a dictionary comprehension instead of in_bulk for non-unique fields
+        existing_records_qs = Attendance.objects.filter(
+            student__in=students, date=attendance_date
+        )
+        existing_records = {record.student_id: record for record in existing_records_qs}
+        
+        if existing_records:
+            records_exist_for_date = True
+
+        for student in students:
+            student.existing_record = existing_records.get(student.id)
+
+    context = {
+        "classrooms": ClassRoom.objects.filter(session__is_current=True),
+        "selected_classroom": selected_classroom,
+        "students": students,
+        "attendance_date": attendance_date,
+        "records_exist_for_date": records_exist_for_date,
+    }
+    return render(request, "academics/take_attendance.html", context)
+
+
+@login_required
+def attendance_report(request):
+    """
+    View for generating and displaying attendance reports for a class.
+    """
+    selected_classroom = None
+    students_report = []
+    summary_stats = {}
+
+    # Get filter parameters
+    classroom_id = request.GET.get("classroom")
+    start_date_str = request.GET.get("start_date")
+    end_date_str = request.GET.get("end_date")
+
+    # Set default dates to the last 7 days if not provided
+    today = timezone.now().date()
+    if not start_date_str:
+        start_date_str = (today - timezone.timedelta(days=7)).strftime("%Y-%m-%d")
+    if not end_date_str:
+        end_date_str = today.strftime("%Y-%m-%d")
+
+    if classroom_id:
+        selected_classroom = get_object_or_404(ClassRoom, id=classroom_id)
+        start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+
+        students = selected_classroom.students.all().order_by("surname", "other_name")
+        attendance_records = Attendance.objects.filter(
+            student__in=students, date__range=[start_date, end_date]
+        ).order_by("student", "date")
+
+        # Overall summary
+        summary_stats = attendance_records.values("status").annotate(count=Count("id"))
+
+        # Per-student summary
+        for student in students:
+            student_records = attendance_records.filter(student=student)
+            students_report.append(
+                {
+                    "student": student,
+                    "present": student_records.filter(status="Present").count(),
+                    "absent": student_records.filter(status="Absent").count(),
+                    "late": student_records.filter(status="Late").count(),
+                    "excused": student_records.filter(status="Excused").count(),
+                }
+            )
+
+    context = {
+        "classrooms": ClassRoom.objects.filter(session__is_current=True),
+        "selected_classroom": selected_classroom,
+        "students_report": students_report,
+        "summary_stats": {s["status"]: s["count"] for s in summary_stats},
+        "start_date": start_date_str,
+        "end_date": end_date_str,
+    }
+    return render(request, "academics/attendance_report.html", context)

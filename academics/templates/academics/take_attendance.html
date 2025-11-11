@@ -1,0 +1,137 @@
+{% extends 'records/base.html' %}
+
+{% block title %}Take Attendance{% endblock %}
+
+{% block extra_css %}
+<style>
+    .attendance-header {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .student-row {
+        transition: background-color 0.2s ease;
+    }
+
+    .student-row:hover {
+        background-color: #f8f9fa;
+    }
+
+    .status-radio {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .status-radio .form-check-input {
+        cursor: pointer;
+    }
+
+    .status-radio .form-check-label {
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+
+    .remarks-input {
+        border-radius: 6px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="attendance-header">
+        <h2 class="mb-2"><i class="bi bi-calendar-check"></i> Take Attendance</h2>
+        <p class="mb-0">Select a class and date to record daily attendance.</p>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label for="classroom" class="form-label fw-bold">Classroom</label>
+                    <select name="classroom" id="classroom" class="form-select" required>
+                        <option value="">-- Select a Class --</option>
+                        {% for c in classrooms %}
+                        <option value="{{ c.id }}" {% if selected_classroom.id == c.id %}selected{% endif %}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label for="date" class="form-label fw-bold">Date</label>
+                    <input type="date" name="date" id="date" class="form-control" value="{{ attendance_date|date:'Y-m-d' }}" required>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Load Students
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Attendance Form -->
+    {% if selected_classroom %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Attendance for {{ selected_classroom }} on {{ attendance_date|date:"F d, Y" }}</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="classroom_id" value="{{ selected_classroom.id }}">
+                <input type="hidden" name="date" value="{{ attendance_date|date:'Y-m-d' }}">
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Student</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr class="student-row">
+                                <td>{{ forloop.counter }}</td>
+                                <td><strong>{{ student.full_name }}</strong></td>
+                                <td>
+                                    <div class="status-radio">
+                                        {% for status_val, status_display in student.ATTENDANCE_STATUS %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="status_{{ student.id }}" id="status_{{ student.id }}_{{ status_val }}" value="{{ status_val }}" {% if student.existing_record.status == status_val or not student.existing_record and status_val == 'Present' %}checked{% endif %}>
+                                            <label class="form-check-label" for="status_{{ student.id }}_{{ status_val }}">{{ status_display }}</label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" name="remarks_{{ student.id }}" class="form-control remarks-input" placeholder="Optional remarks" value="{{ student.existing_record.remarks|default:'' }}">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle"></i> Save Attendance
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

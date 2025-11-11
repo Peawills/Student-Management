@@ -1,0 +1,42 @@
+{% extends "records/base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-person-circle"></i> My Profile
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">User Information</h6>
+        </div>
+        <div class="card-body">
+            <p><strong>Username:</strong> {{ request.user.username }}</p>
+            <p><strong>Full Name:</strong> {{ request.user.get_full_name }}</p>
+            <p><strong>Email:</strong> {{ request.user.email|default:"N/A" }}</p>
+            <p><strong>Account Type:</strong>
+                {% if request.user.is_staff %}Staff
+                {% elif request.user.parent_profile %}Parent
+                {% elif request.user.student_profile %}Student
+                {% else %}General User{% endif %}
+            </p>
+            <hr>
+            <a href="{% url 'portal:update_profile' %}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Edit Profile
+            </a>
+            <a href="{% url 'portal:change_password' %}" class="btn btn-secondary ms-2">
+                <i class="bi bi-key"></i> Change Password
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

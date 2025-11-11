@@ -1,0 +1,58 @@
+{% extends "records/base.html" %}
+
+{% block title %}Message Inbox{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        <i class="bi bi-inbox"></i> Message Inbox
+    </h1>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Inbox</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Your Messages</h6>
+            <a href="{% url 'portal:compose_message' %}" class="btn btn-sm btn-primary">
+                <i class="bi bi-pencil-square"></i> Compose
+            </a>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                <div class="list-group">
+                    {% for message in messages %}
+                        <a href="{% url 'portal:message_detail' message.id %}" class="list-group-item list-group-item-action {% if not message.is_read %}fw-bold bg-light{% endif %}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">
+                                    From: {{ message.sender.get_full_name|default:message.sender.username }}
+                                    <span class="text-muted ms-2">Subject: {{ message.subject }}</span>
+                                </h5>
+                                <small class="text-muted">{{ message.created_at|date:"M d, Y H:i" }}</small>
+                            </div>
+                            <p class="mb-1">{{ message.message|truncatechars:100 }}</p>
+                            {% if message.student %}
+                                <small class="text-muted">Regarding: {{ message.student.full_name }}</small>
+                            {% endif %}
+                            {% if not message.is_read %}
+                                <span class="badge bg-info float-end">New</span>
+                            {% endif %}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    <h4 class="alert-heading">Your Inbox is Empty!</h4>
+                    <p>You have no messages in your inbox.</p>
+                    <hr>
+                    <p class="mb-0">Why not <a href="{% url 'portal:compose_message' %}" class="alert-link">compose a new message</a>?</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

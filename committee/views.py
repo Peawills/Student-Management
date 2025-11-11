@@ -3,35 +3,35 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import StudentOffense, TeacherReport
 from .forms import StudentOffenseForm, TeacherReportForm
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
-
+from django.db.models import Count, Q
+from django.db.models.functions import TruncMonth
 
 
 @login_required
 def offense_list(request):
     offenses = StudentOffense.objects.all().order_by("-offense_date")
     offenses = StudentOffense.objects.all()
-    
+
     # Search
-    query = request.GET.get('q')
+    query = request.GET.get("q")
     if query:
         offenses = offenses.filter(
-            Q(student_name__icontains=query) |
-            Q(offense_description__icontains=query)
+            Q(student_name__icontains=query) | Q(offense_description__icontains=query)
         )
-    
+
     # Filter by event type
-    event_type = request.GET.get('event_type')
+    event_type = request.GET.get("event_type")
     if event_type:
         offenses = offenses.filter(event_type=event_type)
-    
-    return render(request, 'committee/offense_list.html', {
-        'offenses': offenses,
-        'query': query,
-        'event_type': event_type
-    })
+
+    return render(
+        request,
+        "committee/offense_list.html",
+        {"offenses": offenses, "query": query, "event_type": event_type},
+    )
     return render(request, "committee/offense_list.html", {"offenses": offenses})
 
 
@@ -130,3 +130,46 @@ def render_pdf_view(request, offense_id):
     if pisa_status.err:
         return HttpResponse("We had some errors <pre>" + html + "</pre>")
     return response
+
+
+@login_required
+def analytics_dashboard(request):
+    """
+    Display analytics dashboard for disciplinary records.
+    """
+    offenses = StudentOffense.objects.all()
+
+    # 1. Offenses by type (for pie chart)
+    offenses_by_type = (
+        offenses.values("event_type").annotate(count=Count("id")).order_by("-count")
+    )
+
+    # 2. Offenses over time (for bar chart)
+    offenses_over_time = (
+        offenses.annotate(month=TruncMonth("offense_date"))
+        .values("month")
+        .annotate(count=Count("id"))
+        .order_by("month")
+    )
+
+    # 3. "Hotspots" - locations with the most incidents
+    hotspots = (
+        offenses.values("location").annotate(count=Count("id")).order_by("-count")[:10]
+    )
+
+    # 4. Students with the most repeated offenses
+    repeat_offenders = (
+        offenses.values("student_name", "student_class")
+        .annotate(count=Count("id"))
+        .filter(count__gt=1)
+        .order_by("-count")[:10]
+    )
+
+    context = {
+        "total_offenses": offenses.count(),
+        "offenses_by_type": list(offenses_by_type),
+        "offenses_over_time": list(offenses_over_time),
+        "hotspots": hotspots,
+        "repeat_offenders": repeat_offenders,
+    }
+    return render(request, "committee/analytics_dashboard.html", context)
