@@ -1,0 +1,180 @@
+{% extends 'records/base.html' %}
+{% block title %}Publication Center{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-megaphone"></i> Publication Center</h2>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="term" class="form-label">Term</label>
+                    <select name="term" id="term" class="form-select">
+                        <option value="">All Terms</option>
+                        {% for term in terms %}
+                        <option value="{{ term.id }}" {% if term.id == selected_term_id %}selected{% endif %}>
+                            {{ term }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="classroom" class="form-label">Classroom</label>
+                    <select name="classroom" id="classroom" class="form-select">
+                        <option value="">All Classrooms</option>
+                        {% for classroom in classrooms %}
+                        <option value="{{ classroom.id }}" {% if classroom.id == selected_classroom_id %}selected{% endif %}>
+                            {{ classroom }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <a href="{% url 'academics:publication_center' %}" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs nav-fill mb-3" id="publicationTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="assessments-tab" data-bs-toggle="tab" data-bs-target="#assessments"
+                type="button" role="tab" aria-controls="assessments" aria-selected="true">
+                <i class="bi bi-card-checklist"></i> Assessments (Scores)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="report-cards-tab" data-bs-toggle="tab" data-bs-target="#report-cards"
+                type="button" role="tab" aria-controls="report-cards" aria-selected="false">
+                <i class="bi bi-file-earmark-text"></i> Report Cards
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="publicationTabsContent">
+        <!-- Assessments Tab -->
+        <div class="tab-pane fade show active" id="assessments" role="tabpanel" aria-labelledby="assessments-tab">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Assessments</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Class</th>
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for assessment in assessments %}
+                                <tr>
+                                    <td><a href="{% url 'academics:assessment_detail' assessment.pk %}">{{ assessment.title }}</a></td>
+                                    <td>{{ assessment.assignment.classroom }}</td>
+                                    <td>{{ assessment.assignment.subject.name }}</td>
+                                    <td>{{ assessment.date|date:"M d, Y" }}</td>
+                                    <td>
+                                        {% if assessment.is_published %}
+                                        <span class="badge bg-success">Published</span>
+                                        {% else %}
+                                        <span class="badge bg-warning text-dark">Draft</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if assessment.is_published %}
+                                        <form action="{% url 'academics:unpublish_assessment' assessment.pk %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye-slash"></i> Unpublish</button>
+                                        </form>
+                                        {% else %}
+                                        <form action="{% url 'academics:publish_assessment' assessment.pk %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-send-check"></i> Publish</button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="6" class="text-center py-4 text-muted">No assessments found for the selected filters.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Cards Tab -->
+        <div class="tab-pane fade" id="report-cards" role="tabpanel" aria-labelledby="report-cards-tab">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Report Cards</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Class</th>
+                                    <th>Term</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for report in report_cards %}
+                                <tr>
+                                    <td><a href="{% url 'academics:report_card_detail' report.pk %}">{{ report.student.full_name }}</a></td>
+                                    <td>{{ report.classroom }}</td>
+                                    <td>{{ report.term }}</td>
+                                    <td>
+                                        {% if report.is_published %}
+                                        <span class="badge bg-success">Published</span>
+                                        {% else %}
+                                        <span class="badge bg-warning text-dark">Draft</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if report.is_published %}
+                                        <form action="{% url 'academics:unpublish_report_card' report.pk %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye-slash"></i> Unpublish</button>
+                                        </form>
+                                        {% else %}
+                                        <form action="{% url 'academics:publish_report_card' report.pk %}" method="post" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-send-check"></i> Publish</button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="5" class="text-center py-4 text-muted">No report cards found for the selected filters.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

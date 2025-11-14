@@ -3,33 +3,68 @@
 {% block title %}Compose Message{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-pencil-square"></i> Compose New Message
-    </h1>
+<div class="container mx-auto px-4 py-6 max-w-3xl">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-pencil-square text-primary-500"></i> Compose New Message
+        </h1>
+    </div>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'portal:messages_inbox' %}">Inbox</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Compose</li>
+    <nav class="mb-6" aria-label="breadcrumb">
+        <ol class="flex items-center gap-2 text-sm">
+            <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><a href="{% url 'portal:messages_inbox' %}" class="text-primary-600 hover:text-primary-700">Inbox</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li class="text-gray-500">Compose</li>
         </ol>
     </nav>
 
-    <div class="card shadow-sm">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">New Message</h6>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4">
+            <h6 class="text-lg font-bold">New Message</h6>
         </div>
-        <div class="card-body">
+        <div class="p-6">
             <form method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <div class="mt-4 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Send Message</button>
-                    <a href="{% url 'portal:messages_inbox' %}" class="btn btn-secondary">Cancel</a>
+                <div class="space-y-5">
+                    {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ field.label }}
+                            {% if field.field.required %}<span class="text-red-600">*</span>{% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</div>
+                        {% endif %}
+                        {% if field.help_text %}
+                        <small class="text-gray-500 text-xs mt-1 block">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="mt-6 flex gap-3">
+                    <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                        <i class="bi bi-send"></i> Send Message
+                    </button>
+                    <a href="{% url 'portal:messages_inbox' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                        Cancel
+                    </a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    .form-input,
+    .form-select,
+    .form-textarea {
+        @apply block w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all;
+    }
+    .form-textarea {
+        @apply resize-y min-h-[150px];
+    }
+</style>
 {% endblock %}

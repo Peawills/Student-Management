@@ -3,43 +3,51 @@
 {% block title %}Announcements{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-megaphone"></i> School Announcements
-    </h1>
+<div class="container mx-auto px-4 py-6">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-megaphone text-primary-500"></i> School Announcements
+        </h1>
+    </div>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Announcements</li>
+    <nav class="mb-6" aria-label="breadcrumb">
+        <ol class="flex items-center gap-2 text-sm">
+            <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li class="text-gray-500">Announcements</li>
         </ol>
     </nav>
 
-    <div class="card shadow-sm">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Latest Announcements</h6>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4">
+            <h6 class="text-lg font-bold">Latest Announcements</h6>
         </div>
-        <div class="card-body">
+        <div class="p-6">
             {% if announcements %}
-                <div class="list-group">
+                <div class="space-y-3">
                     {% for announcement in announcements %}
-                        <a href="{% url 'portal:announcement_detail' announcement.id %}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">
-                                    {% if announcement.is_urgent %}<span class="badge bg-danger me-2">URGENT</span>{% endif %}
+                        <a href="{% url 'portal:announcement_detail' announcement.id %}" class="block p-5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border-l-4 border-primary-500">
+                            <div class="flex justify-between items-start mb-2">
+                                <h5 class="font-semibold text-gray-900 flex items-center gap-2">
+                                    {% if announcement.is_urgent %}
+                                    <span class="px-2 py-1 bg-red-600 text-white text-xs font-semibold rounded">URGENT</span>
+                                    {% endif %}
                                     {{ announcement.title }}
                                 </h5>
-                                <small class="text-muted">{{ announcement.created_at|date:"M d, Y" }}</small>
+                                <small class="text-gray-500 whitespace-nowrap ml-4">{{ announcement.created_at|date:"M d, Y" }}</small>
                             </div>
-                            <p class="mb-1">{{ announcement.content|truncatechars:150 }}</p>
-                            <small class="text-muted">Category: {{ announcement.category }}</small>
+                            <p class="text-gray-700 mb-2">{{ announcement.content|truncatechars:150 }}</p>
+                            <small class="text-gray-500">Category: {{ announcement.category }}</small>
                         </a>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="alert alert-info" role="alert">
-                    <h4 class="alert-heading">No Announcements Yet!</h4>
-                    <p>There are no active announcements to display at this time. Please check back later.</p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-8 rounded-xl">
+                    <div class="text-center">
+                        <i class="bi bi-megaphone text-5xl text-blue-500 mb-4 opacity-50"></i>
+                        <h4 class="text-lg font-bold text-blue-800 mb-2">No Announcements Yet!</h4>
+                        <p class="text-blue-700">There are no active announcements to display at this time. Please check back later.</p>
+                    </div>
                 </div>
             {% endif %}
         </div>

@@ -3,441 +3,224 @@
 
 {% block title %}Academics Dashboard{% endblock %}
 
-{% block extra_css %}
-<style>
-    .dashboard-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2.5rem 2rem;
-        border-radius: 16px;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-    }
-
-    .dashboard-header h2 {
-        font-weight: 800;
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.25rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 1.75rem 1.5rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        border-left: 4px solid;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 100px;
-        height: 100px;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-        border-radius: 50%;
-        transform: translate(30%, -30%);
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
-
-    .stat-card.blue {
-        border-left-color: #667eea;
-    }
-
-    .stat-card.purple {
-        border-left-color: #764ba2;
-    }
-
-    .stat-card.green {
-        border-left-color: #10b981;
-    }
-
-    .stat-card.orange {
-        border-left-color: #f59e0b;
-    }
-
-    .stat-card.red {
-        border-left-color: #ef4444;
-    }
-
-    .stat-icon {
-        font-size: 2.5rem;
-        margin-bottom: 0.75rem;
-        opacity: 0.8;
-    }
-
-    .stat-value {
-        font-size: 2.25rem;
-        font-weight: 800;
-        color: #1f2937;
-        line-height: 1;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-        color: #6b7280;
-        font-weight: 600;
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .section-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        padding: 1.75rem;
-        margin-bottom: 1.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .section-card:hover {
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
-
-    .section-title {
-        font-weight: 700;
-        font-size: 1.25rem;
-        margin-bottom: 1.25rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        color: #1f2937;
-    }
-
-    .section-title i {
-        font-size: 1.5rem;
-        color: #667eea;
-    }
-
-    .table-modern {
-        margin: 0;
-    }
-
-    .table-modern thead {
-        background: #f9fafb;
-        border-radius: 8px;
-    }
-
-    .table-modern th {
-        font-weight: 600;
-        color: #374151;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border: none;
-        padding: 1rem;
-    }
-
-    .table-modern td {
-        padding: 1rem;
-        vertical-align: middle;
-        border-bottom: 1px solid #f3f4f6;
-    }
-
-    .table-modern tbody tr {
-        transition: background 0.2s ease;
-    }
-
-    .table-modern tbody tr:hover {
-        background: #f9fafb;
-    }
-
-    .table-modern tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .class-item {
-        padding: 1rem;
-        border-radius: 10px;
-        margin-bottom: 0.75rem;
-        background: #f9fafb;
-        transition: all 0.2s ease;
-        border-left: 3px solid #667eea;
-    }
-
-    .class-item:hover {
-        background: #f3f4f6;
-        transform: translateX(5px);
-    }
-
-    .badge-count {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 0.5rem 0.75rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    .quick-action-btn {
-        padding: 1rem;
-        border-radius: 12px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: 2px solid;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        text-decoration: none;
-    }
-
-    .quick-action-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .quick-action-btn i {
-        font-size: 1.25rem;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: #9ca3af;
-    }
-
-    .empty-state i {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-    }
-
-    .score-badge {
-        background: #10b981;
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.875rem;
-    }
-
-    @media (max-width: 768px) {
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .dashboard-header {
-            padding: 1.5rem 1rem;
-        }
-
-        .dashboard-header h2 {
-            font-size: 1.5rem;
-        }
-
-        .stat-value {
-            font-size: 1.75rem;
-        }
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<!-- Dashboard Header -->
-<div class="dashboard-header">
-    <h2><i class="bi bi-speedometer2"></i> Academics Dashboard</h2>
-    <p class="mb-0" style="opacity: 0.95;">
-        Welcome back! Here's an overview of your academic activities and performance.
-    </p>
-</div>
-
-<!-- Statistics Cards -->
-<div class="stats-grid">
-    <div class="stat-card blue">
-        <div class="stat-icon">
-            <i class="bi bi-calendar3"></i>
-        </div>
-        <div class="stat-value">{{ total_sessions|default:0 }}</div>
-        <div class="stat-label">Sessions</div>
+<div class="container mx-auto px-4 py-6">
+    <!-- Dashboard Header -->
+    <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white p-8 rounded-2xl mb-6 shadow-lg">
+        <h2 class="text-3xl font-bold mb-2 flex items-center gap-3">
+            <i class="bi bi-speedometer2"></i> Academics Dashboard
+        </h2>
+        <p class="opacity-95">
+            Welcome back! Here's an overview of your academic activities and performance.
+        </p>
     </div>
 
-    <div class="stat-card purple">
-        <div class="stat-icon">
-            <i class="bi bi-clock-history"></i>
-        </div>
-        <div class="stat-value">{{ current_term_name|default:'-' }}</div>
-        <div class="stat-label">Current Term</div>
-    </div>
-
-    <div class="stat-card green">
-        <div class="stat-icon">
-            <i class="bi bi-door-open"></i>
-        </div>
-        <div class="stat-value">{{ total_classes|default:0 }}</div>
-        <div class="stat-label">Classes</div>
-    </div>
-
-    <div class="stat-card orange">
-        <div class="stat-icon">
-            <i class="bi bi-book"></i>
-        </div>
-        <div class="stat-value">{{ total_subjects|default:0 }}</div>
-        <div class="stat-label">Subjects</div>
-    </div>
-
-    <div class="stat-card red">
-        <div class="stat-icon">
-            <i class="bi bi-clipboard-check"></i>
-        </div>
-        <div class="stat-value">{{ pending_assessments|default:0 }}</div>
-        <div class="stat-label">Pending</div>
-    </div>
-</div>
-
-<!-- Main Content Grid -->
-<div class="row g-4">
-    <!-- Recent Assessments -->
-    <div class="col-lg-7">
-        <div class="section-card">
-            <h3 class="section-title">
-                <i class="bi bi-clipboard-data"></i>
-                Recent Assessments
-            </h3>
-            {% if recent_assessments %}
-            <div class="table-responsive">
-                <table class="table table-modern">
-                    <thead>
-                        <tr>
-                            <th>Assessment</th>
-                            <th>Subject</th>
-                            <th>Class</th>
-                            <th>Date</th>
-                            <th class="text-center">Max</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for a in recent_assessments %}
-                        <tr>
-                            <td><strong>{{ a.title }}</strong></td>
-                            <td>{{ a.assignment.subject.name }}</td>
-                            <td><span class="badge bg-primary">{{ a.assignment.classroom }}</span></td>
-                            <td>{{ a.date|date:"M d, Y" }}</td>
-                            <td class="text-center"><span class="score-badge">{{ a.max_score|floatformat:0 }}</span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div class="empty-state">
-                <i class="bi bi-inbox"></i>
-                <p class="mb-0">No assessments found</p>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- Recent Scores -->
-        <div class="section-card">
-            <h3 class="section-title">
-                <i class="bi bi-graph-up-arrow"></i>
-                Recent Student Scores
-            </h3>
-            {% if recent_scores %}
-            <div class="table-responsive">
-                <table class="table table-modern">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Assessment</th>
-                            <th class="text-center">Score</th>
-                            <th>Submitted</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for s in recent_scores %}
-                        <tr>
-                            <td><strong>{{ s.student.full_name }}</strong></td>
-                            <td>{{ s.assessment.title }}</td>
-                            <td class="text-center"><span class="score-badge">{{ s.score|floatformat:0 }}</span></td>
-                            <td><small class="text-muted">{{ s.submitted_at|date:"M d, h:i A" }}</small></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div class="empty-state">
-                <i class="bi bi-inbox"></i>
-                <p class="mb-0">No recent scores</p>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="col-lg-5">
-        <!-- Classes Snapshot -->
-        <div class="section-card">
-            <h3 class="section-title">
-                <i class="bi bi-people"></i>
-                Classes Overview
-            </h3>
-            {% if classes_snapshot %}
-            {% for c in classes_snapshot %}
-            <div class="class-item">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong style="font-size: 1.1rem;">{{ c.classroom }}</strong>
-                        <br>
-                        <small class="text-muted">
-                            <i class="bi bi-person-badge"></i> {{ c.class_teacher_name|default:"No Teacher" }}
-                        </small>
-                    </div>
-                    <span class="badge-count">{{ c.student_count|default:0 }} <i class="bi bi-people-fill"></i></span>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="empty-state">
-                <i class="bi bi-inbox"></i>
-                <p class="mb-0">No classes found</p>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="section-card">
-            <h3 class="section-title">
-                <i class="bi bi-lightning"></i>
-                Quick Actions
-            </h3>
-            <div class="d-grid gap-3">
-                <a href="{% url 'academics:assessment_create' %}" class="quick-action-btn btn-primary">
-                    <i class="bi bi-plus-circle-fill"></i>
-                    <span>Create Assessment</span>
-                </a>
-                <a href="{% url 'academics:session_list' %}" class="quick-action-btn btn-outline-primary">
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-6">
+        <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border-l-4 border-primary-500 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-primary-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
+            <div class="relative">
+                <div class="text-4xl mb-3 text-primary-500">
                     <i class="bi bi-calendar3"></i>
-                    <span>Manage Sessions</span>
-                </a>
-                <a href="{% url 'academics:classroom_list' %}" class="quick-action-btn btn-outline-secondary">
+                </div>
+                <div class="text-3xl font-bold text-gray-800 mb-1">{{ total_sessions|default:0 }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Sessions</div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border-l-4 border-secondary-500 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-secondary-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
+            <div class="relative">
+                <div class="text-4xl mb-3 text-secondary-500">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="text-2xl font-bold text-gray-800 mb-1">{{ current_term_name|default:'-' }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Current Term</div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border-l-4 border-green-500 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-green-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
+            <div class="relative">
+                <div class="text-4xl mb-3 text-green-500">
                     <i class="bi bi-door-open"></i>
-                    <span>Manage Classes</span>
-                </a>
-                <a href="{% url 'academics:subject_list' %}" class="quick-action-btn btn-outline-success">
+                </div>
+                <div class="text-3xl font-bold text-gray-800 mb-1">{{ total_classes|default:0 }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Classes</div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border-l-4 border-yellow-500 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
+            <div class="relative">
+                <div class="text-4xl mb-3 text-yellow-500">
                     <i class="bi bi-book"></i>
-                    <span>Manage Subjects</span>
-                </a>
-                <a href="{% url 'academics:performance_analytics' %}" class="quick-action-btn btn-outline-info">
-                    <i class="bi bi-graph-up"></i>
-                    <span>View Analytics</span>
-                </a>
+                </div>
+                <div class="text-3xl font-bold text-gray-800 mb-1">{{ total_subjects|default:0 }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Subjects</div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border-l-4 border-red-500 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-red-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
+            <div class="relative">
+                <div class="text-4xl mb-3 text-red-500">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+                <div class="text-3xl font-bold text-gray-800 mb-1">{{ pending_assessments|default:0 }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Pending</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Recent Assessments -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <i class="bi bi-clipboard-data text-primary-500 text-2xl"></i>
+                    Recent Assessments
+                </h3>
+                {% if recent_assessments %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Assessment</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Subject</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Class</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                                <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Max</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for a in recent_assessments %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-4 py-3 whitespace-nowrap font-semibold text-gray-900">{{ a.title }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ a.assignment.subject.name }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-700">{{ a.assignment.classroom }}</span>
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ a.date|date:"M d, Y" }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-center">
+                                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-500 text-white">{{ a.max_score|floatformat:0 }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-12 text-gray-500">
+                    <i class="bi bi-inbox text-5xl mb-3 opacity-50"></i>
+                    <p>No assessments found</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Scores -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <i class="bi bi-graph-up-arrow text-primary-500 text-2xl"></i>
+                    Recent Student Scores
+                </h3>
+                {% if recent_scores %}
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Assessment</th>
+                                <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Score</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Submitted</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for s in recent_scores %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-4 py-3 whitespace-nowrap font-semibold text-gray-900">{{ s.student.full_name }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-gray-700">{{ s.assessment.title }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap text-center">
+                                    <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-500 text-white">{{ s.score|floatformat:0 }}</span>
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ s.submitted_at|date:"M d, h:i A" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-12 text-gray-500">
+                    <i class="bi bi-inbox text-5xl mb-3 opacity-50"></i>
+                    <p>No recent scores</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Classes Snapshot -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <i class="bi bi-people text-primary-500 text-2xl"></i>
+                    Classes Overview
+                </h3>
+                {% if classes_snapshot %}
+                <div class="space-y-3">
+                    {% for c in classes_snapshot %}
+                    <div class="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border-l-3 border-primary-500">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-bold text-gray-800 text-lg">{{ c.classroom }}</div>
+                                <div class="text-sm text-gray-600 mt-1">
+                                    <i class="bi bi-person-badge"></i> {{ c.class_teacher_name|default:"No Teacher" }}
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-sm font-semibold rounded-full">
+                                {{ c.student_count|default:0 }} <i class="bi bi-people-fill"></i>
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12 text-gray-500">
+                    <i class="bi bi-inbox text-5xl mb-3 opacity-50"></i>
+                    <p>No classes found</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <i class="bi bi-lightning text-primary-500 text-2xl"></i>
+                    Quick Actions
+                </h3>
+                <div class="space-y-3">
+                    <a href="{% url 'academics:assessment_create' %}" class="block w-full px-4 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-3">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        <span>Create Assessment</span>
+                    </a>
+                    <a href="{% url 'academics:session_list' %}" class="block w-full px-4 py-3 border-2 border-primary-500 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-all flex items-center gap-3">
+                        <i class="bi bi-calendar3"></i>
+                        <span>Manage Sessions</span>
+                    </a>
+                    <a href="{% url 'academics:classroom_list' %}" class="block w-full px-4 py-3 border-2 border-gray-400 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all flex items-center gap-3">
+                        <i class="bi bi-door-open"></i>
+                        <span>Manage Classes</span>
+                    </a>
+                    <a href="{% url 'academics:subject_list' %}" class="block w-full px-4 py-3 border-2 border-green-500 text-green-600 font-semibold rounded-xl hover:bg-green-50 transition-all flex items-center gap-3">
+                        <i class="bi bi-book"></i>
+                        <span>Manage Subjects</span>
+                    </a>
+                    <a href="{% url 'academics:performance_analytics' %}" class="block w-full px-4 py-3 border-2 border-blue-500 text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all flex items-center gap-3">
+                        <i class="bi bi-graph-up"></i>
+                        <span>View Analytics</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

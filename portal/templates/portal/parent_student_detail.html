@@ -3,46 +3,85 @@
 {% block title %}Student Details - {{ student.full_name }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-person-vcard"></i> {{ student.full_name }} ({{ student.admission_no }})
-    </h1>
+<div class="container mx-auto px-4 py-6">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-person-vcard text-primary-500"></i> {{ student.full_name }} ({{ student.admission_no }})
+        </h1>
+    </div>
 
-    <div class="row">
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Student Information</h6>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-4">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4">
+                    <h6 class="text-lg font-bold">Student Information</h6>
                 </div>
-                <div class="card-body">
-                    <p><strong>Class:</strong> {{ student.classroom }}</p>
-                    <p><strong>Date of Birth:</strong> {{ student.date_of_birth|date:"F d, Y" }}</p>
-                    <p><strong>Gender:</strong> {{ student.sex }}</p>
-                    <p><strong>Admission Date:</strong> {{ student.date_of_entry|date:"F d, Y" }}</p>
-                    <p><strong>Residential Address:</strong> {{ student.residential_address }}</p>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-sm font-semibold text-gray-600 block mb-1">Class:</span>
+                            <span class="text-gray-900 font-medium">{{ student.classroom }}</span>
+                        </div>
+                        <div>
+                            <span class="text-sm font-semibold text-gray-600 block mb-1">Date of Birth:</span>
+                            <span class="text-gray-900 font-medium">{{ student.date_of_birth|date:"F d, Y" }}</span>
+                        </div>
+                        <div>
+                            <span class="text-sm font-semibold text-gray-600 block mb-1">Gender:</span>
+                            <span class="text-gray-900 font-medium">{{ student.sex }}</span>
+                        </div>
+                        <div>
+                            <span class="text-sm font-semibold text-gray-600 block mb-1">Admission Date:</span>
+                            <span class="text-gray-900 font-medium">{{ student.date_of_entry|date:"F d, Y" }}</span>
+                        </div>
+                        <div>
+                            <span class="text-sm font-semibold text-gray-600 block mb-1">Residential Address:</span>
+                            <span class="text-gray-900 font-medium">{{ student.residential_address }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-8 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Academic Overview</h6>
+        <div class="lg:col-span-8">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4">
+                    <h6 class="text-lg font-bold">Academic Overview</h6>
                 </div>
-                <div class="card-body">
-                    <p><strong>Latest Report Card:</strong> {% if latest_report %}{{ latest_report.term }} (Avg: {{ latest_report.average_score|floatformat:1 }}){% else %}N/A{% endif %}</p>
-                    <p><strong>Recent Scores:</strong></p>
-                    {% if recent_scores %}
-                        <ul>
-                            {% for score in recent_scores %}
-                                <li>{{ score.assessment.title }} ({{ score.assessment.assignment.subject.name }}): {{ score.score|floatformat:1 }}/{{ score.assessment.max_score|floatformat:0 }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>No recent scores available.</p>
-                    {% endif %}
-                    <a href="{% url 'portal:parent_student_scores' student.id %}" class="btn btn-sm btn-primary">View All Scores</a>
-                    <a href="{% url 'portal:parent_student_attendance' student.id %}" class="btn btn-sm btn-info ms-2">View Attendance</a>
+                <div class="p-6">
+                    <div class="mb-6">
+                        <span class="text-sm font-semibold text-gray-600 block mb-1">Latest Report Card:</span>
+                        <span class="text-gray-900 font-medium">
+                            {% if latest_report %}
+                                {{ latest_report.term }} (Avg: {{ latest_report.average_score|floatformat:1 }})
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-sm font-semibold text-gray-600 block mb-3">Recent Scores:</span>
+                        {% if recent_scores %}
+                            <div class="space-y-2">
+                                {% for score in recent_scores %}
+                                    <div class="p-3 bg-gray-50 rounded-lg border-l-4 border-primary-500">
+                                        <div class="font-medium text-gray-900">{{ score.assessment.title }} ({{ score.assessment.assignment.subject.name }})</div>
+                                        <div class="text-sm text-gray-600">Score: {{ score.score|floatformat:1 }}/{{ score.assessment.max_score|floatformat:0 }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-gray-500">No recent scores available.</p>
+                        {% endif %}
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="{% url 'portal:parent_student_scores' student.id %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                            View All Scores
+                        </a>
+                        <a href="{% url 'portal:parent_student_attendance' student.id %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                            View Attendance
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

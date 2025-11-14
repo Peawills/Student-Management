@@ -8,292 +8,32 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
     }
-
-    .login-wrapper {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem 0;
-    }
-
-    .login-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        overflow: hidden;
-        max-width: 450px;
-        width: 100%;
-        animation: slideUp 0.5s ease;
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .login-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 2.5rem 2rem;
-        text-align: center;
-        color: white;
-    }
-
-    .login-icon {
-        width: 80px;
-        height: 80px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem;
-        backdrop-filter: blur(10px);
-    }
-
-    .login-icon i {
-        font-size: 2.5rem;
-    }
-
-    .login-header h3 {
-        margin: 0;
-        font-weight: 700;
-        font-size: 1.75rem;
-    }
-
-    .login-header p {
-        margin: 0.5rem 0 0;
-        opacity: 0.9;
-        font-size: 0.95rem;
-    }
-
-    .login-body {
-        padding: 2.5rem 2rem;
-    }
-
-    .form-floating {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-floating > .form-control {
-        border: 2px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 1rem 0.75rem;
-        height: calc(3.5rem + 2px);
-        transition: all 0.3s ease;
-    }
-
-    .form-floating > .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
-    }
-
-    .form-floating > label {
-        padding: 1rem 0.75rem;
-        color: #6b7280;
-    }
-
-    .input-icon {
-        position: relative;
-    }
-
-    .input-icon i {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9ca3af;
-        font-size: 1.25rem;
-        z-index: 10;
-    }
-
-    .form-control.is-invalid {
-        border-color: #ef4444;
-        background-image: none;
-    }
-
-    .invalid-feedback {
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
-        color: #ef4444;
-    }
-
-    .btn-login {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
-        border-radius: 12px;
-        padding: 1rem;
-        font-weight: 600;
-        font-size: 1rem;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .btn-login:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-    }
-
-    .btn-login:active {
-        transform: translateY(0);
-    }
-
-    .alert {
-        border: none;
-        border-radius: 12px;
-        padding: 1rem 1.25rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .alert-danger {
-        background: #fef2f2;
-        color: #991b1b;
-        border-left: 4px solid #ef4444;
-    }
-
-    .alert-success {
-        background: #f0fdf4;
-        color: #166534;
-        border-left: 4px solid #22c55e;
-    }
-
-    .alert-info {
-        background: #eff6ff;
-        color: #1e40af;
-        border-left: 4px solid #3b82f6;
-    }
-
-    .alert i {
-        font-size: 1.25rem;
-    }
-
-    .password-toggle {
-        position: absolute;
-        right: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #9ca3af;
-        z-index: 10;
-        background: none;
-        border: none;
-        padding: 0.5rem;
-        transition: color 0.3s ease;
-    }
-
-    .password-toggle:hover {
-        color: #667eea;
-    }
-
-    .login-footer {
-        text-align: center;
-        padding: 1.5rem 2rem;
-        background: #f9fafb;
-        border-top: 1px solid #e5e7eb;
-    }
-
-    .login-footer p {
-        margin: 0;
-        color: #6b7280;
-        font-size: 0.875rem;
-    }
-
-    .login-footer a {
-        color: #667eea;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .login-footer a:hover {
-        text-decoration: underline;
-    }
-
-    /* Remember me checkbox */
-    .form-check {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-check-input:checked {
-        background-color: #667eea;
-        border-color: #667eea;
-    }
-
-    .form-check-input:focus {
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        border-color: #667eea;
-    }
-
-    .form-check-label {
-        color: #4b5563;
-        font-size: 0.9rem;
-    }
-
-    /* Loading state */
-    .btn-login:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-
-    .spinner-border-sm {
-        width: 1rem;
-        height: 1rem;
-        border-width: 0.15em;
-    }
-
-    @media (max-width: 768px) {
-        .login-card {
-            margin: 1rem;
-        }
-
-        .login-body {
-            padding: 2rem 1.5rem;
-        }
-    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="login-wrapper">
-    <div class="login-card">
+<div class="min-h-screen flex items-center justify-center py-8 px-4">
+    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden max-w-md w-full animate-slideUp">
         <!-- Header -->
-        <div class="login-header">
-            <div class="login-icon">
-                <i class="bi bi-shield-lock-fill"></i>
+        <div class="bg-gradient-to-br from-primary-500 to-secondary-500 px-8 py-10 text-center text-white">
+            <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+                <i class="bi bi-shield-lock-fill text-4xl"></i>
             </div>
-            <h3>{{ page_title|default:"Portal Login" }}</h3>
-            <p>Welcome back! Please login to continue</p>
+            <h3 class="text-2xl font-bold mb-2">{{ page_title|default:"Portal Login" }}</h3>
+            <p class="opacity-90">Welcome back! Please login to continue</p>
+        </div>
 
         <!-- Body -->
-        <div class="login-body">
+        <div class="p-8">
             <!-- Messages -->
             {% if messages %}
                 {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    <i class="bi bi-{% if message.tags == 'error' or message.tags == 'danger' %}exclamation-circle-fill{% elif message.tags == 'success' %}check-circle-fill{% else %}info-circle-fill{% endif %}"></i>
-                    <span>{{ message }}</span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="mb-4 p-4 rounded-xl flex items-center gap-3 animate-fadeIn {% if message.tags == 'error' or message.tags == 'danger' %}bg-red-50 text-red-800 border-l-4 border-red-500{% elif message.tags == 'success' %}bg-green-50 text-green-800 border-l-4 border-green-500{% elif message.tags == 'warning' %}bg-yellow-50 text-yellow-800 border-l-4 border-yellow-500{% else %}bg-blue-50 text-blue-800 border-l-4 border-blue-500{% endif %}" role="alert">
+                    <i class="bi bi-{% if message.tags == 'error' or message.tags == 'danger' %}exclamation-circle-fill{% elif message.tags == 'success' %}check-circle-fill{% else %}info-circle-fill{% endif %} text-xl flex-shrink-0"></i>
+                    <span class="flex-1">{{ message }}</span>
+                    <button type="button" class="text-gray-500 hover:text-gray-700" onclick="this.parentElement.remove()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
                 {% endfor %}
             {% endif %}
@@ -303,21 +43,21 @@
                 {% csrf_token %}
                 
                 <!-- Username Field -->
-                <div class="form-floating mb-3">
+                <div class="mb-6">
+                    <label for="id_username" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="bi bi-person mr-2"></i>Username
+                    </label>
                     <input type="text" 
-                           class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.username.errors %}border-red-500{% endif %}" 
                            id="id_username" 
                            name="username" 
-                           placeholder="Username"
+                           placeholder="Enter your username"
                            value="{{ form.username.value|default:'' }}"
                            required
                            autocomplete="username"
                            autofocus>
-                    <label for="id_username">
-                        <i class="bi bi-person me-2"></i>Username
-                    </label>
                     {% if form.username.errors %}
-                        <div class="invalid-feedback">
+                        <div class="mt-2 text-sm text-red-600">
                             {% for error in form.username.errors %}
                                 {{ error }}
                             {% endfor %}
@@ -326,22 +66,24 @@
                 </div>
 
                 <!-- Password Field -->
-                <div class="form-floating mb-3 position-relative">
-                    <input type="password" 
-                           class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
-                           id="id_password" 
-                           name="password" 
-                           placeholder="Password"
-                           autocomplete="current-password"
-                           required>
-                    <label for="id_password">
-                        <i class="bi bi-lock me-2"></i>Password
+                <div class="mb-6 relative">
+                    <label for="id_password" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="bi bi-lock mr-2"></i>Password
                     </label>
-                    <button type="button" class="password-toggle" onclick="togglePassword()">
-                        <i class="bi bi-eye" id="toggleIcon"></i>
-                    </button>
+                    <div class="relative">
+                        <input type="password" 
+                               class="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.password.errors %}border-red-500{% endif %}" 
+                               id="id_password" 
+                               name="password" 
+                               placeholder="Enter your password"
+                               autocomplete="current-password"
+                               required>
+                        <button type="button" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-primary-600 transition-colors" onclick="togglePassword()">
+                            <i class="bi bi-eye text-xl" id="toggleIcon"></i>
+                        </button>
+                    </div>
                     {% if form.password.errors %}
-                        <div class="invalid-feedback">
+                        <div class="mt-2 text-sm text-red-600">
                             {% for error in form.password.errors %}
                                 {{ error }}
                             {% endfor %}
@@ -350,20 +92,23 @@
                 </div>
 
                 <!-- Remember Me -->
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="rememberMe" name="remember_me">
-                    <label class="form-check-label" for="rememberMe">
+                <div class="mb-6 flex items-center">
+                    <input class="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500 focus:ring-2" type="checkbox" id="rememberMe" name="remember_me">
+                    <label class="ml-2 text-sm text-gray-700" for="rememberMe">
                         Remember me
                     </label>
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-login btn-primary w-100" id="loginBtn">
-                    <span id="btnText">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                <button type="submit" class="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed" id="loginBtn">
+                    <span id="btnText" class="flex items-center justify-center gap-2">
+                        <i class="bi bi-box-arrow-in-right"></i>Login
                     </span>
-                    <span id="btnLoading" class="d-none">
-                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <span id="btnLoading" class="hidden items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
                         Logging in...
                     </span>
                 </button>
@@ -371,9 +116,9 @@
         </div>
 
         <!-- Footer -->
-        <div class="login-footer">
-            <p>
-                <i class="bi bi-info-circle me-1"></i>
+        <div class="bg-gray-50 px-8 py-6 text-center border-t border-gray-200">
+            <p class="text-sm text-gray-600">
+                <i class="bi bi-info-circle mr-1"></i>
                 Need help? Contact your administrator
             </p>
         </div>
@@ -404,33 +149,37 @@
         const btnLoading = document.getElementById('btnLoading');
         
         btn.disabled = true;
-        btnText.classList.add('d-none');
-        btnLoading.classList.remove('d-none');
+        btnText.classList.add('hidden');
+        btnLoading.classList.remove('hidden');
+        btnLoading.classList.add('flex');
     });
 
     // Auto-dismiss alerts after 5 seconds
     setTimeout(function() {
-        const alerts = document.querySelectorAll('.alert');
+        const alerts = document.querySelectorAll('.alert, [role="alert"]');
         alerts.forEach(function(alert) {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+            alert.style.transition = 'opacity 0.5s ease-out';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
         });
     }, 5000);
 
     // Add shake animation on error
     {% if form.errors %}
-    const loginCard = document.querySelector('.login-card');
-    loginCard.style.animation = 'shake 0.5s';
-    
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
-        }
-    `;
-    document.head.appendChild(style);
+    const loginCard = document.querySelector('.animate-slideUp');
+    if (loginCard) {
+        loginCard.style.animation = 'shake 0.5s';
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+                20%, 40%, 60%, 80% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
     {% endif %}
 </script>
 {% endblock %}

@@ -146,6 +146,8 @@ class Assessment(models.Model):
     instructions = models.TextField(blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_published = models.BooleanField(default=False)
+    published_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} - {self.assignment.subject.name}"
@@ -302,15 +304,19 @@ class ReportCard(models.Model):
 
     # --- New: Affective & Psychomotor Domains ---
     SKILL_RATING_CHOICES = [
-        (5, 'Excellent'), (4, 'Good'), (3, 'Average'),
-        (2, 'Fair'), (1, 'Poor'), (0, 'N/A')
+        (5, "Excellent"),
+        (4, "Good"),
+        (3, "Average"),
+        (2, "Fair"),
+        (1, "Poor"),
+        (0, "N/A"),
     ]
     # Affective
     punctuality = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
     attendance_in_class = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
     honesty = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
     neatness = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
-    
+
     # Psychomotor
     handwriting = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
     sports_and_games = models.IntegerField(choices=SKILL_RATING_CHOICES, default=0)
@@ -322,6 +328,17 @@ class ReportCard(models.Model):
 
     def __str__(self):
         return f"{self.student.full_name} - {self.term} Report"
+
+    def get_skill_fields(self):
+        """Returns a dictionary of skill fields and their labels for template iteration."""
+        return {
+            'punctuality': 'Punctuality',
+            'attendance_in_class': 'Attendance',
+            'honesty': 'Honesty',
+            'neatness': 'Neatness',
+            'handwriting': 'Handwriting',
+            'sports_and_games': 'Sports/Games',
+        }
 
     class Meta:
         unique_together = ["student", "term"]
@@ -340,3 +357,66 @@ class PerformanceComment(models.Model):
 
     class Meta:
         ordering = ["category"]
+
+
+class Attendance(models.Model):
+    """Model to track student attendance."""
+
+    ATTENDANCE_STATUS = [
+        ("Present", "Present"),
+        ("Absent", "Absent"),
+        ("Late", "Late"),
+        ("Excused", "Excused"),
+    ]
+
+    student = models.ForeignKey(
+        "records.Student", on_delete=models.CASCADE, related_name="attendances"
+    )
+    date = models.DateField()
+    status = models.CharField(max_length=10, choices=ATTENDANCE_STATUS)
+    remarks = models.TextField(blank=True)
+    marked_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="academics_attendances",
+    )
+
+    def __str__(self):
+        return f"{self.student.full_name} - {self.date} - {self.status}"
+
+    class Meta:
+        unique_together = ["student", "date"]
+        ordering = ["-date", "student__surname"]
+
+
+class Timetable(models.Model):
+    """Class timetable"""
+
+    DAYS_OF_WEEK = [
+        ("Monday", "Monday"),
+        ("Tuesday", "Tuesday"),
+        ("Wednesday", "Wednesday"),
+        ("Thursday", "Thursday"),
+        ("Friday", "Friday"),
+    ]
+
+    classroom = models.ForeignKey(
+        "ClassRoom", on_delete=models.CASCADE, related_name="timetable"
+    )
+    day_of_week = models.CharField(max_length=10, choices=DAYS_OF_WEEK)
+    period_number = models.IntegerField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    subject = models.ForeignKey("Subject", on_delete=models.CASCADE)
+    teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    term = models.ForeignKey("Term", on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.classroom} - {self.day_of_week} Period {self.period_number} - {self.subject.name}"
+
+    class Meta:
+        ordering = ["classroom", "day_of_week", "period_number"]
+        unique_together = ["classroom", "day_of_week", "period_number", "term"]

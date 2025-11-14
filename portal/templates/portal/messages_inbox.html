@@ -3,53 +3,60 @@
 {% block title %}Message Inbox{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-inbox"></i> Message Inbox
-    </h1>
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-inbox text-primary-500"></i> Message Inbox
+        </h1>
+        <a href="{% url 'portal:compose_message' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+            <i class="bi bi-pencil-square"></i> Compose
+        </a>
+    </div>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Inbox</li>
+    <nav class="mb-6" aria-label="breadcrumb">
+        <ol class="flex items-center gap-2 text-sm">
+            <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li class="text-gray-500">Inbox</li>
         </ol>
     </nav>
 
-    <div class="card shadow-sm">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Your Messages</h6>
-            <a href="{% url 'portal:compose_message' %}" class="btn btn-sm btn-primary">
-                <i class="bi bi-pencil-square"></i> Compose
-            </a>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4">
+            <h6 class="text-lg font-bold">Your Messages</h6>
         </div>
-        <div class="card-body">
+        <div class="p-6">
             {% if messages %}
-                <div class="list-group">
+                <div class="space-y-3">
                     {% for message in messages %}
-                        <a href="{% url 'portal:message_detail' message.id %}" class="list-group-item list-group-item-action {% if not message.is_read %}fw-bold bg-light{% endif %}">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">
+                        <a href="{% url 'portal:message_detail' message.id %}" class="block p-5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border-l-4 {% if not message.is_read %}border-primary-500 bg-primary-50{% else %}border-gray-300{% endif %}">
+                            <div class="flex justify-between items-start mb-2">
+                                <h5 class="font-semibold text-gray-900 {% if not message.is_read %}font-bold{% endif %}">
                                     From: {{ message.sender.get_full_name|default:message.sender.username }}
-                                    <span class="text-muted ms-2">Subject: {{ message.subject }}</span>
+                                    <span class="text-gray-600 font-normal ml-2">Subject: {{ message.subject }}</span>
                                 </h5>
-                                <small class="text-muted">{{ message.created_at|date:"M d, Y H:i" }}</small>
+                                <small class="text-gray-500 whitespace-nowrap ml-4">{{ message.created_at|date:"M d, Y H:i" }}</small>
                             </div>
-                            <p class="mb-1">{{ message.message|truncatechars:100 }}</p>
+                            <p class="text-gray-700 mb-2">{{ message.message|truncatechars:100 }}</p>
                             {% if message.student %}
-                                <small class="text-muted">Regarding: {{ message.student.full_name }}</small>
+                                <small class="text-gray-500">Regarding: {{ message.student.full_name }}</small>
                             {% endif %}
                             {% if not message.is_read %}
-                                <span class="badge bg-info float-end">New</span>
+                                <span class="inline-block mt-2 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded">New</span>
                             {% endif %}
                         </a>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="alert alert-info" role="alert">
-                    <h4 class="alert-heading">Your Inbox is Empty!</h4>
-                    <p>You have no messages in your inbox.</p>
-                    <hr>
-                    <p class="mb-0">Why not <a href="{% url 'portal:compose_message' %}" class="alert-link">compose a new message</a>?</p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-8 rounded-xl">
+                    <div class="text-center">
+                        <i class="bi bi-inbox text-5xl text-blue-500 mb-4 opacity-50"></i>
+                        <h4 class="text-lg font-bold text-blue-800 mb-2">Your Inbox is Empty!</h4>
+                        <p class="text-blue-700 mb-4">You have no messages in your inbox.</p>
+                        <a href="{% url 'portal:compose_message' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="bi bi-pencil-square"></i> Compose a new message
+                        </a>
+                    </div>
                 </div>
             {% endif %}
         </div>

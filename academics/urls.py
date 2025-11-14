@@ -8,6 +8,8 @@ app_name = "academics"
 urlpatterns = [
     # Dashboard
     path("dashboard/", views.academics_dashboard, name="dashboard"),
+    # Publication Center
+    path("publications/", views.publication_center, name="publication_center"),
     # Sessions
     path("sessions/", views.session_list, name="session_list"),
     path("sessions/create/", views.session_create, name="session_create"),
@@ -66,6 +68,16 @@ urlpatterns = [
         views.assessment_delete,
         name="assessment_delete",
     ),
+    path(
+        "assessments/<int:pk>/publish/",
+        views.publish_assessment,
+        name="publish_assessment",
+    ),
+    path(
+        "assessments/<int:pk>/unpublish/",
+        views.unpublish_assessment,
+        name="unpublish_assessment",
+    ),
     # Scores
     path(
         "assessments/<int:assessment_id>/scores/",
@@ -75,11 +87,45 @@ urlpatterns = [
     path("scores/import/", views.import_scores, name="import_scores"),
     # Report Cards
     path("report-cards/", views.report_card_list, name="report_card_list"),
+    path("report-cards/<int:pk>/", views.report_card_detail, name="report_card_detail"),
+    path("report-cards/<int:pk>/publish/", views.publish_report_card, name="publish_report_card"),
+    path("report-cards/<int:pk>/unpublish/", views.unpublish_report_card, name="unpublish_report_card"),
+    # --- New Report Card Generation Workflow ---
+    path(
+        "report-cards/prepare/",
+        views.prepare_report_cards,
+        name="prepare_report_cards",
+    ),
+    path(
+        "report-cards/ajax/save-data/",
+        views.ajax_save_report_card_data,
+        name="ajax_save_report_card_data",
+    ),
+    path(
+        "report-cards/finalize/",
+        views.finalize_report_cards,
+        name="finalize_report_cards",
+    ),
     # Analytics
     path(
         "analytics/",
         views.PerformanceAnalyticsView.as_view(),
         name="performance_analytics",
+    ),
+    path(
+        "analytics/export/subjects/",
+        views.export_subject_performance_csv,
+        name="export_subject_performance_csv",
+    ),
+    path(
+        "analytics/export/classes/",
+        views.export_class_performance_csv,
+        name="export_class_performance_csv",
+    ),
+    path(
+        "analytics/recalculate/",
+        views.recalculate_term_results,
+        name="recalculate_term_results",
     ),
     # Comments
     path("comments/", views.comment_list, name="comment_list"),
@@ -95,4 +141,9 @@ urlpatterns = [
     # Attendance
     path("attendance/take/", views.take_attendance, name="take_attendance"),
     path("attendance/report/", views.attendance_report, name="attendance_report"),
+    # Timetable
+    path("timetables/", views.timetable_list, name="timetable_list"),
+    path("timetables/create/", views.timetable_create, name="timetable_create"),
+    path("timetables/<int:pk>/update/", views.timetable_update, name="timetable_update"),
+    path("timetables/<int:pk>/delete/", views.timetable_delete, name="timetable_delete"),
 ]

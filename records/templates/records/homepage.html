@@ -4,410 +4,30 @@
 {% block title %}Home - Student Management System{% endblock %}
 
 {% block extra_css %}
-<style>
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-    }
-
-    .hero-section {
-        padding: 4rem 0;
-        text-align: center;
-        color: white;
-    }
-
-    .hero-content {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-    }
-
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 0.5rem 1.25rem;
-        border-radius: 50px;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        backdrop-filter: blur(10px);
-        animation: fadeInDown 0.6s ease;
-    }
-
-    .hero-title {
-        font-size: 3.5rem;
-        font-weight: 900;
-        margin-bottom: 1.5rem;
-        line-height: 1.2;
-        animation: fadeInUp 0.8s ease;
-    }
-
-    .hero-subtitle {
-        font-size: 1.3rem;
-        margin-bottom: 2.5rem;
-        opacity: 0.95;
-        line-height: 1.6;
-        animation: fadeInUp 1s ease;
-    }
-
-    .hero-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-        animation: fadeInUp 1.2s ease;
-    }
-
-    .btn-hero {
-        padding: 1rem 2.5rem;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 1.05rem;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        transition: all 0.3s ease;
-        border: none;
-    }
-
-    .btn-primary-hero {
-        background: white;
-        color: #667eea;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-primary-hero:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        color: #764ba2;
-    }
-
-    .btn-secondary-hero {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: 2px solid white;
-        backdrop-filter: blur(10px);
-    }
-
-    .btn-secondary-hero:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-3px);
-        color: white;
-    }
-
-    .features-section {
-        padding: 3rem 1.5rem;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
-    }
-
-    .feature-card {
-        background: white;
-        border-radius: 20px;
-        padding: 2.5rem;
-        text-align: center;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        animation: fadeInUp 0.8s ease;
-        animation-fill-mode: both;
-    }
-
-    .feature-card:nth-child(1) {
-        animation-delay: 0.2s;
-    }
-
-    .feature-card:nth-child(2) {
-        animation-delay: 0.4s;
-    }
-
-    .feature-card:nth-child(3) {
-        animation-delay: 0.6s;
-    }
-
-    .feature-card:nth-child(4) {
-        animation-delay: 0.8s;
-    }
-
-    .feature-card:nth-child(5) {
-        animation-delay: 1s;
-    }
-
-    .feature-card:nth-child(6) {
-        animation-delay: 1.2s;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-    }
-
-    .feature-icon {
-        width: 80px;
-        height: 80px;
-        margin: 0 auto 1.5rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        color: white;
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-    }
-
-    .feature-card:hover .feature-icon {
-        transform: rotateY(360deg);
-        transition: transform 0.6s ease;
-    }
-
-    .feature-title {
-        font-size: 1.35rem;
-        font-weight: 700;
-        color: #1f2937;
-        margin-bottom: 0.75rem;
-    }
-
-    .feature-description {
-        color: #6b7280;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
-    }
-
-    .feature-link {
-        color: #667eea;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .feature-link:hover {
-        gap: 0.75rem;
-        color: #764ba2;
-    }
-
-    .stats-section {
-        background: white;
-        border-radius: 20px;
-        padding: 3rem;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        animation: fadeInUp 1s ease;
-    }
-
-    .stats-header {
-        text-align: center;
-        margin-bottom: 2.5rem;
-    }
-
-    .stats-title {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #1f2937;
-        margin-bottom: 0.5rem;
-    }
-
-    .stats-subtitle {
-        color: #6b7280;
-        font-size: 1.05rem;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 2rem;
-    }
-
-    .stat-item {
-        text-align: center;
-        padding: 1.5rem;
-        border-radius: 16px;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-        border: 2px solid rgba(102, 126, 234, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .stat-item:hover {
-        transform: translateY(-5px);
-        border-color: #667eea;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-    }
-
-    .stat-value {
-        font-size: 3rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-        color: #6b7280;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-    }
-
-    .cta-section {
-        margin-top: 3rem;
-        padding: 3rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        text-align: center;
-        color: white;
-        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
-        animation: fadeInUp 1.2s ease;
-    }
-
-    .cta-title {
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-    }
-
-    .cta-text {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-        opacity: 0.95;
-    }
-
-    .cta-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    /* Animations */
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .hero-title {
-            font-size: 2.5rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1.1rem;
-        }
-
-        .hero-buttons {
-            flex-direction: column;
-        }
-
-        .btn-hero {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .features-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .stats-section {
-            padding: 2rem 1.5rem;
-        }
-
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .cta-section {
-            padding: 2rem 1.5rem;
-        }
-
-        .cta-title {
-            font-size: 1.5rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .hero-title {
-            font-size: 2rem;
-        }
-
-        .feature-card {
-            padding: 2rem 1.5rem;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-        }
-    }
-
-    /* Floating animation for hero badge */
-    @keyframes float {
-
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-10px);
-        }
-    }
-
-    .hero-badge {
-        animation: float 3s ease-in-out infinite;
-    }
-</style>
+<!-- No extra CSS needed, using Tailwind utilities -->
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<div class="hero-section">
-    <div class="hero-content">
-        <div class="hero-badge">
+<div class="py-16 text-center text-white bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl">
+    <div class="max-w-3xl mx-auto px-6">
+        <div class="inline-flex items-center gap-2 bg-white/20 px-5 py-2 rounded-full font-semibold mb-6 backdrop-blur-sm animate-fadeIn">
             <i class="bi bi-stars"></i>
             <span>Welcome to Your Dashboard</span>
         </div>
-        <h1 class="hero-title">Student Management System</h1>
-        <p class="hero-subtitle">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight animate-slideUp">Student Management System</h1>
+        <p class="text-lg md:text-xl mb-10 opacity-95 leading-relaxed animate-slideUp" style="animation-delay: 0.2s;">
             Streamline your educational administration with our comprehensive platform.
             Manage students, track disciplinary records, and maintain organized documentation.
         </p>
-        <div class="hero-buttons">
-            <a href="{% url 'records:student_list' %}" class="btn-hero btn-primary-hero">
+        <div class="flex gap-4 justify-center flex-wrap animate-slideUp" style="animation-delay: 0.4s;">
+            <a href="{% url 'records:student_list' %}"
+                class="px-8 py-3 rounded-xl font-bold text-lg bg-white text-primary-500 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
                 <i class="bi bi-people-fill"></i>
                 View Students
             </a>
-            <a href="{% url 'records:student_create' %}" class="btn-hero btn-secondary-hero">
+            <a href="{% url 'records:student_create' %}"
+                class="px-8 py-3 rounded-xl font-bold text-lg bg-white/20 text-white border-2 border-white backdrop-blur-sm hover:bg-white/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
                 <i class="bi bi-plus-circle-fill"></i>
                 Add New Student
             </a>
@@ -416,137 +36,174 @@
 </div>
 
 <!-- Features Section -->
-<div class="features-section">
-    <div class="features-grid">
+<div class="py-12 md:py-20 max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
         <!-- Student Management -->
-        <div class="feature-card">
-            <div class="feature-icon">
+        <div
+            class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-fadeIn">
+            <div
+                class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center text-4xl text-white shadow-lg">
                 <i class="bi bi-people"></i>
             </div>
-            <h3 class="feature-title">Student Records</h3>
-            <p class="feature-description">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Student Records</h3>
+            <p class="text-gray-600 leading-relaxed mb-6">
                 Comprehensive student database with personal information, academic details, and document management.
             </p>
-            <a href="{% url 'records:student_list' %}" class="feature-link">
+            <a href="{% url 'records:student_list' %}"
+                class="font-semibold text-primary-600 hover:text-secondary-500 transition-colors flex items-center justify-center gap-2">
                 Explore <i class="bi bi-arrow-right"></i>
             </a>
         </div>
 
         <!-- Dashboard -->
-        <div class="feature-card">
-            <div class="feature-icon">
+        <div
+            class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-fadeIn"
+            style="animation-delay: 0.1s;">
+            <div
+                class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center text-4xl text-white shadow-lg">
                 <i class="bi bi-speedometer2"></i>
             </div>
-            <h3 class="feature-title">Admin Dashboard</h3>
-            <p class="feature-description">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Admin Dashboard</h3>
+            <p class="text-gray-600 leading-relaxed mb-6">
                 Real-time statistics and overview of student demographics with advanced search capabilities.
             </p>
-            <a href="{% url 'records:admin_dashboard' %}" class="feature-link">
+            <a href="{% url 'records:admin_dashboard' %}"
+                class="font-semibold text-primary-600 hover:text-secondary-500 transition-colors flex items-center justify-center gap-2">
                 View Dashboard <i class="bi bi-arrow-right"></i>
             </a>
         </div>
 
         <!-- Disciplinary Records -->
-        <div class="feature-card">
-            <div class="feature-icon">
+        <div
+            class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-fadeIn"
+            style="animation-delay: 0.2s;">
+            <div
+                class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center text-4xl text-white shadow-lg">
                 <i class="bi bi-exclamation-triangle"></i>
             </div>
-            <h3 class="feature-title">Disciplinary Records</h3>
-            <p class="feature-description">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Disciplinary Records</h3>
+            <p class="text-gray-600 leading-relaxed mb-6">
                 Track behavioral incidents, sanctions, and maintain comprehensive disciplinary documentation.
             </p>
-            <a href="{% url 'committee:offense_list' %}" class="feature-link">
+            <a href="{% url 'committee:offense_list' %}"
+                class="font-semibold text-primary-600 hover:text-secondary-500 transition-colors flex items-center justify-center gap-2">
                 View Records <i class="bi bi-arrow-right"></i>
             </a>
         </div>
 
         <!-- Document Management -->
-        <div class="feature-card">
-            <div class="feature-icon">
+        <div
+            class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-fadeIn"
+            style="animation-delay: 0.3s;">
+            <div
+                class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center text-4xl text-white shadow-lg">
                 <i class="bi bi-files"></i>
             </div>
-            <h3 class="feature-title">Document Management</h3>
-            <p class="feature-description">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Document Management</h3>
+            <p class="text-gray-600 leading-relaxed mb-6">
                 Upload and organize important documents, certificates, and student files securely.
             </p>
-            <a href="{% url 'records:student_list' %}" class="feature-link">
+            <a href="{% url 'records:student_list' %}"
+                class="font-semibold text-primary-600 hover:text-secondary-500 transition-colors flex items-center justify-center gap-2">
                 Manage Files <i class="bi bi-arrow-right"></i>
             </a>
         </div>
 
         <!-- User Management -->
-        <div class="feature-card">
-            <div class="feature-icon">
+        <div
+            class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-fadeIn"
+            style="animation-delay: 0.4s;">
+            <div
+                class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center text-4xl text-white shadow-lg">
                 <i class="bi bi-person-gear"></i>
             </div>
-            <h3 class="feature-title">User Management</h3>
-            <p class="feature-description">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">User Management</h3>
+            <p class="text-gray-600 leading-relaxed mb-6">
                 Control access levels, manage staff accounts, and configure system permissions.
             </p>
             {% if user.is_superuser %}
-            <a href="{% url 'accounts:user_list' %}" class="feature-link">
+            <a href="{% url 'accounts:user_list' %}"
+                class="font-semibold text-primary-600 hover:text-secondary-500 transition-colors flex items-center justify-center gap-2">
                 Manage Users <i class="bi bi-arrow-right"></i>
             </a>
             {% else %}
-            <span class="feature-link" style="color: #9ca3af; cursor: not-allowed;">
+            <span class="font-semibold text-gray-400 cursor-not-allowed">
                 Admin Only
             </span>
             {% endif %}
         </div>
 
         <!-- Reports & Analytics -->
-        <div class="feature-card">
-            <div class="feature-icon">
+        <div
+            class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-fadeIn"
+            style="animation-delay: 0.5s;">
+            <div
+                class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center text-4xl text-white shadow-lg">
                 <i class="bi bi-graph-up"></i>
             </div>
-            <h3 class="feature-title">Reports & Analytics</h3>
-            <p class="feature-description">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Reports & Analytics</h3>
+            <p class="text-gray-600 leading-relaxed mb-6">
                 Generate detailed reports, export data, and gain insights into student demographics.
             </p>
-            <a href="{% url 'records:admin_dashboard' %}" class="feature-link">
+            <a href="{% url 'records:admin_dashboard' %}"
+                class="font-semibold text-primary-600 hover:text-secondary-500 transition-colors flex items-center justify-center gap-2">
                 View Reports <i class="bi bi-arrow-right"></i>
             </a>
         </div>
     </div>
 
     <!-- Statistics Section -->
-    <div class="stats-section">
-        <div class="stats-header">
-            <h2 class="stats-title">System Overview</h2>
-            <p class="stats-subtitle">Quick snapshot of your database</p>
+    <div class="bg-white rounded-2xl p-8 md:p-12 shadow-lg animate-fadeIn">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-gray-800 mb-2">System Overview</h2>
+            <p class="text-gray-600">Quick snapshot of your database</p>
         </div>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-value">{{ total_students|default:0 }}</div>
-                <div class="stat-label">Total Students</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div
+                class="text-center p-6 rounded-2xl bg-gradient-to-br from-primary-50 to-secondary-50 border-2 border-primary-100/50 hover:-translate-y-1 transition-transform">
+                <div
+                    class="text-5xl font-extrabold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent mb-2">
+                    {{ total_students|default:0 }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Total Students</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-value">{{ male_count|default:0 }}</div>
-                <div class="stat-label">Male Students</div>
+            <div
+                class="text-center p-6 rounded-2xl bg-gradient-to-br from-primary-50 to-secondary-50 border-2 border-primary-100/50 hover:-translate-y-1 transition-transform">
+                <div
+                    class="text-5xl font-extrabold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent mb-2">
+                    {{ male_count|default:0 }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Male Students</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-value">{{ female_count|default:0 }}</div>
-                <div class="stat-label">Female Students</div>
+            <div
+                class="text-center p-6 rounded-2xl bg-gradient-to-br from-primary-50 to-secondary-50 border-2 border-primary-100/50 hover:-translate-y-1 transition-transform">
+                <div
+                    class="text-5xl font-extrabold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent mb-2">
+                    {{ female_count|default:0 }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Female Students</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-value">{{ offense_count|default:0 }}</div>
-                <div class="stat-label">Disciplinary Records</div>
+            <div
+                class="text-center p-6 rounded-2xl bg-gradient-to-br from-primary-50 to-secondary-50 border-2 border-primary-100/50 hover:-translate-y-1 transition-transform">
+                <div
+                    class="text-5xl font-extrabold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent mb-2">
+                    {{ offense_count|default:0 }}</div>
+                <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Disciplinary Records</div>
             </div>
         </div>
     </div>
 
     <!-- Call to Action -->
-    <div class="cta-section">
-        <h2 class="cta-title">Ready to Get Started?</h2>
-        <p class="cta-text">
+    <div class="mt-12 md:mt-20 p-8 md:p-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl text-center text-white shadow-lg animate-fadeIn">
+        <h2 class="text-3xl font-extrabold mb-4">Ready to Get Started?</h2>
+        <p class="text-lg mb-8 opacity-95">
             Begin managing your student records efficiently and effectively today.
         </p>
-        <div class="cta-buttons">
-            <a href="{% url 'records:student_create' %}" class="btn-hero btn-primary-hero">
+        <div class="flex gap-4 justify-center flex-wrap">
+            <a href="{% url 'records:student_create' %}"
+                class="px-8 py-3 rounded-xl font-bold text-lg bg-white text-primary-500 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
                 <i class="bi bi-plus-circle-fill"></i>
                 Add Your First Student
             </a>
-            <a href="{% url 'records:admin_dashboard' %}" class="btn-hero btn-secondary-hero">
+            <a href="{% url 'records:admin_dashboard' %}"
+                class="px-8 py-3 rounded-xl font-bold text-lg bg-white/20 text-white border-2 border-white backdrop-blur-sm hover:bg-white/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
                 <i class="bi bi-speedometer2"></i>
                 Go to Dashboard
             </a>

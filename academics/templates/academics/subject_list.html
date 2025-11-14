@@ -1,83 +1,90 @@
 {% extends 'records/base.html' %}
 {% block title %}Subjects{% endblock %}
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-book"></i> Subjects</h2>
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-book text-primary-500"></i> Subjects
+        </h2>
         {% if user.is_superuser %}
-        <a href="{% url 'academics:subject_create' %}" class="btn btn-primary">
+        <a href="{% url 'academics:subject_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
             <i class="bi bi-plus-circle"></i> Add Subject
         </a>
         {% endif %}
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form method="get" class="mb-3">
-                <div class="row g-2">
-                    <div class="col-md-8">
-                        <input type="text" name="q" class="form-control" placeholder="Search subjects..."
-                            value="{{ query|default:'' }}">
-                    </div>
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-secondary w-100">
-                            <i class="bi bi-search"></i> Search
-                        </button>
-                    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <form method="get" class="mb-6">
+            <div class="flex flex-col md:flex-row gap-3">
+                <div class="flex-1">
+                    <input type="text" name="q" class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all" placeholder="Search subjects..." value="{{ query|default:'' }}">
                 </div>
-            </form>
+                <div class="md:w-auto">
+                    <button type="submit" class="w-full md:w-auto px-6 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </form>
 
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                            {% if user.is_superuser %}
-                            <th>Actions</th>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Code</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Description</th>
+                        {% if user.is_superuser %}
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for subject in subjects %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="font-semibold text-gray-900">{{ subject.name }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-700">{{ subject.code }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if subject.is_core %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Core</span>
+                            {% else %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">Elective</span>
                             {% endif %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for subject in subjects %}
-                        <tr>
-                            <td><strong>{{ subject.name }}</strong></td>
-                            <td><span class="badge bg-primary">{{ subject.code }}</span></td>
-                            <td>
-                                {% if subject.is_core %}
-                                <span class="badge bg-success">Core</span>
-                                {% else %}
-                                <span class="badge bg-info">Elective</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ subject.description|truncatewords:10 }}</td>
-                            {% if user.is_superuser %}
-                            <td>
+                        </td>
+                        <td class="px-6 py-4 text-gray-700">{{ subject.description|truncatewords:10 }}</td>
+                        {% if user.is_superuser %}
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center gap-2">
                                 <a href="{% url 'academics:subject_update' subject.pk %}"
-                                    class="btn btn-sm btn-outline-warning">
+                                    class="inline-flex items-center justify-center w-9 h-9 border-2 border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-50 transition-colors">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <a href="{% url 'academics:subject_delete' subject.pk %}"
-                                    class="btn btn-sm btn-outline-danger"
+                                    class="inline-flex items-center justify-center w-9 h-9 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
                                     onclick="return confirm('Delete this subject?')">
                                     <i class="bi bi-trash"></i>
                                 </a>
-                            </td>
-                            {% endif %}
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center py-5">
-                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
-                                <p class="text-muted mt-2">No subjects found</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="{% if user.is_superuser %}5{% else %}4{% endif %}" class="px-6 py-16 text-center">
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="bi bi-inbox text-6xl text-gray-300 mb-4"></i>
+                                <p class="text-gray-500 text-lg font-medium">No subjects found</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

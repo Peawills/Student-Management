@@ -2,61 +2,98 @@
 {% block title %}Assessments - Academics{% endblock %}
 
 {% block content %}
-<div class="card">
-  <div class="card-body">
-    <h3 class="card-title">Assessments</h3>
-    <div class="mb-3">
-      <a href="{% url 'academics:assessment_create' %}" class="btn btn-primary">Create Assessment</a>
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-clipboard-data text-primary-500"></i> Assessments
+        </h2>
+        <a href="{% url 'academics:assessment_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+            <i class="bi bi-plus-circle"></i> Create Assessment
+        </a>
     </div>
 
-    {% if assessments and assessments.object_list %}
-    <div class="table-responsive">
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Subject</th>
-            <th>Class</th>
-            <th>Date</th>
-            <th>Max</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for a in assessments %}
-          <tr>
-            <td><a href="{% url 'academics:assessment_detail' a.pk %}">{{ a.title }}</a></td>
-            <td>{{ a.assignment.subject.name }}</td>
-            <td>{{ a.assignment.classroom }}</td>
-            <td>{{ a.date }}</td>
-            <td>{{ a.max_score }}</td>
-            <td>
-              <a href="{% url 'academics:assessment_update' a.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-              <a href="{% url 'academics:assessment_delete' a.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        {% if assessments and assessments.object_list %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Subject</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Class</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Max</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for a in assessments %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="{% url 'academics:assessment_detail' a.pk %}" class="font-semibold text-primary-600 hover:text-primary-700 hover:underline">
+                                {{ a.title }}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ a.assignment.subject.name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ a.assignment.classroom }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ a.date }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ a.max_score }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if a.is_published %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Published</span>
+                            {% else %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Draft</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{% url 'academics:assessment_update' a.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-gray-400 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'academics:assessment_delete' a.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if assessments.has_other_pages %}
+        <nav class="mt-6 flex items-center justify-between">
+            <div class="flex-1 flex justify-start">
+                {% if assessments.has_previous %}
+                <a href="?page={{ assessments.previous_page_number }}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    Previous
+                </a>
+                {% endif %}
+            </div>
+            <div class="hidden md:block">
+                <span class="text-sm text-gray-700">
+                    Page <span class="font-bold text-primary-600">{{ assessments.number }}</span> of
+                    <span class="font-bold">{{ assessments.paginator.num_pages }}</span>
+                </span>
+            </div>
+            <div class="flex-1 flex justify-end">
+                {% if assessments.has_next %}
+                <a href="?page={{ assessments.next_page_number }}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    Next
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-12 text-gray-500">
+            <i class="bi bi-inbox text-6xl mb-4 opacity-50"></i>
+            <p class="text-lg font-medium">No assessments found.</p>
+        </div>
+        {% endif %}
     </div>
-
-    <nav aria-label="Page navigation">
-      {% if assessments.has_other_pages %}
-      <ul class="pagination">
-        {% if assessments.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ assessments.previous_page_number }}">Previous</a></li>
-        {% endif %}
-        <li class="page-item disabled"><span class="page-link">Page {{ assessments.number }} of {{ assessments.paginator.num_pages }}</span></li>
-        {% if assessments.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ assessments.next_page_number }}">Next</a></li>
-        {% endif %}
-      </ul>
-      {% endif %}
-    </nav>
-
-    {% else %}
-    <p class="text-muted">No assessments found.</p>
-    {% endif %}
-  </div>
 </div>
 {% endblock %}

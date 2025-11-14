@@ -4,621 +4,57 @@
 {% block title %}{{ student.full_name }} - Student Details{% endblock %}
 
 {% block extra_css %}
-<style>
-    .profile-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
-    }
-
-    .profile-header-content {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-    }
-
-    .profile-image-container {
-        position: relative;
-    }
-
-    .profile-image {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 5px solid white;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .profile-placeholder {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 4rem;
-        font-weight: 600;
-        border: 5px solid white;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .profile-info h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .profile-badges {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .badge-custom {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .action-buttons {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1.5rem;
-        flex-wrap: wrap;
-    }
-
-    .btn-custom {
-        padding: 0.75rem 1.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        border: none;
-        text-decoration: none;
-    }
-
-    .btn-upload {
-        background: white;
-        color: #667eea;
-    }
-
-    .btn-upload:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-        color: #667eea;
-    }
-
-    .btn-edit {
-        background: #fbbf24;
-        color: white;
-    }
-
-    .btn-edit:hover {
-        background: #f59e0b;
-        transform: translateY(-2px);
-    }
-
-    .btn-delete {
-        background: #ef4444;
-        color: white;
-    }
-
-    .btn-delete:hover {
-        background: #dc2626;
-        transform: translateY(-2px);
-    }
-
-    .info-section {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .section-title {
-        font-size: 1.5rem;
-        color: #667eea;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 3px solid #e0e0e0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .info-item {
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 10px;
-        border-left: 4px solid #667eea;
-    }
-
-    .info-label {
-        font-weight: 600;
-        color: #666;
-        font-size: 0.85rem;
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .info-value {
-        color: #333;
-        font-size: 1rem;
-    }
-
-    .documents-section {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .document-type-group {
-        margin-bottom: 2rem;
-    }
-
-    .document-type-header {
-        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 1rem;
-    }
-
-    .document-type-title {
-        font-size: 1.2rem;
-        color: #764ba2;
-        font-weight: 600;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .documents-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .document-card {
-        background: white;
-        border: 2px solid #e0e0e0;
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .document-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-        border-color: #667eea;
-    }
-
-    .document-preview {
-        width: 100%;
-        height: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f5f5f5;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .document-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .document-preview:hover img {
-        transform: scale(1.1);
-    }
-
-    .document-icon {
-        font-size: 4rem;
-        color: #667eea;
-    }
-
-    .document-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .document-preview:hover .document-overlay {
-        opacity: 1;
-    }
-
-    .overlay-icon {
-        color: white;
-        font-size: 3rem;
-    }
-
-    .document-info {
-        padding: 1.25rem;
-    }
-
-    .document-name {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 0.5rem;
-        font-size: 1rem;
-        word-break: break-word;
-    }
-
-    .document-meta {
-        font-size: 0.85rem;
-        color: #888;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .document-meta i {
-        color: #667eea;
-    }
-
-    .document-actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1rem;
-    }
-
-    .btn-doc-action {
-        flex: 1;
-        padding: 0.5rem;
-        border-radius: 8px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        border: none;
-        text-decoration: none;
-    }
-
-    .btn-view-doc {
-        background: #667eea;
-        color: white;
-    }
-
-    .btn-view-doc:hover {
-        background: #5568d3;
-        color: white;
-    }
-
-    .btn-delete-doc {
-        background: #ef4444;
-        color: white;
-    }
-
-    .btn-delete-doc:hover {
-        background: #dc2626;
-        color: white;
-    }
-
-    .no-documents {
-        text-align: center;
-        padding: 3rem;
-        color: #999;
-    }
-
-    .no-documents i {
-        font-size: 5rem;
-        margin-bottom: 1rem;
-        opacity: 0.3;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.95);
-        animation: fadeIn 0.3s;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-
-        to {
-            opacity: 1;
-        }
-    }
-
-    .modal-content {
-        margin: auto;
-        display: block;
-        max-width: 90%;
-        max-height: 90vh;
-        width: auto;
-        height: auto;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        animation: zoomIn 0.3s;
-        object-fit: contain;
-    }
-
-    @media (max-width: 768px) {
-        .modal-content {
-            max-width: 95%;
-            max-height: 80vh;
-        }
-
-        .close-modal {
-            top: 10px;
-            right: 20px;
-            font-size: 40px;
-        }
-    }
-
-    @keyframes zoomIn {
-        from {
-            transform: translate(-50%, -50%) scale(0.8);
-        }
-
-        to {
-            transform: translate(-50%, -50%) scale(1);
-        }
-    }
-
-    .close-modal {
-        position: absolute;
-        top: 20px;
-        right: 40px;
-        color: #f1f1f1;
-        font-size: 50px;
-        font-weight: bold;
-        cursor: pointer;
-        z-index: 10000;
-        transition: color 0.3s;
-    }
-
-    .close-modal:hover {
-        color: #667eea;
-    }
-
-    .health-status {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-    .health-badge {
-        background: #fef3c7;
-        color: #92400e;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .back-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #667eea;
-        text-decoration: none;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .back-button:hover {
-        color: #764ba2;
-        transform: translateX(-5px);
-    }
-
-    @media (max-width: 768px) {
-        .profile-header {
-            padding: 1.5rem;
-            margin: 0.5rem;
-            border-radius: 12px;
-        }
-
-        .profile-header-content {
-            flex-direction: column;
-            text-align: center;
-            gap: 1rem;
-        }
-
-        .profile-info h1 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-badges {
-            justify-content: center;
-            margin-top: 0.5rem;
-        }
-
-        .badge-custom {
-            font-size: 0.8rem;
-            padding: 0.4rem 0.8rem;
-        }
-
-        .action-buttons {
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
-        .btn-custom {
-            width: 100%;
-            justify-content: center;
-            padding: 0.6rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .profile-image,
-        .profile-placeholder {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto;
-        }
-
-        .info-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .documents-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .info-section {
-            padding: 1.5rem;
-            margin: 0.5rem;
-            border-radius: 12px;
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .info-item {
-            padding: 0.8rem;
-        }
-
-        .info-label {
-            font-size: 0.75rem;
-        }
-
-        .info-value {
-            font-size: 0.9rem;
-        }
-
-        .document-card {
-            margin: 0.5rem 0;
-        }
-
-        .document-preview {
-            height: 160px;
-        }
-
-        .document-actions {
-            flex-direction: column;
-        }
-
-        .btn-doc-action {
-            width: 100%;
-            margin: 0.2rem 0;
-        }
-
-        .back-button {
-            margin: 1rem 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        /* Override grid styles on mobile */
-        .info-item-full {
-            grid-column: auto;
-        }
-    }
-
-    /* Custom classes to replace inline styles */
-    .info-item-full {
-        grid-column: 1 / -1;
-    }
-
-    .parent-heading {
-        color: #667eea;
-        margin-bottom: 1rem;
-    }
-
-    .document-meta-spaced {
-        margin-top: 0.5rem;
-    }
-</style>
+<!-- No extra CSS needed, using Tailwind utilities -->
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container mx-auto px-4">
     <!-- Back Button -->
-    <div class="d-flex flex-wrap gap-2 align-items-center">
-        <a href="{% url 'records:student_list' %}" class="back-button mb-0">
+    <div class="my-6">
+        <a href="{% url 'records:student_list' %}"
+            class="inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-secondary-500 transition-colors">
             <i class="bi bi-arrow-left-circle"></i>
             Back to Student List
         </a>
     </div>
 
     <!-- Profile Header -->
-    <div class="profile-header">
-        <div class="profile-header-content">
-            <div class="profile-image-container">
+    <div
+        class="p-6 md:p-8 bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-2xl mb-8 shadow-lg">
+        <div class="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+            <div class="flex-shrink-0">
                 {% if student.student_image %}
-                <img src="{{ student.student_image.url }}" alt="{{ student.full_name }}" class="profile-image">
+                <img src="{{ student.student_image.url }}" alt="{{ student.full_name }}"
+                    class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-2xl">
                 {% else %}
-                <div class="profile-placeholder">
+                <div
+                    class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-white/20 flex items-center justify-center text-5xl font-bold border-4 border-white shadow-2xl">
                     {{ student.surname.0|upper }}
                 </div>
                 {% endif %}
             </div>
 
-            <div class="profile-info flex-grow-1">
-                <h1>{{ student.full_name }}</h1>
-                <div class="profile-badges">
-                    <div class="badge-custom">
+            <div class="flex-grow text-center md:text-left">
+                <h1 class="text-3xl md:text-4xl font-bold">{{ student.full_name }}</h1>
+                <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                    <div class="profile-badge">
                         <i class="bi bi-card-text"></i>
                         {{ student.admission_no }}
                     </div>
-                    <div class="badge-custom">
+                    <div class="profile-badge">
                         <i class="bi bi-book"></i>
                         {{ student.class_at_present }}
                     </div>
-                    <div class="badge-custom">
+                    <div class="profile-badge">
                         <i class="bi bi-calendar"></i>
                         {{ student.age }} years old
                     </div>
-                    <div class="badge-custom">
+                    <div class="profile-badge">
                         <i class="bi bi-gender-{{ student.sex|lower }}"></i>
                         {{ student.sex }}
                     </div>
-                    <div class="badge-custom 
-                        {% if student.is_active %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">
+                    <div
+                        class="profile-badge {% if student.is_active %}bg-green-500/80{% else %}bg-gray-500/80{% endif %}">
                         {% if student.is_active %}
                         <i class="bi bi-check-circle"></i>
                         Active
@@ -629,29 +65,42 @@
                     </div>
                 </div>
 
-                <div class="action-buttons">
-                    <a href="{% url 'records:upload_document' student.id %}" class="btn-custom btn-upload">
+                <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-6">
+                    <a href="{% url 'records:upload_document' student.id %}" class="action-btn bg-white text-primary-600">
                         <i class="bi bi-cloud-upload"></i> Upload Document
                     </a>
-                  
-                    <a href="{% url 'records:student_update' student.pk %}" class="btn-custom btn-edit">
+
+                    <a href="{% url 'records:student_update' student.pk %}" class="action-btn bg-yellow-500 text-white">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
-                    <form action="{% url 'records:toggle_student_status' student.pk %}" method="post" class="d-inline">
+                    {% if request.user.is_superuser %}
+                    <form action="{% url 'academics:generate_single_report_card' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="student_id" value="{{ student.id }}">
+                        {% if student.classroom %}
+                        <input type="hidden" name="classroom_id" value="{{ student.classroom.id }}">
+                        {% endif %}
+                        <button type="submit" class="action-btn bg-blue-500 text-white"
+                            title="Generate report card for current term">
+                            <i class="bi bi-file-earmark-plus"></i> Generate Report Card
+                        </button>
+                    </form>
+                    {% endif %}
+                    <form action="{% url 'records:toggle_student_status' student.pk %}" method="post">
                         {% csrf_token %}
                         {% if student.is_active %}
-                        <button type="submit" class="btn-custom btn-warning"
+                        <button type="submit" class="action-btn bg-orange-500 text-white"
                             onclick="return confirm('Are you sure you want to archive this student?')">
                             <i class="bi bi-archive"></i> Archive
                         </button>
                         {% else %}
-                        <button type="submit" class="btn-custom btn-success"
+                        <button type="submit" class="action-btn bg-green-500 text-white"
                             onclick="return confirm('Are you sure you want to reactivate this student?')">
                             <i class="bi bi-arrow-counterclockwise"></i> Reactivate
                         </button>
                         {% endif %}
                     </form>
-                    <a href="{% url 'records:student_delete' student.pk %}" class="btn-custom btn-delete"
+                    <a href="{% url 'records:student_delete' student.pk %}" class="action-btn bg-red-600 text-white"
                         onclick="return confirm('Are you sure you want to delete this student? This action cannot be undone.')">
                         <i class="bi bi-trash"></i> Delete
                     </a>
@@ -660,61 +109,53 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Personal Information -->
-        <div class="col-lg-6 mb-4">
-            <div class="info-section">
-                <h3 class="section-title">
-                    <i class="bi bi-person-badge"></i>
-                    Personal Information
-                </h3>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Date of Birth</div>
-                        <div class="info-value">{{ student.date_of_birth|date:"F d, Y" }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Place of Birth</div>
-                        <div class="info-value">{{ student.place_of_birth }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Nationality</div>
-                        <div class="info-value">{{ student.nationality }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">State of Origin</div>
-                        <div class="info-value">{{ student.state_of_origin }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">LGA</div>
-                        <div class="info-value">{{ student.lga }}</div>
-                    </div>
-                    {% if student.religion %}
-                    <div class="info-item">
-                        <div class="info-label">Religion</div>
-                        <div class="info-value">
-                            {{ student.religion }}
-                            {% if student.denomination %} - {{ student.denomination }}{% endif %}
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% if student.nin_no %}
-                    <div class="info-item">
-                        <div class="info-label">NIN Number</div>
-                        <div class="info-value">{{ student.nin_no }}</div>
-                    </div>
-                    {% endif %}
+        <div class="info-card">
+            <h3 class="section-title"><i class="bi bi-person-badge"></i>Personal Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Date of Birth</div>
+                    <div class="info-value">{{ student.date_of_birth|date:"F d, Y" }}</div>
                 </div>
+                <div class="info-item">
+                    <div class="info-label">Place of Birth</div>
+                    <div class="info-value">{{ student.place_of_birth }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Nationality</div>
+                    <div class="info-value">{{ student.nationality }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">State of Origin</div>
+                    <div class="info-value">{{ student.state_of_origin }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">LGA</div>
+                    <div class="info-value">{{ student.lga }}</div>
+                </div>
+                {% if student.religion %}
+                <div class="info-item">
+                    <div class="info-label">Religion</div>
+                    <div class="info-value">
+                        {{ student.religion }}
+                        {% if student.denomination %} - {{ student.denomination }}{% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% if student.nin_no %}
+                <div class="info-item">
+                    <div class="info-label">NIN Number</div>
+                    <div class="info-value">{{ student.nin_no }}</div>
+                </div>
+                {% endif %}
             </div>
         </div>
 
         <!-- Contact & Academic -->
-        <div class="col-lg-6 mb-4">
-            <div class="info-section">
-                <h3 class="section-title">
-                    <i class="bi bi-building"></i>
-                    Academic Information
-                </h3>
+        <div class="space-y-8">
+            <div class="info-card">
+                <h3 class="section-title"><i class="bi bi-building"></i>Academic Information</h3>
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Date of Entry</div>
@@ -731,18 +172,15 @@
                 </div>
             </div>
 
-            <div class="info-section mt-4">
-                <h3 class="section-title">
-                    <i class="bi bi-geo-alt"></i>
-                    Contact Information
-                </h3>
-                <div class="info-grid">
-                    <div class="info-item info-item-full">
+            <div class="info-card">
+                <h3 class="section-title"><i class="bi bi-geo-alt"></i>Contact Information</h3>
+                <div class="info-grid grid-cols-1">
+                    <div class="info-item">
                         <div class="info-label">Residential Address</div>
                         <div class="info-value">{{ student.residential_address }}</div>
                     </div>
                     {% if student.permanent_home_address %}
-                    <div class="info-item info-item-full">
+                    <div class="info-item">
                         <div class="info-label">Permanent Home Address</div>
                         <div class="info-value">{{ student.permanent_home_address }}</div>
                     </div>
@@ -753,83 +191,29 @@
     </div>
 
     <!-- Parent/Guardian Information -->
-    <div class="info-section">
-        <h3 class="section-title">
-            <i class="bi bi-people"></i>
-            Parent/Guardian Information
-        </h3>
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <h5 class="parent-heading">
-                    <i class="bi bi-person"></i> Father
-                </h5>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Name</div>
-                        <div class="info-value">{{ student.father_name }}</div>
-                    </div>
-                    {% if student.father_occupation %}
-                    <div class="info-item">
-                        <div class="info-label">Occupation</div>
-                        <div class="info-value">{{ student.father_occupation }}</div>
-                    </div>
-                    {% endif %}
-                    {% if student.father_mobile %}
-                    <div class="info-item">
-                        <div class="info-label">Mobile</div>
-                        <div class="info-value">{{ student.father_mobile }}</div>
-                    </div>
-                    {% endif %}
-                </div>
+    <div class="info-card">
+        <h3 class="section-title"><i class="bi bi-people"></i>Parent/Guardian Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="space-y-4">
+                <h4 class="parent-title"><i class="bi bi-person"></i> Father</h4>
+                <div class="info-item"><span class="info-label">Name</span><span class="info-value">{{ student.father_name }}</span></div>
+                {% if student.father_occupation %}<div class="info-item"><span class="info-label">Occupation</span><span class="info-value">{{ student.father_occupation }}</span></div>{% endif %}
+                {% if student.father_mobile %}<div class="info-item"><span class="info-label">Mobile</span><span class="info-value">{{ student.father_mobile }}</span></div>{% endif %}
             </div>
 
-            <div class="col-md-4 mb-3">
-                <h5 class="parent-heading">
-                    <i class="bi bi-person"></i> Mother
-                </h5>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Name</div>
-                        <div class="info-value">{{ student.mother_name }}</div>
-                    </div>
-                    {% if student.mother_occupation %}
-                    <div class="info-item">
-                        <div class="info-label">Occupation</div>
-                        <div class="info-value">{{ student.mother_occupation }}</div>
-                    </div>
-                    {% endif %}
-                    {% if student.mother_mobile %}
-                    <div class="info-item">
-                        <div class="info-label">Mobile</div>
-                        <div class="info-value">{{ student.mother_mobile }}</div>
-                    </div>
-                    {% endif %}
-                </div>
+            <div class="space-y-4">
+                <h4 class="parent-title"><i class="bi bi-person"></i> Mother</h4>
+                <div class="info-item"><span class="info-label">Name</span><span class="info-value">{{ student.mother_name }}</span></div>
+                {% if student.mother_occupation %}<div class="info-item"><span class="info-label">Occupation</span><span class="info-value">{{ student.mother_occupation }}</span></div>{% endif %}
+                {% if student.mother_mobile %}<div class="info-item"><span class="info-label">Mobile</span><span class="info-value">{{ student.mother_mobile }}</span></div>{% endif %}
             </div>
 
             {% if student.guardian_name %}
-            <div class="col-md-4 mb-3">
-                <h5 class="parent-heading">
-                    <i class="bi bi-person-check"></i> Guardian
-                </h5>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Name</div>
-                        <div class="info-value">{{ student.guardian_name }}</div>
-                    </div>
-                    {% if student.guardian_occupation %}
-                    <div class="info-item">
-                        <div class="info-label">Occupation</div>
-                        <div class="info-value">{{ student.guardian_occupation }}</div>
-                    </div>
-                    {% endif %}
-                    {% if student.guardian_mobile %}
-                    <div class="info-item">
-                        <div class="info-label">Mobile</div>
-                        <div class="info-value">{{ student.guardian_mobile }}</div>
-                    </div>
-                    {% endif %}
-                </div>
+            <div class="space-y-4">
+                <h4 class="parent-title"><i class="bi bi-person-check"></i> Guardian</h4>
+                <div class="info-item"><span class="info-label">Name</span><span class="info-value">{{ student.guardian_name }}</span></div>
+                {% if student.guardian_occupation %}<div class="info-item"><span class="info-label">Occupation</span><span class="info-value">{{ student.guardian_occupation }}</span></div>{% endif %}
+                {% if student.guardian_mobile %}<div class="info-item"><span class="info-label">Mobile</span><span class="info-value">{{ student.guardian_mobile }}</span></div>{% endif %}
             </div>
             {% endif %}
         </div>
@@ -837,101 +221,75 @@
 
     <!-- Health Status -->
     {% if student.visually_impaired or student.deaf or student.physically_disabled or student.mentally_impaired or student.others %}
-    <div class="info-section">
-        <h3 class="section-title">
-            <i class="bi bi-heart-pulse"></i>
-            Special Health Status
-        </h3>
-        <div class="health-status">
+    <div class="info-card">
+        <h3 class="section-title"><i class="bi bi-heart-pulse"></i>Special Health Status</h3>
+        <div class="flex flex-wrap gap-4">
             {% if student.visually_impaired %}
-            <div class="health-badge">
-                <i class="bi bi-eye-slash"></i> Visually Impaired
-            </div>
+            <div class="health-badge"><i class="bi bi-eye-slash"></i> Visually Impaired</div>
             {% endif %}
             {% if student.deaf %}
-            <div class="health-badge">
-                <i class="bi bi-ear-slash"></i> Deaf
-            </div>
+            <div class="health-badge"><i class="bi bi-ear-slash"></i> Deaf</div>
             {% endif %}
             {% if student.physically_disabled %}
-            <div class="health-badge">
-                <i class="bi bi-person-wheelchair"></i> Physically Disabled
-            </div>
+            <div class="health-badge"><i class="bi bi-person-wheelchair"></i> Physically Disabled</div>
             {% endif %}
             {% if student.mentally_impaired %}
-            <div class="health-badge">
-                <i class="bi bi-brain"></i> Mentally Impaired
-            </div>
+            <div class="health-badge"><i class="bi bi-brain"></i> Mentally Impaired</div>
             {% endif %}
         </div>
         {% if student.others %}
-        <div class="mt-3">
-            <strong>Additional Information:</strong>
-            <p class="mt-2">{{ student.others }}</p>
+        <div class="mt-4 pt-4 border-t border-gray-200">
+            <strong class="text-gray-700">Additional Information:</strong>
+            <p class="mt-2 text-gray-600 bg-gray-50 p-3 rounded-lg">{{ student.others }}</p>
         </div>
         {% endif %}
     </div>
     {% endif %}
 
     <!-- Documents Section -->
-    <div class="documents-section">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="section-title mb-0">
-                <i class="bi bi-file-earmark-text"></i>
-                Documents ({{ document_count }})
-            </h3>
-        </div>
+    <div class="info-card">
+        <h3 class="section-title"><i class="bi bi-file-earmark-text"></i>Documents ({{ document_count }})</h3>
 
         {% if grouped_documents %}
         {% for doc_type, docs in grouped_documents.items %}
-        <div class="document-type-group">
-            <div class="document-type-header">
-                <h4 class="document-type-title">
-                    <i class="bi bi-folder2-open"></i>
-                    {{ doc_type }} ({{ docs|length }})
-                </h4>
+        <div class="mb-8 last:mb-0">
+            <div class="bg-primary-50 p-4 rounded-xl mb-4">
+                <h4 class="text-lg font-bold text-primary-700 flex items-center gap-3"><i class="bi bi-folder2-open"></i>{{ doc_type }} ({{ docs|length }})</h4>
             </div>
 
-            <div class="documents-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {% for document in docs %}
-                <div class="document-card">
-                    <div class="document-preview"
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center relative group cursor-pointer"
                         onclick="viewDocument('{{ document.file.url }}', {{ document.is_image|yesno:'true,false' }})">
                         {% if document.is_image %}
-                        <img src="{{ document.file.url }}" alt="{{ document.name }}">
-                        <div class="document-overlay">
-                            <i class="bi bi-zoom-in overlay-icon"></i>
+                        <img src="{{ document.file.url }}" alt="{{ document.name }}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="bi bi-zoom-in text-white text-4xl"></i>
                         </div>
                         {% elif document.is_pdf %}
-                        <span class="document-icon">📄</span>
+                        <i class="bi bi-file-earmark-pdf text-5xl text-red-500"></i>
                         {% else %}
-                        <span class="document-icon">📎</span>
+                        <i class="bi bi-file-earmark-text text-5xl text-primary-500"></i>
                         {% endif %}
                     </div>
 
-                    <div class="document-info">
-                        <div class="document-name">{{ document.name }}</div>
-                        <div class="document-meta">
-                            <i class="bi bi-calendar3"></i>
-                            {{ document.uploaded_at|date:"M d, Y" }}
-                        </div>
-                        <div class="document-meta">
-                            <i class="bi bi-file-earmark"></i>
-                            {{ document.file_size_mb }} MB
+                    <div class="p-4">
+                        <h5 class="font-bold text-gray-800 truncate">{{ document.name }}</h5>
+                        <div class="text-xs text-gray-500 mt-2 space-y-1">
+                            <p><i class="bi bi-calendar3 mr-1.5"></i>{{ document.uploaded_at|date:"M d, Y" }}</p>
+                            <p><i class="bi bi-hdd mr-1.5"></i>{{ document.file_size_mb }} MB</p>
                         </div>
                         {% if document.notes %}
-                        <div class="document-meta document-meta-spaced">
-                            <i class="bi bi-chat-square-text"></i>
-                            {{ document.notes|truncatewords:10 }}
-                        </div>
+                        <p class="text-xs text-gray-600 mt-2 p-2 bg-gray-100 rounded-md truncate" title="{{ document.notes }}"><i class="bi bi-chat-square-text mr-1.5"></i>{{ document.notes }}</p>
                         {% endif %}
 
-                        <div class="document-actions">
-                            <a href="{{ document.file.url }}" target="_blank" class="btn-doc-action btn-view-doc">
+                        <div class="flex gap-2 mt-4">
+                            <a href="{{ document.file.url }}" target="_blank" class="doc-action-btn bg-primary-600 hover:bg-primary-700">
                                 <i class="bi bi-eye"></i> View
                             </a>
                             <a href="{% url 'records:delete_document' student.id document.id %}"
-                                class="btn-doc-action btn-delete-doc"
+                                class="doc-action-btn bg-red-600 hover:bg-red-700"
                                 onclick="return confirm('Are you sure you want to delete this document?')">
                                 <i class="bi bi-trash"></i> Delete
                             </a>
@@ -943,21 +301,58 @@
         </div>
         {% endfor %}
         {% else %}
-        <div class="no-documents">
-            <i class="bi bi-inbox"></i>
-            <h4>No Documents Uploaded</h4>
-            <p>Upload documents using the buttons above</p>
+        <div class="text-center py-16">
+            <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center text-4xl text-gray-400">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-gray-700 mb-2">No Documents Uploaded</h4>
+            <p class="text-gray-500">Upload documents for this student using the button above.</p>
         </div>
         {% endif %}
     </div>
 </div>
 
 <!-- Image Preview Modal -->
-<div id="imageModal" class="modal" onclick="closeModal()">
-    <span class="close-modal">&times;</span>
-    <img class="modal-content" id="modalImage">
+<div id="imageModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4" onclick="closeModal()">
+    <span class="absolute top-4 right-6 text-white text-4xl font-bold cursor-pointer hover:text-gray-300">&times;</span>
+    <img class="max-w-full max-h-full object-contain" id="modalImage" onclick="event.stopPropagation()">
 </div>
 
+<style>
+    .profile-badge {
+        @apply inline-flex items-center gap-2 bg-white/20 px-4 py-1.5 rounded-full font-semibold text-sm backdrop-blur-sm;
+    }
+    .action-btn {
+        @apply inline-flex items-center gap-2 px-5 py-2.5 font-bold rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all;
+    }
+    .info-card {
+        @apply bg-white rounded-2xl shadow-lg p-6 md:p-8;
+    }
+    .section-title {
+        @apply text-xl font-bold text-primary-600 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3;
+    }
+    .info-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5;
+    }
+    .info-item {
+        @apply bg-gray-50 p-4 rounded-lg border-l-4 border-primary-500;
+    }
+    .info-label {
+        @apply block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1;
+    }
+    .info-value {
+        @apply text-gray-800 font-medium;
+    }
+    .parent-title {
+        @apply text-lg font-bold text-gray-700 mb-3 flex items-center gap-2;
+    }
+    .health-badge {
+        @apply inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1.5 rounded-full;
+    }
+    .doc-action-btn {
+        @apply flex-1 inline-flex justify-center items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-md text-white shadow-sm transition-colors;
+    }
+</style>
 {% endblock %}
 
 {% block extra_js %}
@@ -966,7 +361,8 @@
         if (isImage) {
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
-            modal.style.display = 'block';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
             modalImg.src = url;
         } else {
             window.open(url, '_blank');
@@ -974,7 +370,9 @@
     }
 
     function closeModal() {
-        document.getElementById('imageModal').style.display = 'none';
+        const modal = document.getElementById('imageModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }
 
     // Close modal with Escape key
@@ -982,11 +380,6 @@
         if (event.key === 'Escape') {
             closeModal();
         }
-    });
-
-    // Prevent modal image click from closing
-    document.getElementById('modalImage').addEventListener('click', function (e) {
-        e.stopPropagation();
     });
 </script>
 {% endblock %}

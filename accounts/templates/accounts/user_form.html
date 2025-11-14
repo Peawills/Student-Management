@@ -3,191 +3,26 @@
 
 {% block title %}{% if form.instance.pk %}Edit User{% else %}Create New User{% endif %}{% endblock %}
 
-{% block extra_css %}
-<style>
-    .form-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-        padding: 2rem;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    .form-title {
-        color: #1f2937;
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 2rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-        position: relative;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    .form-control {
-        border-radius: 8px;
-        border: 1px solid #d1d5db;
-        padding: 0.5rem 0.75rem;
-        width: 100%;
-        font-size: 1rem;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    input[type="password"].form-control {
-        padding-right: 2.5rem;
-    }
-
-    .password-toggle {
-        position: absolute;
-        right: 12px;
-        top: 38px;
-        background: transparent;
-        border: none;
-        color: #6b7280;
-        font-size: 1.05rem;
-        padding: 0.15rem;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .password-toggle:hover {
-        color: #374151;
-    }
-
-    .invalid-feedback {
-        color: #ef4444;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-        display: block;
-    }
-
-    .alert {
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
-    }
-
-    .alert-danger {
-        background-color: #fee2e2;
-        border: 1px solid #fecaca;
-        color: #991b1b;
-    }
-
-    .alert-success {
-        background-color: #d1fae5;
-        border: 1px solid #a7f3d0;
-        color: #065f46;
-    }
-
-    .btn-submit {
-        background: #667eea;
-        color: white;
-        padding: 0.5rem 2rem;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-weight: 500;
-        transition: background 0.2s;
-    }
-
-    .btn-submit:hover {
-        background: #5568d3;
-    }
-
-    .btn-cancel {
-        background: #f3f4f6;
-        color: #6b7280;
-        padding: 0.5rem 2rem;
-        border-radius: 8px;
-        border: none;
-        margin-left: 1rem;
-        text-decoration: none;
-        display: inline-block;
-        transition: background 0.2s;
-    }
-
-    .btn-cancel:hover {
-        background: #e5e7eb;
-        color: #6b7280;
-    }
-
-    .form-check {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem;
-        background: #f9fafb;
-        border-radius: 8px;
-    }
-
-    .form-check-input {
-        width: 1.25rem;
-        height: 1.25rem;
-        cursor: pointer;
-    }
-
-    .form-check-label {
-        cursor: pointer;
-        color: #374151;
-        margin: 0;
-    }
-
-    .help-text {
-        font-size: 0.875rem;
-        color: #6b7280;
-        margin-top: 0.25rem;
-    }
-
-    @media (max-width: 768px) {
-        .form-card {
-            padding: 1rem;
-        }
-
-        .btn-cancel {
-            margin-left: 0;
-            margin-top: 0.5rem;
-        }
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="container py-4">
-    <div class="form-card">
-        <h2 class="form-title">
-            <i class="bi bi-person-plus"></i>
+<div class="container mx-auto px-4 py-6 max-w-3xl">
+    <div class="mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-person-plus text-primary-500"></i>
             {% if form.instance.pk %}Edit User{% else %}Create New User{% endif %}
         </h2>
+    </div>
 
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
         {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
+        <div class="mb-6 p-4 rounded-xl {% if message.tags == 'error' or message.tags == 'danger' %}bg-red-50 text-red-800 border-l-4 border-red-500{% elif message.tags == 'success' %}bg-green-50 text-green-800 border-l-4 border-green-500{% else %}bg-blue-50 text-blue-800 border-l-4 border-blue-500{% endif %}">
             {{ message }}
         </div>
         {% endfor %}
         {% endif %}
 
         {% if form.non_field_errors %}
-        <div class="alert alert-danger">
+        <div class="mb-6 p-4 rounded-xl bg-red-50 text-red-800 border-l-4 border-red-500">
             {{ form.non_field_errors }}
         </div>
         {% endif %}
@@ -195,96 +30,111 @@
         <form method="post" novalidate>
             {% csrf_token %}
 
-            <div class="row g-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Username -->
-                <div class="col-md-6 form-group">
-                    <label for="{{ form.username.id_for_label }}" class="form-label">Username*</label>
-                    {{ form.username }}
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">Username <span class="text-red-600">*</span></label>
+                    <input type="text" name="username" value="{{ form.username.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.username.errors %}border-red-500{% endif %}">
                     {% if form.username.errors %}
-                    <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                    <div class="mt-2 text-sm text-red-600">{{ form.username.errors.0 }}</div>
                     {% endif %}
                     {% if form.username.help_text %}
-                    <small class="help-text">{{ form.username.help_text }}</small>
+                    <small class="text-gray-500 mt-1 block">{{ form.username.help_text }}</small>
                     {% endif %}
                 </div>
 
                 <!-- Email -->
-                <div class="col-md-6 form-group">
-                    <label for="{{ form.email.id_for_label }}" class="form-label">Email*</label>
-                    {{ form.email }}
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">Email <span class="text-red-600">*</span></label>
+                    <input type="email" name="email" value="{{ form.email.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.email.errors %}border-red-500{% endif %}">
                     {% if form.email.errors %}
-                    <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                    <div class="mt-2 text-sm text-red-600">{{ form.email.errors.0 }}</div>
                     {% endif %}
                 </div>
 
                 <!-- First Name -->
-                <div class="col-md-6 form-group">
-                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name*</label>
-                    {{ form.first_name }}
+                <div>
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">First Name <span class="text-red-600">*</span></label>
+                    <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.first_name.errors %}border-red-500{% endif %}">
                     {% if form.first_name.errors %}
-                    <div class="invalid-feedback">{{ form.first_name.errors.0 }}</div>
+                    <div class="mt-2 text-sm text-red-600">{{ form.first_name.errors.0 }}</div>
                     {% endif %}
                 </div>
 
                 <!-- Last Name -->
-                <div class="col-md-6 form-group">
-                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name*</label>
-                    {{ form.last_name }}
+                <div>
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">Last Name <span class="text-red-600">*</span></label>
+                    <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.last_name.errors %}border-red-500{% endif %}">
                     {% if form.last_name.errors %}
-                    <div class="invalid-feedback">{{ form.last_name.errors.0 }}</div>
+                    <div class="mt-2 text-sm text-red-600">{{ form.last_name.errors.0 }}</div>
                     {% endif %}
                 </div>
 
                 <!-- Password -->
-                <div class="col-md-6 form-group">
-                    <label for="{{ form.password1.id_for_label }}" class="form-label">
-                        {% if form.instance.pk %}New Password{% else %}Password*{% endif %}
+                <div class="relative">
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {% if form.instance.pk %}New Password{% else %}Password <span class="text-red-600">*</span>{% endif %}
                     </label>
-                    {{ form.password1 }}
+                    <input type="password" name="password1" id="id_password1" {% if not form.instance.pk %}required{% endif %}
+                        class="w-full px-4 py-2.5 pr-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.password1.errors %}border-red-500{% endif %}">
+                    <button type="button" class="absolute right-3 top-9 text-gray-500 hover:text-gray-700" onclick="togglePassword('id_password1', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
                     {% if form.password1.errors %}
-                    <div class="invalid-feedback">{{ form.password1.errors.0 }}</div>
+                    <div class="mt-2 text-sm text-red-600">{{ form.password1.errors.0 }}</div>
                     {% endif %}
                     {% if form.instance.pk %}
-                        <small class="help-text">Leave blank to keep the current password.</small>
+                        <small class="text-gray-500 mt-1 block">Leave blank to keep the current password.</small>
                     {% else %}
                         {% if form.password1.help_text %}
-                        <small class="help-text">{{ form.password1.help_text }}</small>
+                        <small class="text-gray-500 mt-1 block">{{ form.password1.help_text }}</small>
                         {% endif %}
                     {% endif %}
                 </div>
 
                 <!-- Confirm Password -->
-                <div class="col-md-6 form-group">
-                    <label for="{{ form.password2.id_for_label }}" class="form-label">
-                        {% if form.instance.pk %}Confirm New Password{% else %}Confirm Password*{% endif %}
+                <div class="relative">
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {% if form.instance.pk %}Confirm New Password{% else %}Confirm Password <span class="text-red-600">*</span>{% endif %}
                     </label>
-                    {{ form.password2 }}
+                    <input type="password" name="password2" id="id_password2" {% if not form.instance.pk %}required{% endif %}
+                        class="w-full px-4 py-2.5 pr-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.password2.errors %}border-red-500{% endif %}">
+                    <button type="button" class="absolute right-3 top-9 text-gray-500 hover:text-gray-700" onclick="togglePassword('id_password2', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
                     {% if form.password2.errors %}
-                    <div class="invalid-feedback">{{ form.password2.errors.0 }}</div>
+                    <div class="mt-2 text-sm text-red-600">{{ form.password2.errors.0 }}</div>
                     {% endif %}
                     {% if form.instance.pk %}
-                        <small class="help-text">Enter the same password as above, for verification.</small>
+                        <small class="text-gray-500 mt-1 block">Enter the same password as above, for verification.</small>
                     {% endif %}
                 </div>
 
                 <!-- Staff Status -->
-                <div class="col-12 form-check">
-                    {{ form.is_staff }}
-                    <label class="form-check-label" for="{{ form.is_staff.id_for_label }}">
-                        Staff Status
-                        {% if form.is_staff.help_text %}
-                        <small class="help-text d-block">{{ form.is_staff.help_text }}</small>
-                        {% endif %}
-                    </label>
+                <div class="md:col-span-2">
+                    <div class="flex items-center p-4 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-primary-500 transition-colors cursor-pointer">
+                        <input type="checkbox" name="is_staff" id="{{ form.is_staff.id_for_label }}" {% if form.is_staff.value %}checked{% endif %}
+                            class="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500 focus:ring-2">
+                        <label for="{{ form.is_staff.id_for_label }}" class="ml-3 font-semibold text-gray-700 cursor-pointer">
+                            Staff Status
+                            {% if form.is_staff.help_text %}
+                            <small class="block text-gray-500 font-normal mt-1">{{ form.is_staff.help_text }}</small>
+                            {% endif %}
+                        </label>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-4">
-                <button type="submit" class="btn btn-submit">
+            <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                <button type="submit" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
                     <i class="bi bi-check-circle"></i>
                     {% if form.instance.pk %}Save Changes{% else %}Create User{% endif %}
                 </button>
-                <a href="{% url 'accounts:user_list' %}" class="btn btn-cancel">
+                <a href="{% url 'accounts:user_list' %}" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
                     <i class="bi bi-x-circle"></i>
                     Cancel
                 </a>
@@ -294,48 +144,33 @@
 </div>
 
 <script>
-    // Password visibility toggle
-    (function attachPasswordToggles() {
-        const pwFields = document.querySelectorAll('input[type="password"]');
-
-        pwFields.forEach(field => {
-            const container = field.closest('.form-group');
-            if (!container) return;
-
-            // Check if toggle already exists
-            if (container.querySelector('.password-toggle')) return;
-
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'password-toggle';
-            btn.setAttribute('aria-label', 'Show password');
-            btn.innerHTML = '<i class="bi bi-eye"></i>';
-
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (field.type === 'password') {
-                    field.type = 'text';
-                    btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
-                    btn.setAttribute('aria-label', 'Hide password');
-                } else {
-                    field.type = 'password';
-                    btn.innerHTML = '<i class="bi bi-eye"></i>';
-                    btn.setAttribute('aria-label', 'Show password');
-                }
-            });
-
-            container.appendChild(btn);
-        });
-    })();
+    function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
 
     // Form submission handling
     document.querySelector('form').addEventListener('submit', function (e) {
         const submitBtn = this.querySelector('button[type="submit"]');
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split animate-spin"></i> Processing...';
+            
+            // Re-enable after 5 seconds in case of error
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
+            }, 5000);
         }
     });
 </script>

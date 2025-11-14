@@ -1,53 +1,57 @@
 {% extends 'records/base.html' %}
 {% block title %}Classes{% endblock %}
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-            <h2><i class="bi bi-door-open"></i> Classes</h2>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+                <i class="bi bi-door-open text-primary-500"></i> Classes
+            </h2>
             {% if current_session %}
-            <p class="text-muted mb-0">{{ current_session.name }}</p>
+            <p class="text-gray-600 mt-1">{{ current_session.name }}</p>
             {% endif %}
         </div>
         {% if user.is_superuser %}
-        <a href="{% url 'academics:classroom_create' %}" class="btn btn-primary">
+        <a href="{% url 'academics:classroom_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
             <i class="bi bi-plus-circle"></i> Add Class
         </a>
         {% endif %}
     </div>
 
-    <div class="row g-3">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for classroom in classrooms %}
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h4 class="card-title">{{ classroom }}</h4>
-                    <p class="text-muted mb-2">
-                        <i class="bi bi-person"></i> Class Teacher:
-                        {{ classroom.class_teacher.get_full_name|default:"Not Assigned" }}
+        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden h-full flex flex-col">
+            <div class="p-6 flex-1">
+                <h4 class="text-xl font-bold text-gray-800 mb-4">{{ classroom }}</h4>
+                <div class="space-y-3">
+                    <p class="text-gray-600 flex items-center gap-2">
+                        <i class="bi bi-person text-primary-500"></i>
+                        <span class="font-medium">Class Teacher:</span>
+                        <span>{{ classroom.class_teacher.get_full_name|default:"Not Assigned" }}</span>
                     </p>
-                    <p class="mb-3">
-                        <i class="bi bi-calendar"></i> {{ classroom.session.name }}
+                    <p class="text-gray-600 flex items-center gap-2">
+                        <i class="bi bi-calendar text-primary-500"></i>
+                        {{ classroom.session.name }}
                     </p>
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'academics:classroom_detail' classroom.pk %}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-eye"></i> View
-                        </a>
-                        {% if user.is_superuser %}
-                        <a href="{% url 'academics:classroom_update' classroom.pk %}"
-                            class="btn btn-sm btn-outline-warning">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        {% endif %}
-                    </div>
                 </div>
+            </div>
+            <div class="px-6 pb-6 flex gap-3">
+                <a href="{% url 'academics:classroom_detail' classroom.pk %}" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                    <i class="bi bi-eye"></i> View
+                </a>
+                {% if user.is_superuser %}
+                <a href="{% url 'academics:classroom_update' classroom.pk %}"
+                    class="inline-flex items-center justify-center w-10 h-10 border-2 border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-50 transition-colors">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                {% endif %}
             </div>
         </div>
         {% empty %}
-        <div class="col-12">
-            <div class="text-center py-5">
-                <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
-                <p class="text-muted mt-3">No classes found for current session</p>
+        <div class="col-span-full">
+            <div class="bg-white rounded-2xl shadow-md p-12 text-center">
+                <i class="bi bi-inbox text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500 text-lg font-medium">No classes found for current session</p>
             </div>
         </div>
         {% endfor %}

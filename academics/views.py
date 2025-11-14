@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.db.models import Q, Count, Avg, Sum, Max, Min
 from django.http import HttpResponse, JsonResponse
+import csv
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -26,6 +27,8 @@ from .models import (
     TermResult,
     ReportCard,
     PerformanceComment,
+    Timetable,
+    Attendance,
 )
 from .forms import (
     AcademicSessionForm,
@@ -42,10 +45,10 @@ from .forms import (
     BulkReportCardGenerationForm,
     PerformanceFilterForm,
     ScoreImportForm,
+    TimetableForm,
     PerformanceCommentForm,
 )
 from records.models import Student
-from portal.models import Attendance
 
 
 # ============================================
@@ -146,6 +149,59 @@ def academics_dashboard(request):
     }
 
     return render(request, "academics/dashboard.html", context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def publication_center(request):
+    """A central place to manage the publication status of assessments and report cards."""
+
+    # Get current term for default filtering
+    current_term = Term.objects.filter(is_current=True).first()
+
+    # --- Filtering ---
+    selected_term_id = request.GET.get(
+        "term", current_term.id if current_term else None
+    )
+    selected_classroom_id = request.GET.get("classroom")
+
+    # --- Assessments ---
+    assessments_qs = Assessment.objects.select_related(
+        "assignment__subject", "assignment__classroom", "assessment_type"
+    ).order_by("-date")
+
+    if selected_term_id:
+        assessments_qs = assessments_qs.filter(assignment__term_id=selected_term_id)
+    if selected_classroom_id:
+        assessments_qs = assessments_qs.filter(
+            assignment__classroom_id=selected_classroom_id
+        )
+
+    # --- Report Cards ---
+    report_cards_qs = ReportCard.objects.select_related(
+        "student", "term", "classroom"
+    ).order_by("-term__start_date", "classroom__level", "student__surname")
+
+    if selected_term_id:
+        report_cards_qs = report_cards_qs.filter(term_id=selected_term_id)
+    if selected_classroom_id:
+        report_cards_qs = report_cards_qs.filter(classroom_id=selected_classroom_id)
+
+    # --- Context ---
+    context = {
+        "assessments": assessments_qs,
+        "report_cards": report_cards_qs,
+        "terms": Term.objects.all().order_by("-start_date"),
+        "classrooms": ClassRoom.objects.filter(session__is_current=True).order_by(
+            "level", "arm"
+        ),
+        "selected_term_id": int(selected_term_id) if selected_term_id else None,
+        "selected_classroom_id": int(selected_classroom_id)
+        if selected_classroom_id
+        else None,
+    }
+
+    return render(request, "academics/publication_center.html", context)
 
 
 # ============================================
@@ -766,6 +822,32 @@ def assessment_delete(request, pk):
     )
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+@require_POST
+def publish_assessment(request, pk):
+    """Publish an assessment, making scores visible."""
+    assessment = get_object_or_404(Assessment, pk=pk)
+    assessment.is_published = True
+    assessment.published_at = timezone.now()
+    assessment.save(update_fields=["is_published", "published_at"])
+    messages.success(request, f'Assessment "{assessment.title}" has been published.')
+    return redirect("academics:assessment_detail", pk=pk)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+@require_POST
+def unpublish_assessment(request, pk):
+    """Unpublish an assessment, hiding scores."""
+    assessment = get_object_or_404(Assessment, pk=pk)
+    assessment.is_published = False
+    assessment.published_at = None
+    assessment.save(update_fields=["is_published", "published_at"])
+    messages.info(request, f'Assessment "{assessment.title}" has been unpublished.')
+    return redirect("academics:assessment_detail", pk=pk)
+
+
 # ============================================
 # SCORE ENTRY
 # ============================================
@@ -984,6 +1066,116 @@ def report_card_detail(request, pk):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def publish_report_card(request, pk):
+    report_card = get_object_or_404(ReportCard, pk=pk)
+    report_card.is_published = True
+    report_card.save(update_fields=["is_published"])
+    messages.success(
+        request, f"Report card for {report_card.student.full_name} has been published."
+    )
+    return redirect(
+        request.META.get("HTTP_REFERER", reverse("academics:report_card_list"))
+    )
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def unpublish_report_card(request, pk):
+    report_card = get_object_or_404(ReportCard, pk=pk)
+    report_card.is_published = False
+    report_card.save(update_fields=["is_published"])
+    messages.info(
+        request,
+        f"Report card for {report_card.student.full_name} has been unpublished.",
+    )
+    return redirect(
+        request.META.get("HTTP_REFERER", reverse("academics:report_card_list"))
+    )
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def generate_single_report_card(request):
+    """Generate or refresh a single student's report card for a term/class."""
+    try:
+        student_id = int(request.POST.get("student_id"))
+        classroom_id = int(request.POST.get("classroom_id"))
+    except (TypeError, ValueError):
+        messages.error(request, "Invalid data. Please provide student and class.")
+        return redirect(
+            request.META.get("HTTP_REFERER", reverse("academics:report_card_list"))
+        )
+
+    student = get_object_or_404(Student, id=student_id)
+    term_id = request.POST.get("term_id")
+    if term_id:
+        term = get_object_or_404(Term, id=int(term_id))
+    else:
+        term = Term.objects.filter(is_current=True).first()
+        if not term:
+            messages.error(request, "No current term found. Please select a term.")
+            return redirect(
+                request.META.get("HTTP_REFERER", reverse("academics:report_card_list"))
+            )
+    classroom = get_object_or_404(ClassRoom, id=classroom_id)
+
+    # Ensure term results exist for this student/class/term by reusing calculate_term_results on just this class.
+    # The calculation updates/creates TermResult rows; then we build the ReportCard.
+    try:
+        # Calculate results for this class/term
+        calculate_term_results(request, term_id=term.id, classroom_id=classroom.id)
+    except Exception:
+        # Continue even if calculation view redirects; results likely computed
+        pass
+
+    # Aggregate averages and create/update report card
+    term_results = TermResult.objects.filter(
+        student=student, term=term, classroom=classroom
+    )
+    if not term_results.exists():
+        messages.warning(request, "No term results found for this student/term/class.")
+        return redirect(
+            request.META.get("HTTP_REFERER", reverse("academics:report_card_list"))
+        )
+
+    average_score = term_results.aggregate(avg=Avg("total_score"))["avg"] or 0
+    all_students = classroom.students.all()
+
+    # Compute rank map within class (by average across subjects)
+    averages = (
+        TermResult.objects.filter(term=term, classroom=classroom)
+        .values("student_id")
+        .annotate(avg_score=Avg("total_score"))
+        .order_by("-avg_score")
+    )
+    rank_map = {}
+    last_score = None
+    last_rank = 0
+    for idx, row in enumerate(averages, 1):
+        if row["avg_score"] != last_score:
+            last_rank = idx
+            last_score = row["avg_score"]
+        rank_map[row["student_id"]] = last_rank
+
+    report_card, _ = ReportCard.objects.update_or_create(
+        student=student,
+        term=term,
+        classroom=classroom,
+        defaults={
+            "average_score": average_score,
+            "position": rank_map.get(student.id, 0),
+            "out_of": all_students.count(),
+        },
+    )
+    messages.success(request, f"Report card generated for {student.full_name}.")
+    return redirect("academics:report_card_detail", pk=report_card.pk)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def generate_report_cards(request):
     """Generate report cards for multiple students"""
     if request.method == "POST":
@@ -991,53 +1183,74 @@ def generate_report_cards(request):
         if form.is_valid():
             term = form.cleaned_data["term"]
             classroom = form.cleaned_data["classroom"]
-            class_teacher_remarks = form.cleaned_data.get("class_teacher_remarks", "")
-            principal_remarks = form.cleaned_data.get("principal_remarks", "")
 
             # Get all students in the class
             students = classroom.students.all()
-
             generated_count = 0
-            
+            errors = []
+
             # --- Start of new ranking logic ---
             # First, calculate all student averages for the term
             student_averages = []
             for student in students:
-                avg = TermResult.objects.filter(student=student, term=term).aggregate(avg_score=Avg('total_score'))['avg_score']
+                avg = TermResult.objects.filter(student=student, term=term).aggregate(
+                    avg_score=Avg("total_score")
+                )["avg_score"]
                 if avg is not None:
-                    student_averages.append({'student_id': student.id, 'average': avg})
+                    student_averages.append({"student_id": student.id, "average": avg})
 
             # Sort students by average score in descending order
-            sorted_students = sorted(student_averages, key=lambda x: x['average'], reverse=True)
+            sorted_students = sorted(
+                student_averages, key=lambda x: x["average"], reverse=True
+            )
 
             # Build a rank map that handles ties
             rank_map = {}
             last_score = -1
             last_rank = 0
             for i, data in enumerate(sorted_students, 1):
-                if data['average'] != last_score:
+                if data["average"] != last_score:
                     last_rank = i
-                    last_score = data['average']
-                rank_map[data['student_id']] = last_rank
+                    last_score = data["average"]
+                rank_map[data["student_id"]] = last_rank
             # --- End of new ranking logic ---
 
             with transaction.atomic():
                 for student in students:
+                    # --- Collect individualized data from POST ---
+                    class_teacher_remarks = request.POST.get(
+                        f"remarks_{student.id}", ""
+                    )
+                    principal_remarks = request.POST.get(
+                        f"principal_remarks_{student.id}", ""
+                    )
+                    days_present = request.POST.get(f"days_present_{student.id}")
+                    days_absent = request.POST.get(f"days_absent_{student.id}")
+
+                    # Collect domain skills
+                    skill_fields = {
+                        "punctuality": request.POST.get(f"punctuality_{student.id}", 0),
+                        "attendance_in_class": request.POST.get(
+                            f"attendance_in_class_{student.id}", 0
+                        ),
+                        "honesty": request.POST.get(f"honesty_{student.id}", 0),
+                        "neatness": request.POST.get(f"neatness_{student.id}", 0),
+                        "handwriting": request.POST.get(f"handwriting_{student.id}", 0),
+                        "sports_and_games": request.POST.get(
+                            f"sports_and_games_{student.id}", 0
+                        ),
+                    }
+
                     # Get all term results for this student
                     term_results = TermResult.objects.filter(
                         student=student, term=term, classroom=classroom
                     )
-                    
+
                     if term_results.exists():
                         # Calculate overall stats
                         average_score = (
-                            term_results.aggregate(avg=Avg("total_score"))["avg"]
-                            or 0
+                            term_results.aggregate(avg=Avg("total_score"))["avg"] or 0
                         )
-
-                        # Calculate position (you'll need to implement ranking logic)
-                        all_students = classroom.students.all()
-                        # ... position calculation logic
 
                         # Create or update report card
                         report_card, created = ReportCard.objects.update_or_create(
@@ -1064,6 +1277,141 @@ def generate_report_cards(request):
     return render(request, "academics/generate_report_cards.html", {"form": form})
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def prepare_report_cards(request):
+    """
+    A new, interactive page for preparing report card data like remarks and skills
+    before final generation.
+    """
+    form = BulkReportCardGenerationForm(request.GET or None)
+    students = []
+    classroom = None
+    term = None
+
+    if form.is_valid():
+        classroom = form.cleaned_data["classroom"]
+        term = form.cleaned_data["term"]
+
+        # Get all students and pre-fetch their existing report cards to populate the form
+        students_qs = classroom.students.all().order_by("surname", "other_name")
+        existing_reports = ReportCard.objects.filter(
+            classroom=classroom, term=term
+        ).in_bulk(field_name="student_id")
+
+        for student in students_qs:
+            student.existing_report = existing_reports.get(student.id)
+            students.append(student)
+
+    context = {
+        "form": form,
+        "classroom": classroom,
+        "term": term,
+        "students": students,
+        "skill_choices": ReportCard.SKILL_RATING_CHOICES,
+    }
+    return render(request, "academics/prepare_report_cards.html", context)
+
+
+@login_required
+@require_POST
+def ajax_save_report_card_data(request):
+    """
+    Save remarks, attendance, and skills for a single student's report card via AJAX.
+    This creates a placeholder report card or updates an existing one.
+    """
+    try:
+        data = json.loads(request.body)
+        student_id = data.get("student_id")
+        term_id = data.get("term_id")
+        classroom_id = data.get("classroom_id")
+
+        student = get_object_or_404(Student, id=student_id)
+        term = get_object_or_404(Term, id=term_id)
+        classroom = get_object_or_404(ClassRoom, id=classroom_id)
+
+        # Create or update the report card with the preparatory data
+        report_card, created = ReportCard.objects.update_or_create(
+            student=student,
+            term=term,
+            classroom=classroom,
+            defaults={
+                "class_teacher_remarks": data.get("class_teacher_remarks", ""),
+                "principal_remarks": data.get("principal_remarks", ""),
+                "days_present": data.get("days_present") or 0,
+                "days_absent": data.get("days_absent") or 0,
+                "punctuality": data.get("punctuality", 0),
+                "attendance_in_class": data.get("attendance_in_class", 0),
+                "honesty": data.get("honesty", 0),
+                "neatness": data.get("neatness", 0),
+                "handwriting": data.get("handwriting", 0),
+                "sports_and_games": data.get("sports_and_games", 0),
+            },
+        )
+        return JsonResponse(
+            {"status": "success", "message": f"Data for {student.full_name} saved."}
+        )
+
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+@login_required
+@require_POST
+def finalize_report_cards(request):
+    """
+    Finalizes the report cards for a class by calculating averages and ranks.
+    This should be called after all preparatory data has been entered.
+    """
+    term_id = request.POST.get("term_id")
+    classroom_id = request.POST.get("classroom_id")
+
+    term = get_object_or_404(Term, id=term_id)
+    classroom = get_object_or_404(ClassRoom, id=classroom_id)
+    students = classroom.students.all()
+
+    # --- Ranking Logic ---
+    averages = (
+        TermResult.objects.filter(term=term, classroom=classroom)
+        .values("student_id")
+        .annotate(avg_score=Avg("total_score"))
+        .order_by("-avg_score")
+    )
+
+    rank_map = {row["student_id"]: i + 1 for i, row in enumerate(averages)}
+
+    # --- Update Report Cards with Final Data ---
+    updated_count = 0
+    with transaction.atomic():
+        for student in students:
+            term_results = TermResult.objects.filter(
+                student=student, term=term, classroom=classroom
+            )
+            if term_results.exists():
+                total_score = (
+                    term_results.aggregate(total=Sum("total_score"))["total"] or 0
+                )
+                average_score = (
+                    term_results.aggregate(avg=Avg("total_score"))["avg"] or 0
+                )
+
+                ReportCard.objects.filter(
+                    student=student, term=term, classroom=classroom
+                ).update(
+                    total_score=total_score,
+                    average_score=average_score,
+                    position=rank_map.get(student.id, 0),
+                    out_of=students.count(),
+                )
+                updated_count += 1
+
+    messages.success(
+        request,
+        f"Successfully finalized and generated {updated_count} report cards for {classroom}.",
+    )
+    return redirect("academics:report_card_list")
+
+
 # ============================================
 # ANALYTICS & REPORTS
 # ============================================
@@ -1078,8 +1426,16 @@ class PerformanceAnalyticsView(TemplateView):
             "student", "classroom", "subject", "term", "term__session"
         )
 
-        if not form.is_bound or not form.is_valid():
-            return queryset  # Return unfiltered queryset if no filters are applied
+        # If no filters provided or form invalid, prefer showing current term by default
+        if (
+            not form.is_bound
+            or not form.is_valid()
+            or not any(self.request.GET.values())
+        ):
+            current_term = Term.objects.filter(is_current=True).first()
+            if current_term:
+                return queryset.filter(term=current_term)
+            return queryset  # Fallback to unfiltered if no current term
 
         # Apply filters
         session = form.cleaned_data.get("session")
@@ -1123,6 +1479,12 @@ class PerformanceAnalyticsView(TemplateView):
 
         # Get filtered queryset
         queryset = self.get_queryset(form)
+
+        # Flag when we defaulted to current term (no GET filters provided)
+        context["used_default_filters"] = not (
+            self.request.GET and any(self.request.GET.values())
+        )
+        context["current_term"] = Term.objects.filter(is_current=True).first()
 
         # Calculate statistics
         stats = queryset.aggregate(
@@ -1218,7 +1580,7 @@ class PerformanceAnalyticsView(TemplateView):
                         performer["student__surname"], performer["student__other_name"]
                     ),
                     "classroom": f"{performer['classroom__level']}{performer['classroom__arm']}",
-                    "total_score": performer["total_score"],
+                    "average_score": float(performer["total_score"] or 0),
                 }
             )
 
@@ -1427,6 +1789,101 @@ def export_class_results(request, classroom_id, term_id):
         df.to_excel(writer, index=False, sheet_name="Results")
 
     return response
+
+
+# ============================================
+# CSV EXPORT FOR ANALYTICS
+# ============================================
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def export_subject_performance_csv(request):
+    """Export subject performance table (based on current filters) to CSV."""
+    form = PerformanceFilterForm(request.GET or None)
+    view = PerformanceAnalyticsView()
+    view.request = request
+    queryset = view.get_queryset(form)
+
+    subject_performance = (
+        queryset.values("subject__name")
+        .annotate(
+            avg_score=Avg("total_score"), student_count=Count("student", distinct=True)
+        )
+        .order_by("-avg_score")
+    )
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="subject_performance.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(["Subject", "Average Score", "Students"])
+    for row in subject_performance:
+        writer.writerow(
+            [row["subject__name"], float(row["avg_score"] or 0), row["student_count"]]
+        )
+
+    return response
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def export_class_performance_csv(request):
+    """Export class performance table (based on current filters) to CSV."""
+    form = PerformanceFilterForm(request.GET or None)
+    view = PerformanceAnalyticsView()
+    view.request = request
+    queryset = view.get_queryset(form)
+
+    class_performance = (
+        queryset.values("classroom__level", "classroom__arm")
+        .annotate(avg_score=Avg("total_score"))
+        .order_by("classroom__level", "classroom__arm")
+    )
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="class_performance.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(["Class", "Average Score"])
+    for row in class_performance:
+        class_name = f"{row['classroom__level']}{row['classroom__arm']}"
+        writer.writerow([class_name, float(row["avg_score"] or 0)])
+
+    return response
+
+
+# ============================================
+# RECALCULATE TERM RESULTS (ACTION)
+# ============================================
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def recalculate_term_results(request):
+    """Recalculate term results for a selected class and term, then redirect back to analytics."""
+    term_id = request.POST.get("term_id")
+    classroom_id = request.POST.get("classroom_id")
+    if not term_id or not classroom_id:
+        messages.error(
+            request, "Please select both term and class to recalculate results."
+        )
+        return redirect(
+            f"{reverse('academics:performance_analytics')}?{request.META.get('QUERY_STRING', '')}"
+        )
+
+    # Call existing calculation logic
+    try:
+        # Reuse calculate_term_results view logic by calling it directly
+        return calculate_term_results(
+            request, term_id=int(term_id), classroom_id=int(classroom_id)
+        )
+    except Exception as e:
+        messages.error(request, f"Failed to recalculate results: {e}")
+        return redirect(
+            f"{reverse('academics:performance_analytics')}?{request.META.get('QUERY_STRING', '')}"
+        )
 
 
 @login_required
@@ -1779,6 +2236,103 @@ def student_performance(request, student_id):
 
 
 # ============================================
+# TIMETABLE MANAGEMENT
+# ============================================
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def timetable_list(request):
+    """List all timetable entries."""
+    timetables = (
+        Timetable.objects.all()
+        .select_related("classroom", "subject", "teacher", "term")
+        .order_by(
+            "term__session__start_date",
+            "classroom__level",
+            "day_of_week",
+            "period_number",
+        )
+    )
+
+    # Filter options
+    classroom_id = request.GET.get("classroom")
+    term_id = request.GET.get("term")
+    day_of_week = request.GET.get("day_of_week")
+
+    if classroom_id:
+        timetables = timetables.filter(classroom_id=classroom_id)
+    if term_id:
+        timetables = timetables.filter(term_id=term_id)
+    if day_of_week:
+        timetables = timetables.filter(day_of_week=day_of_week)
+
+    context = {
+        "timetables": timetables,
+        "classrooms": ClassRoom.objects.filter(session__is_current=True).order_by(
+            "level", "arm"
+        ),
+        "terms": Term.objects.all().order_by("-session__start_date", "name"),
+        "days_of_week": Timetable.DAYS_OF_WEEK,
+        "selected_classroom_id": int(classroom_id) if classroom_id else None,
+        "selected_term_id": int(term_id) if term_id else None,
+        "selected_day_of_week": day_of_week,
+    }
+    return render(request, "academics/timetable_list.html", context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def timetable_create(request):
+    """Create a new timetable entry."""
+    if request.method == "POST":
+        form = TimetableForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Timetable entry created successfully!")
+            return redirect("academics:timetable_list")
+    else:
+        form = TimetableForm()
+    return render(
+        request, "academics/timetable_form.html", {"form": form, "action": "Create"}
+    )
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def timetable_update(request, pk):
+    """Update an existing timetable entry."""
+    timetable = get_object_or_404(Timetable, pk=pk)
+    if request.method == "POST":
+        form = TimetableForm(request.POST, instance=timetable)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Timetable entry updated successfully!")
+            return redirect("academics:timetable_list")
+    else:
+        form = TimetableForm(instance=timetable)
+    return render(
+        request,
+        "academics/timetable_form.html",
+        {"form": form, "timetable": timetable, "action": "Update"},
+    )
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_staff)
+def timetable_delete(request, pk):
+    """Delete a timetable entry."""
+    timetable = get_object_or_404(Timetable, pk=pk)
+    if request.method == "POST":
+        timetable.delete()
+        messages.success(request, "Timetable entry deleted successfully!")
+        return redirect("academics:timetable_list")
+    return render(
+        request, "academics/timetable_confirm_delete.html", {"timetable": timetable}
+    )
+
+
+# ============================================
 # TEACHER PERFORMANCE VIEW
 # ============================================
 
@@ -1878,7 +2432,7 @@ def take_attendance(request):
             student__in=students, date=attendance_date
         )
         existing_records = {record.student_id: record for record in existing_records_qs}
-        
+
         if existing_records:
             records_exist_for_date = True
 
@@ -1891,6 +2445,7 @@ def take_attendance(request):
         "students": students,
         "attendance_date": attendance_date,
         "records_exist_for_date": records_exist_for_date,
+        "attendance_statuses": Attendance.ATTENDANCE_STATUS,
     }
     return render(request, "academics/take_attendance.html", context)
 
@@ -1901,11 +2456,16 @@ def attendance_report(request):
     View for generating and displaying attendance reports for a class.
     """
     selected_classroom = None
+    selected_term = None
     students_report = []
     summary_stats = {}
 
+    # Get all terms for the dropdown
+    terms = Term.objects.all().order_by("-session__start_date", "name")
+
     # Get filter parameters
     classroom_id = request.GET.get("classroom")
+    term_id = request.GET.get("term")
     start_date_str = request.GET.get("start_date")
     end_date_str = request.GET.get("end_date")
 
@@ -1916,6 +2476,12 @@ def attendance_report(request):
     if not end_date_str:
         end_date_str = today.strftime("%Y-%m-%d")
 
+    if term_id:
+        selected_term = get_object_or_404(Term, id=term_id)
+        # If a term is selected, override start and end dates with term's dates
+        start_date_str = selected_term.start_date.strftime("%Y-%m-%d")
+        end_date_str = selected_term.end_date.strftime("%Y-%m-%d")
+
     if classroom_id:
         selected_classroom = get_object_or_404(ClassRoom, id=classroom_id)
         start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
@@ -1923,7 +2489,8 @@ def attendance_report(request):
 
         students = selected_classroom.students.all().order_by("surname", "other_name")
         attendance_records = Attendance.objects.filter(
-            student__in=students, date__range=[start_date, end_date]
+            student__in=students,
+            date__range=[start_date, end_date],  # This line had the error
         ).order_by("student", "date")
 
         # Overall summary
@@ -1944,6 +2511,8 @@ def attendance_report(request):
 
     context = {
         "classrooms": ClassRoom.objects.filter(session__is_current=True),
+        "terms": terms,
+        "selected_term": selected_term,
         "selected_classroom": selected_classroom,
         "students_report": students_report,
         "summary_stats": {s["status"]: s["count"] for s in summary_stats},

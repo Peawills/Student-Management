@@ -198,8 +198,8 @@ class Attendance(models.Model):
     )
     date = models.DateField()
     status = models.CharField(max_length=20, choices=ATTENDANCE_STATUS)
-    remarks = models.TextField(blank=True)
-    marked_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    remarks = models.TextField(blank=True) 
+    marked_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="portal_attendances")
     marked_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -208,37 +208,6 @@ class Attendance(models.Model):
     class Meta:
         ordering = ["-date"]
         unique_together = ["student", "date"]
-
-
-class Timetable(models.Model):
-    """Class timetable"""
-
-    DAYS_OF_WEEK = [
-        ("Monday", "Monday"),
-        ("Tuesday", "Tuesday"),
-        ("Wednesday", "Wednesday"),
-        ("Thursday", "Thursday"),
-        ("Friday", "Friday"),
-    ]
-
-    classroom = models.ForeignKey(
-        "academics.ClassRoom", on_delete=models.CASCADE, related_name="timetable"
-    )
-    day_of_week = models.CharField(max_length=10, choices=DAYS_OF_WEEK)
-    period_number = models.IntegerField()
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    subject = models.ForeignKey("academics.Subject", on_delete=models.CASCADE)
-    teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    term = models.ForeignKey("academics.Term", on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"{self.classroom} - {self.day_of_week} Period {self.period_number} - {self.subject.name}"
-
-    class Meta:
-        ordering = ["classroom", "day_of_week", "period_number"]
-        unique_together = ["classroom", "day_of_week", "period_number", "term"]
 
 
 class ParentInvitation(models.Model):

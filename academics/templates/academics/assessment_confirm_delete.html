@@ -2,15 +2,97 @@
 {% block title %}Delete Assessment{% endblock %}
 
 {% block content %}
-<div class="card">
-  <div class="card-body">
-    <h3 class="card-title">Delete Assessment</h3>
-    <p>Are you sure you want to delete "{{ assessment.title }}"?</p>
-    <form method="post">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-danger">Yes, delete</button>
-      <a href="{% url 'academics:assessment_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
-  </div>
+<div class="flex items-center justify-center min-h-[80vh] p-4">
+    <div class="max-w-2xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="p-8 bg-gradient-to-br from-red-500 to-red-700 text-white text-center">
+            <div class="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <i class="bi bi-exclamation-triangle-fill text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold">Delete Assessment</h3>
+            <p class="opacity-90 mt-1">This action is permanent and cannot be undone.</p>
+        </div>
+
+        <!-- Body -->
+        <div class="p-8">
+            <!-- Assessment Info -->
+            <div class="p-5 bg-red-50 border-l-4 border-red-500 rounded-lg mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-white font-bold flex-shrink-0 text-xl">
+                        <i class="bi bi-clipboard-data"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-red-800 text-lg">{{ assessment.title }}</div>
+                        <div class="text-sm text-red-700">{{ assessment.assignment.subject.name }} - {{ assessment.assignment.classroom }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Warning Message -->
+            <div class="p-5 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="bi bi-info-circle-fill text-yellow-600 text-xl mt-0.5"></i>
+                    <div>
+                        <h5 class="font-bold text-yellow-800">Warning: Permanent Deletion</h5>
+                        <p class="text-sm text-yellow-700 mt-1">You are about to permanently delete this assessment. This will:</p>
+                        <ul class="list-disc list-inside text-sm text-yellow-700 mt-2 space-y-1">
+                            <li>Remove the assessment from the database</li>
+                            <li>Delete all associated student scores</li>
+                            <li>Cannot be recovered once deleted</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmation Form -->
+            <form method="post" id="deleteForm">
+                {% csrf_token %}
+
+                <div class="p-4 bg-gray-100 rounded-lg mb-6">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="confirmDelete" required
+                            class="h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                        <span class="font-medium text-gray-700">
+                            I understand this action is permanent and cannot be undone
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col-reverse sm:flex-row gap-3">
+                    <a href="{% url 'academics:assessment_list' %}"
+                        class="w-full sm:w-auto flex-1 text-center px-6 py-3 rounded-lg font-semibold text-gray-700 bg-gray-200 hover:bg-gray-300 transition-colors flex items-center justify-center gap-2">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                    <button type="submit" id="deleteBtn" disabled
+                        class="w-full sm:w-auto flex-1 text-center px-6 py-3 rounded-lg font-semibold text-white bg-red-600 hover:bg-red-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        <i class="bi bi-trash"></i> Yes, Delete Assessment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script>
+    const checkbox = document.getElementById('confirmDelete');
+    const deleteBtn = document.getElementById('deleteBtn');
+
+    checkbox.addEventListener('change', function () {
+        deleteBtn.disabled = !this.checked;
+    });
+
+    document.getElementById('deleteForm').addEventListener('submit', function (e) {
+        if (checkbox.checked) {
+            deleteBtn.innerHTML = '<i class="bi bi-hourglass-split animate-spin"></i> Deleting...';
+            deleteBtn.disabled = true;
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            window.location.href = "{% url 'academics:assessment_list' %}";
+        }
+    });
+</script>
 {% endblock %}

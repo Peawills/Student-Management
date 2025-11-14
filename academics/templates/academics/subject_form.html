@@ -1,59 +1,60 @@
 {% extends 'records/base.html' %}
 {% block title %}{{ action }} Subject{% endblock %}
 {% block content %}
-<div class="container py-4" style="max-width: 700px;">
-    <h2 class="mb-4">{{ action }} Subject</h2>
+<div class="container mx-auto px-4 py-6 max-w-2xl">
+    <div class="mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">{{ action }} Subject</h2>
+    </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form method="post">
-                {% csrf_token %}
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <form method="post">
+            {% csrf_token %}
 
-                <div class="mb-3">
-                    <label class="form-label">Subject Name *</label>
-                    {{ form.name }}
-                    {% if form.name.errors %}
-                    <div class="text-danger small">{{ form.name.errors.0 }}</div>
-                    {% endif %}
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Name *</label>
+                <input type="text" name="name" value="{{ form.name.value|default:'' }}" required
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.name.errors %}border-red-500{% endif %}">
+                {% if form.name.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.name.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Subject Code *</label>
+                <input type="text" name="code" value="{{ form.code.value|default:'' }}" required
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.code.errors %}border-red-500{% endif %}">
+                {% if form.code.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.code.errors.0 }}</div>
+                {% endif %}
+                <small class="text-gray-500 mt-1 block">e.g., MATH101, ENG201</small>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                <textarea name="description" rows="4"
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all {% if form.description.errors %}border-red-500{% endif %}">{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.description.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
+                <div class="flex items-center">
+                    <input type="checkbox" name="is_core" id="id_is_core" {% if form.is_core.value %}checked{% endif %}
+                        class="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500 focus:ring-2">
+                    <label for="id_is_core" class="ml-2 text-sm font-medium text-gray-700">Core Subject</label>
                 </div>
+            </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Subject Code *</label>
-                    {{ form.code }}
-                    {% if form.code.errors %}
-                    <div class="text-danger small">{{ form.code.errors.0 }}</div>
-                    {% endif %}
-                    <small class="text-muted">e.g., MATH101, ENG201</small>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Description</label>
-                    {{ form.description }}
-                    {% if form.description.errors %}
-                    <div class="text-danger small">{{ form.description.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-3">
-                    <div class="form-check">
-                        {{ form.is_core }}
-                        <label class="form-check-label">Core Subject</label>
-                    </div>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> {{ action }}
-                    </button>
-                    <a href="{% url 'academics:subject_list' %}" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
-        </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button type="submit" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                    <i class="bi bi-check-circle"></i> {{ action }}
+                </button>
+                <a href="{% url 'academics:subject_list' %}" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+            </div>
+        </form>
     </div>
 </div>
-
-<script>
-    document.querySelectorAll('input[type="text"], textarea').forEach(el => el.classList.add('form-control'));
-    document.querySelectorAll('input[type="checkbox"]').forEach(el => el.classList.add('form-check-input'));
-</script>
 {% endblock %}

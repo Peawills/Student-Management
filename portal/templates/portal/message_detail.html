@@ -3,43 +3,69 @@
 {% block title %}Message: {{ message.subject }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-envelope-open"></i> Message Details
-    </h1>
+<div class="container mx-auto px-4 py-6 max-w-4xl">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-envelope-open text-primary-500"></i> Message Details
+        </h1>
+    </div>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'portal:messages_inbox' %}">Inbox</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ message.subject|truncatechars:30 }}</li>
+    <nav class="mb-6" aria-label="breadcrumb">
+        <ol class="flex items-center gap-2 text-sm">
+            <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><a href="{% url 'portal:messages_inbox' %}" class="text-primary-600 hover:text-primary-700">Inbox</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li class="text-gray-500">{{ message.subject|truncatechars:30 }}</li>
         </ol>
     </nav>
 
-    <div class="card shadow-sm">
-        <div class="card-header py-3">
-            <h5 class="m-0 font-weight-bold text-primary">{{ message.subject }}</h5>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4">
+            <h5 class="text-lg font-bold">{{ message.subject }}</h5>
         </div>
-        <div class="card-body">
-            <p><strong>From:</strong> {{ message.sender.get_full_name|default:message.sender.username }}</p>
-            <p><strong>To:</strong> {{ message.recipient.get_full_name|default:message.recipient.username }}</p>
-            {% if message.student %}
-                <p><strong>Regarding Student:</strong> <a href="{% url 'records:student_detail' message.student.id %}">{{ message.student.full_name }}</a></p>
-            {% endif %}
-            <p><strong>Sent:</strong> {{ message.created_at|date:"F d, Y H:i" }}</p>
-            {% if message.is_read %}
-                <p class="text-muted"><strong>Read:</strong> {{ message.read_at|date:"F d, Y H:i" }}</p>
-            {% else %}
-                <p class="text-info"><strong>Status:</strong> Unread</p>
-            {% endif %}
-            <hr>
-            <div class="message-content">
-                {{ message.message|linebreaksbr }}
+        <div class="p-6">
+            <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-gray-600 w-24">From:</span>
+                    <span class="text-gray-900 font-medium">{{ message.sender.get_full_name|default:message.sender.username }}</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-gray-600 w-24">To:</span>
+                    <span class="text-gray-900 font-medium">{{ message.recipient.get_full_name|default:message.recipient.username }}</span>
+                </div>
+                {% if message.student %}
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-gray-600 w-24">Regarding:</span>
+                    <a href="{% url 'records:student_detail' message.student.id %}" class="text-primary-600 hover:text-primary-700 font-medium">{{ message.student.full_name }}</a>
+                </div>
+                {% endif %}
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-gray-600 w-24">Sent:</span>
+                    <span class="text-gray-900">{{ message.created_at|date:"F d, Y H:i" }}</span>
+                </div>
+                {% if message.is_read %}
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-gray-600 w-24">Read:</span>
+                    <span class="text-gray-900">{{ message.read_at|date:"F d, Y H:i" }}</span>
+                </div>
+                {% else %}
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-gray-600 w-24">Status:</span>
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-full">Unread</span>
+                </div>
+                {% endif %}
+            </div>
+            <hr class="my-6">
+            <div class="prose max-w-none">
+                <div class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ message.message|linebreaksbr }}</div>
             </div>
         </div>
-        <div class="card-footer text-end">
-            <a href="{% url 'portal:messages_inbox' %}" class="btn btn-secondary">Back to Inbox</a>
-            <a href="{% url 'portal:reply_message' message.id %}" class="btn btn-primary ms-2">
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
+            <a href="{% url 'portal:messages_inbox' %}" class="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                Back to Inbox
+            </a>
+            <a href="{% url 'portal:reply_message' message.id %}" class="px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
                 <i class="bi bi-reply"></i> Reply
             </a>
         </div>

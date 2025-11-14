@@ -19,8 +19,6 @@ from .models import (
     ParentInvitation,
     PortalMessage,
     FeePayment,
-    Attendance,
-    Timetable,
 )
 from records.models import Student
 from .forms import (
@@ -31,7 +29,7 @@ from .forms import (
     ParentInvitationForm,
     ReplyMessageForm,
 )
-from academics.models import StudentScore, TermResult, ReportCard, Term, Assessment
+from academics.models import StudentScore, TermResult, ReportCard, Term, Assessment, Attendance, Timetable
 from academics.models import ClassRoom, SubjectAssignment
 
 
@@ -53,9 +51,12 @@ def portal_dashboard(request):
             or SubjectAssignment.objects.filter(teacher=user).exists()
         )
         request.user.is_teacher = is_teacher  # Add flag to user object for templates
-        if is_teacher:
-            return redirect("portal:teacher_dashboard")
-        return redirect("records:admin_dashboard")
+        # Redirect teachers to their dashboard, other staff to the admin dashboard.
+        return (
+            redirect("portal:teacher_dashboard")
+            if is_teacher
+            else redirect("records:admin_dashboard")
+        )
     else:
         # For any other authenticated user without a profile
         messages.error(
@@ -231,11 +232,8 @@ def parent_dashboard(request):
     # Enhance students with stats
     for student in students:
         # Get latest report card
-        latest_report = (
-            ReportCard.objects.filter(student=student)
-            .order_by("-term__start_date")
-            .first()
-        )
+        latest_report = ReportCard.objects.filter(student=student, is_published=True)\
+            .order_by("-term__start_date").first()
         if latest_report:
             student.average_score = latest_report.average_score
             student.position = f"{latest_report.position}/{latest_report.out_of}"
@@ -308,7 +306,7 @@ def parent_student_detail(request, student_id):
 
     # Get latest scores
     recent_scores = (
-        StudentScore.objects.filter(student=student)
+        StudentScore.objects.filter(student=student, assessment__is_published=True)
         .select_related("assessment")
         .order_by("-assessment__date")[:10]
     )
@@ -322,9 +320,8 @@ def parent_student_detail(request, student_id):
     )
 
     # Get latest report card
-    latest_report = (
-        ReportCard.objects.filter(student=student).order_by("-term__start_date").first()
-    )
+    latest_report = ReportCard.objects.filter(student=student, is_published=True)\
+        .order_by("-term__start_date").first()
 
     context = {
         "student": student,
@@ -346,8 +343,18 @@ def parent_student_scores(request, student_id):
         messages.error(request, "Access denied.")
         return redirect("portal:parent_dashboard")
 
-    # Get all scores grouped by term
+    # Only show scores for current term when published
     current_term = Term.objects.filter(is_current=True).first()
+
+    if not ReportCard.objects.filter(
+        student=student, term=current_term, is_published=True
+    ).exists():
+        messages.info(request, "Scores for the current term are not yet published.")
+        return render(
+            request,
+            "portal/parent_student_scores.html",
+            {"student": student, "scores_by_subject": {}, "current_term": current_term},
+        )
 
     scores = (
         StudentScore.objects.filter(
@@ -548,11 +555,9 @@ def student_dashboard(request):
     current_term = Term.objects.filter(is_current=True).first()
 
     # Get latest report card
-    latest_report = (
-        ReportCard.objects.filter(student=student, is_published=True)
-        .order_by("-term__start_date")
-        .first()
-    )
+    latest_report = ReportCard.objects.filter(
+        student=student, is_published=True
+    ).order_by("-term__start_date").first()
 
     # Get unread messages
     unread_messages = PortalMessage.objects.filter(
@@ -582,11 +587,12 @@ def student_scores(request):
         messages.error(request, "Access denied.")
         return redirect("portal:student_dashboard")
 
-    if not student_profile.can_view_scores:
-        messages.error(request, "You don't have permission to view scores.")
-        return redirect("portal:student_dashboard")
-
     current_term = Term.objects.filter(is_current=True).first()
+
+    # Only show scores from published assessments
+    scores = StudentScore.objects.filter(
+        student=student, assessment__assignment__term=current_term, assessment__is_published=True
+    )
 
     scores = (
         StudentScore.objects.filter(

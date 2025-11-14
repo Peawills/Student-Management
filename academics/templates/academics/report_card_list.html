@@ -1,119 +1,148 @@
 {% extends 'records/base.html' %}
 {% block title %}Report Cards{% endblock %}
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-file-text"></i> Report Cards</h2>
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-file-text text-primary-500"></i> Report Cards
+        </h2>
         {% if user.is_superuser %}
-        <a href="{% url 'academics:generate_report_cards' %}" class="btn btn-primary">
+        <a href="{% url 'academics:generate_report_cards' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
             <i class="bi bi-plus-circle"></i> Generate Report Cards
         </a>
         {% endif %}
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form method="get" class="mb-3">
-                <div class="row g-2">
-                    <div class="col-md-4">
-                        <select name="term" class="form-select">
-                            <option value="">All Terms</option>
-                            {% for term in terms %}
-                            <option value="{{ term.id }}">{{ term }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <select name="classroom" class="form-select">
-                            <option value="">All Classes</option>
-                            {% for classroom in classrooms %}
-                            <option value="{{ classroom.id }}">{{ classroom }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-secondary w-100">
-                            <i class="bi bi-funnel"></i> Filter
-                        </button>
-                    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <form method="get" class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <select name="term" class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all">
+                        <option value="">All Terms</option>
+                        {% for term in terms %}
+                        <option value="{{ term.id }}" {% if request.GET.term == term.id|stringformat:"s" %}selected{% endif %}>{{ term }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-            </form>
+                <div>
+                    <select name="classroom" class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all">
+                        <option value="">All Classes</option>
+                        {% for classroom in classrooms %}
+                        <option value="{{ classroom.id }}" {% if request.GET.classroom == classroom.id|stringformat:"s" %}selected{% endif %}>{{ classroom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="w-full px-4 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
 
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Student</th>
-                            <th>Class</th>
-                            <th>Term</th>
-                            <th>Average</th>
-                            <th>Position</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for report in report_cards %}
-                        <tr>
-                            <td>
-                                <strong>{{ report.student.full_name }}</strong>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Class</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Term</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Average</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Position</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for report in report_cards %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div>
+                                <strong class="text-gray-900">{{ report.student.full_name }}</strong>
                                 <br>
-                                <small class="text-muted">{{ report.student.admission_no }}</small>
-                            </td>
-                            <td>{{ report.classroom }}</td>
-                            <td>{{ report.term }}</td>
-                            <td><span class="badge bg-primary">{{ report.average_score|floatformat:2 }}</span></td>
-                            <td>{{ report.position }}/{{ report.out_of }}</td>
-                            <td>
-                                {% if report.is_published %}
-                                <span class="badge bg-success">Published</span>
-                                {% else %}
-                                <span class="badge bg-warning">Draft</span>
-                                {% endif %}
-                            </td>
-                            <td>
+                                <small class="text-gray-500">{{ report.student.admission_no }}</small>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-gray-700">{{ report.classroom }}</td>
+                        <td class="px-6 py-4 text-gray-700">{{ report.term }}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-700">{{ report.average_score|floatformat:2 }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-700">{{ report.position }}/{{ report.out_of }}</td>
+                        <td class="px-6 py-4">
+                            {% if report.is_published %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Published</span>
+                            {% else %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Draft</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
                                 <a href="{% url 'academics:report_card_detail' report.pk %}"
-                                    class="btn btn-sm btn-primary">
+                                    class="inline-flex items-center justify-center w-9 h-9 border-2 border-primary-500 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'academics:report_card_pdf' report.pk %}" class="btn btn-sm btn-danger">
+                                <a href="{% url 'academics:report_card_pdf' report.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
                                     <i class="bi bi-file-pdf"></i>
                                 </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
-                                <p class="text-muted mt-2">No report cards found</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            {% if report_cards.has_other_pages %}
-            <nav>
-                <ul class="pagination justify-content-center">
-                    {% if report_cards.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ report_cards.previous_page_number }}">Previous</a>
-                    </li>
-                    {% endif %}
-                    <li class="page-item active">
-                        <span class="page-link">{{ report_cards.number }} / {{ report_cards.paginator.num_pages
-                            }}</span>
-                    </li>
-                    {% if report_cards.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ report_cards.next_page_number }}">Next</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-            {% endif %}
+                                {% if user.is_superuser %}
+                                {% if report.is_published %}
+                                <form method="post" action="{% url 'academics:unpublish_report_card' report.pk %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="inline-flex items-center justify-center w-9 h-9 border-2 border-gray-400 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors" title="Unpublish">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </button>
+                                </form>
+                                {% else %}
+                                <form method="post" action="{% url 'academics:publish_report_card' report.pk %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="inline-flex items-center justify-center w-9 h-9 border-2 border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition-colors" title="Publish (show to student)">
+                                        <i class="bi bi-send-check"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-16 text-center">
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="bi bi-inbox text-6xl text-gray-300 mb-4"></i>
+                                <p class="text-gray-500 text-lg font-medium">No report cards found</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+
+        {% if report_cards.has_other_pages %}
+        <nav class="mt-6 flex items-center justify-between">
+            <div class="flex-1 flex justify-start">
+                {% if report_cards.has_previous %}
+                <a href="?term={{ request.GET.term|default:'' }}&classroom={{ request.GET.classroom|default:'' }}&page={{ report_cards.previous_page_number }}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    Previous
+                </a>
+                {% endif %}
+            </div>
+            <div class="hidden md:block">
+                <span class="text-sm text-gray-700">
+                    Page <span class="font-bold text-primary-600">{{ report_cards.number }}</span> of
+                    <span class="font-bold">{{ report_cards.paginator.num_pages }}</span>
+                </span>
+            </div>
+            <div class="flex-1 flex justify-end">
+                {% if report_cards.has_next %}
+                <a href="?term={{ request.GET.term|default:'' }}&classroom={{ request.GET.classroom|default:'' }}&page={{ report_cards.next_page_number }}" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                    Next
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

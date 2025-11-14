@@ -8,446 +8,352 @@
     <meta name="description" content="Student Management System">
     <title>{% block title %}Student Management{% endblock %}</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#667eea',
+                            600: '#5568d3',
+                            700: '#4c51bf',
+                            800: '#4338ca',
+                            900: '#3730a3',
+                        },
+                        secondary: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#764ba2',
+                            600: '#9333ea',
+                            700: '#7e22ce',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                        }
+                    },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.5s ease-in',
+                        'slideUp': 'slideUp 0.3s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
-    <style>
-        :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Main Navbar Styles */
-        .main-navbar {
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            margin-bottom: 1.5rem;
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .navbar-brand i {
-            font-size: 1.8rem;
-        }
-
-        .navbar-brand:hover {
-            color: var(--secondary-color);
-        }
-
-        /* User Info Section */
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .user-badge i {
-            font-size: 1.2rem;
-        }
-
-        .btn-custom {
-            border-radius: 8px;
-            padding: 0.5rem 1.2rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .btn-logout {
-            background: white;
-            color: #dc3545;
-            border: 2px solid #dc3545;
-        }
-
-        .btn-logout:hover {
-            background: #dc3545;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-        }
-
-        .content-wrapper {
-            animation: fadeIn 0.5s ease-in;
-            flex: 1;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Dropdown styles */
-        .navbar .dropdown-menu {
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            min-width: 220px;
-            border: none;
-            margin-top: 0.5rem;
-        }
-
-        .navbar .dropdown-item {
-            padding: 0.7rem 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .navbar .dropdown-item:hover,
-        .navbar .dropdown-item:focus {
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            color: var(--primary-color);
-            padding-left: 1.5rem;
-        }
-
-        .navbar .dropdown-divider {
-            margin: 0.5rem 0;
-        }
-
-        /* Main Navigation links */
-        .navbar-nav .nav-link {
-            color: #4a5568;
-            padding: 0.6rem 1.2rem;
-            margin: 0 0.25rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .navbar-nav .nav-link:hover,
-        .navbar-nav .nav-link.active {
-            color: var(--primary-color);
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-        }
-
-        .navbar-nav .nav-link i {
-            font-size: 1.1rem;
-        }
-
-        /* Secondary Academics Navbar */
-        .academics-nav {
-            background: #ffffff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-            display: none;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .academics-nav.show {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .academics-nav .nav-link {
-            color: #4a5568;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .academics-nav .nav-link:hover,
-        .academics-nav .nav-link.active {
-            background: #e9ecef;
-            color: var(--primary-color);
-        }
-
-        .academics-nav .vr {
-            height: 20px;
-            margin: 0 0.5rem;
-            opacity: 0.3;
-        }
-
-    </style>
 
     {% block extra_css %}{% endblock %}
 </head>
 
-<body>
-    <div class="container mt-4 mb-5">
+<body class="min-h-screen bg-gray-50 flex flex-col font-sans">
+    <div class="container mx-auto px-4 py-4 mb-5 flex-1">
         <!-- Main Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white rounded-3 shadow-sm mb-4">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'records:home' %}">
-                    <i class="bi bi-mortarboard-fill"></i>
-                    SchoolAdmin
+        <nav class="bg-white rounded-2xl shadow-md mb-4 px-4 py-3">
+            <div class="flex flex-wrap items-center justify-between">
+                <a href="{% url 'records:home' %}" class="flex items-center gap-2 text-2xl font-bold text-primary-500 hover:text-secondary-500 transition-colors">
+                    <i class="bi bi-mortarboard-fill text-3xl"></i>
+                    <span>SchoolAdmin</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                
+                <button type="button" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100" onclick="toggleMobileMenu()">
+                    <i class="bi bi-list text-2xl" id="menuIcon"></i>
                 </button>
-                {% if request.user.is_authenticated %}
-                <div class="collapse navbar-collapse" id="navbarContent">
 
+                <div class="hidden md:flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0" id="navbarContent">
+                    {% if request.user.is_authenticated %}
                     <!-- Role-Specific Navigation -->
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <div class="flex flex-wrap items-center gap-2">
                         {% if request.user.is_staff %}
                             <!-- Staff/Admin Links -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'records:admin_dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                            </li>
-                            
+                            <a href="{% url 'portal:dashboard' %}" class="nav-link">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
                             {% if not request.user.is_teacher %}
-                                <!-- Student Management Dropdown (for Admins, not Teachers) -->
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="studentMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <!-- Student Management Dropdown -->
+                                <div class="relative group">
+                                    <button class="nav-link flex items-center gap-1">
                                         <i class="bi bi-people-fill"></i> Students
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="studentMenu">
-                                        <li><a class="dropdown-item" href="{% url 'records:student_list' %}">All Students</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'committee:offense_list' %}">Disciplinary Records</a></li>
+                                        <i class="bi bi-chevron-down text-xs"></i>
+                                    </button>
+                                    <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                        <a href="{% url 'records:student_list' %}" class="dropdown-item">All Students</a>
+                                        <a href="{% url 'committee:offense_list' %}" class="dropdown-item">Disciplinary Records</a>
                                         {% if request.user.is_superuser %}
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="{% url 'records:alumni_list' %}">Alumni Records</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'committee:analytics_dashboard' %}">Disciplinary Analytics</a></li>
+                                        <div class="border-t border-gray-200 my-1"></div>
+                                        <a href="{% url 'records:alumni_list' %}" class="dropdown-item">Alumni Records</a>
+                                        <a href="{% url 'committee:analytics_dashboard' %}" class="dropdown-item">Disciplinary Analytics</a>
                                         {% endif %}
-                                    </ul>
-                                </li>
+                                    </div>
+                                </div>
                             {% endif %}
 
-                             <li class="nav-item">
-                                 <a class="nav-link" href="{% url 'academics:dashboard' %}"><i class="bi bi-journal-bookmark-fill"></i> Academics</a>
-                             </li>
+                            <a href="{% url 'academics:dashboard' %}" class="nav-link">
+                                <i class="bi bi-journal-bookmark-fill"></i> Academics
+                            </a>
+                            
+                            {% if request.user.is_teacher %}
+                            <a href="{% url 'portal:teacher_dashboard' %}" class="nav-link">
+                                <i class="bi bi-easel2-fill"></i> Teacher Dashboard
+                            </a>
+                            {% endif %}
 
                             {% if request.user.is_superuser %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="userManagementMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="relative group">
+                                <button class="nav-link flex items-center gap-1">
                                     <i class="bi bi-person-gear"></i> Manage Users
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="userManagementMenu">
-                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}">All Users</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}?type=admin">Admins</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}?type=staff">Staff</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}?type=parent">Parents</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'accounts:user_list' %}?type=student">Students</a></li>
-                                </ul>
-                            </li>
+                                    <i class="bi bi-chevron-down text-xs"></i>
+                                </button>
+                                <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                    <a href="{% url 'accounts:user_list' %}" class="dropdown-item">All Users</a>
+                                    <div class="border-t border-gray-200 my-1"></div>
+                                    <a href="{% url 'accounts:user_list' %}?type=admin" class="dropdown-item">Admins</a>
+                                    <a href="{% url 'accounts:user_list' %}?type=staff" class="dropdown-item">Staff</a>
+                                    <a href="{% url 'accounts:user_list' %}?type=parent" class="dropdown-item">Parents</a>
+                                    <a href="{% url 'accounts:user_list' %}?type=student" class="dropdown-item">Students</a>
+                                </div>
+                            </div>
                             {% endif %}
 
                         {% elif request.user.parent_profile %}
                             <!-- Parent Links -->
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'portal:parent_dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="childrenMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a href="{% url 'portal:dashboard' %}" class="nav-link">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                            <div class="relative group">
+                                <button class="nav-link flex items-center gap-1">
                                     <i class="bi bi-people-fill"></i> My Children
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="childrenMenu">
+                                    <i class="bi bi-chevron-down text-xs"></i>
+                                </button>
+                                <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                     {% for student in request.user.parent_profile.students.all %}
-                                    <li><a class="dropdown-item" href="{% url 'portal:parent_student_detail' student.id %}">{{ student.full_name }}</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    <a href="{% url 'portal:parent_student_detail' student.id %}" class="dropdown-item">{{ student.full_name }}</a>
+                                    {% if not forloop.last %}<div class="border-t border-gray-200 my-1"></div>{% endif %}
                                     {% endfor %}
-                                </ul>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'portal:parent_fees' %}"><i class="bi bi-cash-coin"></i> Fees</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'portal:announcements_list' %}"><i class="bi bi-megaphone"></i> Announcements</a>
-                            </li>
-
+                                </div>
+                            </div>
+                            <a href="{% url 'portal:parent_fees' %}" class="nav-link">
+                                <i class="bi bi-cash-coin"></i> Fees
+                            </a>
+                            <a href="{% url 'portal:announcements_list' %}" class="nav-link">
+                                <i class="bi bi-megaphone"></i> Announcements
+                            </a>
 
                         {% elif request.user.student_profile %}
                             <!-- Student Links -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'portal:student_dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'portal:student_scores' %}"><i class="bi bi-journal-check"></i> My Scores</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'portal:student_attendance' %}"><i class="bi bi-calendar-check"></i> My Attendance</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'portal:student_timetable' %}"><i class="bi bi-table"></i> My Timetable</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'portal:student_reports' %}"><i class="bi bi-file-earmark-text"></i> My Reports</a>
-                            </li>
+                            <a href="{% url 'portal:dashboard' %}" class="nav-link">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                            <a href="{% url 'portal:student_scores' %}" class="nav-link">
+                                <i class="bi bi-journal-check"></i> My Scores
+                            </a>
+                            <a href="{% url 'portal:student_attendance' %}" class="nav-link">
+                                <i class="bi bi-calendar-check"></i> My Attendance
+                            </a>
+                            <a href="{% url 'portal:student_timetable' %}" class="nav-link">
+                                <i class="bi bi-table"></i> My Timetable
+                            </a>
+                            <a href="{% url 'portal:student_reports' %}" class="nav-link">
+                                <i class="bi bi-file-earmark-text"></i> My Reports
+                            </a>
+                            <a href="{% url 'portal:announcements_list' %}" class="nav-link">
+                                <i class="bi bi-megaphone"></i> Announcements
+                            </a>
                         {% endif %}
-                    </ul>
+                    </div>
                     {% endif %}
 
-
-                <div class="collapse navbar-collapse" id="navbarContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <!-- Right Side Navigation -->
+                    <div class="flex items-center gap-3 ml-auto">
                         {% if not request.user.is_authenticated %}
                         <!-- Portal Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="adminMenu" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="relative group">
+                            <button class="nav-link flex items-center gap-1">
                                 <i class="bi bi-box-arrow-in-right"></i> Portal Login
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="adminMenu">
-                                <li><a class="dropdown-item" href="{% url 'accounts:login' %}?type=student">
-                                        <i class="bi bi-person me-2"></i>Student Portal
-                                    </a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:login' %}?type=parent">
-                                        <i class="bi bi-people me-2"></i>Parent Portal
-                                    </a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:login' %}?type=staff">
-                                        <i class="bi bi-person-workspace me-2"></i>Staff Portal
-                                    </a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:login' %}?type=admin">
-                                        <i class="bi bi-shield-lock me-2"></i>Admin Portal
-                                    </a></li>
-                            </ul>
-                        </li>
+                                <i class="bi bi-chevron-down text-xs"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="{% url 'accounts:login' %}?type=student" class="dropdown-item">
+                                    <i class="bi bi-person"></i> Student Portal
+                                </a>
+                                <a href="{% url 'accounts:login' %}?type=parent" class="dropdown-item">
+                                    <i class="bi bi-people"></i> Parent Portal
+                                </a>
+                                <div class="border-t border-gray-200 my-1"></div>
+                                <a href="{% url 'accounts:login' %}?type=staff" class="dropdown-item">
+                                    <i class="bi bi-person-workspace"></i> Staff Portal
+                                </a>
+                                <a href="{% url 'accounts:login' %}?type=admin" class="dropdown-item">
+                                    <i class="bi bi-shield-lock"></i> Admin Portal
+                                </a>
+                            </div>
+                        </div>
                         {% endif %}
+                        
                         {% if request.user.is_authenticated %}
-                        <!-- Common Authenticated User Links (Profile, Messages, Logout) -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i> {{ request.user.get_full_name|default:request.user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                                <li><a class="dropdown-item" href="{% url 'portal:profile' %}">
-                                    <i class="bi bi-person-vcard me-2"></i>My Profile
-                                </a></li>
-                                <li><a class="dropdown-item" href="{% url 'portal:messages_inbox' %}">
-                                    <i class="bi bi-envelope me-2"></i>Messages
-                                </a></li>
-                                <li><a class="dropdown-item" href="{% url 'portal:change_password' %}">
-                                    <i class="bi bi-key me-2"></i>Change Password
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a href="{% url 'accounts:logout' %}" class="dropdown-item text-danger">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        <!-- User Menu -->
+                        <div class="relative group">
+                            <button class="nav-link flex items-center gap-2">
+                                <i class="bi bi-person-circle text-xl"></i>
+                                <span class="hidden lg:inline">{{ request.user.get_full_name|default:request.user.username }}</span>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="{% url 'portal:profile' %}" class="dropdown-item">
+                                    <i class="bi bi-person-vcard"></i> My Profile
+                                </a>
+                                <a href="{% url 'portal:messages_inbox' %}" class="dropdown-item">
+                                    <i class="bi bi-envelope"></i> Messages
+                                </a>
+                                <a href="{% url 'portal:change_password' %}" class="dropdown-item">
+                                    <i class="bi bi-key"></i> Change Password
+                                </a>
+                                <div class="border-t border-gray-200 my-1"></div>
+                                <a href="{% url 'accounts:logout' %}" class="dropdown-item text-red-600 hover:bg-red-50">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a>
+                            </div>
+                        </div>
                         {% endif %}
-                    </ul>
+                    </div>
                 </div>
             </div>
         </nav>
 
         <!-- Secondary Academics Navbar (for Staff) -->
         {% if request.user.is_staff %}
-        <nav class="nav academics-nav" id="academics-subnav">
-            <a class="nav-link" href="{% url 'academics:dashboard' %}">
+        <nav class="hidden md:flex items-center gap-2 bg-white rounded-xl shadow-sm px-4 py-3 mb-4 overflow-x-auto" id="academics-subnav">
+            <a href="{% url 'academics:dashboard' %}" class="academics-nav-link">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <div class="vr"></div>
-            <a class="nav-link" href="{% url 'academics:session_list' %}">Sessions</a>
-            <a class="nav-link" href="{% url 'academics:term_list' %}">Terms</a>
-            <a class="nav-link" href="{% url 'academics:classroom_list' %}">Classes</a>
-            <a class="nav-link" href="{% url 'academics:subject_list' %}">Subjects</a>
-            <a class="nav-link" href="{% url 'academics:assignment_list' %}">Assignments</a>
-            <div class="vr"></div>
-            <a class="nav-link" href="{% url 'academics:assessment_list' %}">Assessments</a>
-            <a class="nav-link" href="{% url 'academics:assessment_type_list' %}">Types</a>
-            <a class="nav-link" href="{% url 'academics:import_scores' %}">Import</a>
-            <div class="vr"></div>
-            <a class="nav-link" href="{% url 'academics:report_card_list' %}">Report Cards</a>
-            <a class="nav-link" href="{% url 'academics:performance_analytics' %}">Analytics</a>
-            <a class="nav-link" href="{% url 'academics:comment_list' %}">Comments</a>
-          
+            <div class="w-px h-5 bg-gray-300 mx-1"></div>
+            <a href="{% url 'academics:session_list' %}" class="academics-nav-link">Sessions</a>
+            <a href="{% url 'academics:term_list' %}" class="academics-nav-link">Terms</a>
+            <a href="{% url 'academics:classroom_list' %}" class="academics-nav-link">Classes</a>
+            <a href="{% url 'academics:subject_list' %}" class="academics-nav-link">Subjects</a>
+            <a href="{% url 'academics:assignment_list' %}" class="academics-nav-link">Assignments</a>
+            <div class="w-px h-5 bg-gray-300 mx-1"></div>
+            <a href="{% url 'academics:assessment_list' %}" class="academics-nav-link">Assessments</a>
+            <a href="{% url 'academics:assessment_type_list' %}" class="academics-nav-link">Types</a>
+            <a href="{% url 'academics:import_scores' %}" class="academics-nav-link">Import</a>
+            <div class="w-px h-5 bg-gray-300 mx-1"></div>
+            <a href="{% url 'academics:report_card_list' %}" class="academics-nav-link">Report Cards</a>
+            <a href="{% url 'academics:performance_analytics' %}" class="academics-nav-link">Analytics</a>
+            <a href="{% url 'academics:comment_list' %}" class="academics-nav-link">Comments</a>
+            <div class="w-px h-5 bg-gray-300 mx-1"></div>
+            <a href="{% url 'academics:timetable_list' %}" class="academics-nav-link">Timetable</a>
+            <a href="{% url 'academics:publication_center' %}" class="academics-nav-link">Publications</a>
+            <a href="{% url 'academics:attendance_report' %}" class="academics-nav-link">Attendance</a>
         </nav>
         {% endif %}
 
         <!-- Messages/Alerts -->
         {% if messages %}
-
-        <div class="messages-container mb-4">
+        <div class="mb-4 space-y-2">
             {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                <i
-                    class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-triangle{% elif message.tags == 'warning' %}exclamation-circle{% else %}info-circle{% endif %}-fill me-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-{{ message.tags }} flex items-center gap-3 p-4 rounded-xl shadow-sm animate-fadeIn" role="alert">
+                <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}exclamation-triangle{% elif message.tags == 'warning' %}exclamation-circle{% else %}info-circle{% endif %}-fill text-xl flex-shrink-0"></i>
+                <span class="flex-1">{{ message }}</span>
+                <button type="button" class="text-gray-500 hover:text-gray-700" onclick="this.parentElement.remove()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
             {% endfor %}
         </div>
         {% endif %}
 
         <!-- Main Content -->
-        <div class="content-wrapper">
+        <div class="content-wrapper animate-fadeIn">
             {% block content %}{% endblock %}
         </div>
     </div>
 
     <!-- Footer -->
-    <footer>
-        <div class="container text-center text-muted">
-            <p class="mb-2" style="color: var(--primary-color);">
-                <i class="bi bi-mortarboard-fill text-primary"></i>
-                <strong>Student Management System</strong>
+    <footer class="bg-white border-t border-gray-200 py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center text-gray-600">
+            <p class="mb-2">
+                <i class="bi bi-mortarboard-fill text-primary-500"></i>
+                <strong class="text-primary-600">Student Management System</strong>
             </p>
-            <p class="mb-0">
-                <small>&copy; {% now "Y" %} All rights reserved. |
-                    <a href="#" class="text-decoration-none">Privacy Policy</a> |
-                    <a href="#" class="text-decoration-none">Terms of Service</a>
-                </small>
+            <p class="text-sm">
+                &copy; {% now "Y" %} All rights reserved. |
+                <a href="#" class="text-primary-600 hover:text-primary-700 hover:underline">Privacy Policy</a> |
+                <a href="#" class="text-primary-600 hover:text-primary-700 hover:underline">Terms of Service</a>
             </p>
         </div>
     </footer>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .nav-link {
+            @apply flex items-center gap-2 px-4 py-2 text-gray-700 rounded-lg font-medium transition-all duration-200 hover:bg-primary-50 hover:text-primary-600;
+        }
+        .nav-link.active {
+            @apply bg-primary-100 text-primary-700;
+        }
+        .dropdown-item {
+            @apply block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors flex items-center gap-2;
+        }
+        .academics-nav-link {
+            @apply px-3 py-1.5 text-sm font-medium text-gray-600 rounded-lg whitespace-nowrap transition-all duration-200 hover:bg-gray-100 hover:text-primary-600;
+        }
+        .academics-nav-link.active {
+            @apply bg-primary-100 text-primary-600;
+        }
+        .alert-success {
+            @apply bg-green-50 text-green-800 border-l-4 border-green-500;
+        }
+        .alert-error, .alert-danger {
+            @apply bg-red-50 text-red-800 border-l-4 border-red-500;
+        }
+        .alert-warning {
+            @apply bg-yellow-50 text-yellow-800 border-l-4 border-yellow-500;
+        }
+        .alert-info {
+            @apply bg-blue-50 text-blue-800 border-l-4 border-blue-500;
+        }
+    </style>
 
-    <!-- Custom JavaScript -->
     <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('navbarContent');
+            const icon = document.getElementById('menuIcon');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+            menu.classList.toggle('flex-col');
+            if (icon.classList.contains('bi-list')) {
+                icon.classList.remove('bi-list');
+                icon.classList.add('bi-x-lg');
+            } else {
+                icon.classList.remove('bi-x-lg');
+                icon.classList.add('bi-list');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             // Auto-hide alerts after 5 seconds
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(alert => {
                 setTimeout(() => {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
+                    alert.style.transition = 'opacity 0.5s ease-out';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
                 }, 5000);
             });
 
@@ -458,17 +364,14 @@
             handleAcademicsNav();
         });
 
-        // Set active class to current page navigation
         function setActiveNav() {
             const currentPath = window.location.pathname;
 
             // Main navigation
-            const mainNavLinks = document.querySelectorAll('.main-navbar .navbar-nav .nav-link');
+            const mainNavLinks = document.querySelectorAll('.nav-link');
             mainNavLinks.forEach(link => {
                 if (link.href) {
                     const linkPath = new URL(link.href).pathname;
-
-                    // Check if current path starts with link path
                     if (currentPath.startsWith(linkPath) && linkPath !== '/') {
                         link.classList.add('active');
                     }
@@ -476,7 +379,7 @@
             });
 
             // Academics sub-navigation
-            const academicsNavLinks = document.querySelectorAll('.academics-nav .nav-link');
+            const academicsNavLinks = document.querySelectorAll('.academics-nav-link');
             academicsNavLinks.forEach(link => {
                 if (link.href) {
                     const linkPath = new URL(link.href).pathname;
@@ -487,11 +390,11 @@
             });
         }
 
-        // Show/hide academics sub-navigation
         function handleAcademicsNav() {
             const academicsSubnav = document.getElementById('academics-subnav');
             if (academicsSubnav && window.location.pathname.startsWith('/academics/')) {
-                academicsSubnav.classList.add('show');
+                academicsSubnav.classList.remove('hidden');
+                academicsSubnav.classList.add('flex');
             }
         }
     </script>

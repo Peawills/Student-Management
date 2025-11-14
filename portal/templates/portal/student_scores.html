@@ -3,47 +3,50 @@
 {% block title %}My Scores{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-journal-check"></i> My Scores
-        {% if current_term %}<small class="text-muted">({{ current_term }})</small>{% endif %}
-    </h1>
+<div class="container mx-auto px-4 py-6">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-journal-check text-primary-500"></i> My Scores
+            {% if current_term %}<small class="text-gray-600 text-lg font-normal">({{ current_term }})</small>{% endif %}
+        </h1>
+    </div>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'portal:student_dashboard' %}">Student Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">My Scores</li>
+    <nav class="mb-6" aria-label="breadcrumb">
+        <ol class="flex items-center gap-2 text-sm">
+            <li><a href="{% url 'portal:student_dashboard' %}" class="text-primary-600 hover:text-primary-700">Student Dashboard</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li class="text-gray-500">My Scores</li>
         </ol>
     </nav>
 
     {% if scores_by_subject %}
         {% for subject_name, scores_list in scores_by_subject.items %}
-            <div class="card shadow-sm mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ subject_name }}</h6>
+            <div class="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
+                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4">
+                    <h6 class="text-lg font-bold">{{ subject_name }}</h6>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
                                 <tr>
-                                    <th>Assessment</th>
-                                    <th>Type</th>
-                                    <th>Date</th>
-                                    <th>Score</th>
-                                    <th>Max Score</th>
-                                    <th>Remarks</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Assessment</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Score</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Max Score</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Remarks</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="bg-white divide-y divide-gray-200">
                                 {% for score in scores_list %}
-                                    <tr>
-                                        <td>{{ score.assessment.title }}</td>
-                                        <td>{{ score.assessment.assessment_type.name }}</td>
-                                        <td>{{ score.assessment.date|date:"M d, Y" }}</td>
-                                        <td>{{ score.score|floatformat:1 }}</td>
-                                        <td>{{ score.assessment.max_score|floatformat:0 }}</td>
-                                        <td>{{ score.remarks|default:"-" }}</td>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-medium">{{ score.assessment.title }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ score.assessment.assessment_type.name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ score.assessment.date|date:"M d, Y" }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 font-semibold">{{ score.score|floatformat:1 }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ score.assessment.max_score|floatformat:0 }}</td>
+                                        <td class="px-6 py-4 text-gray-700">{{ score.remarks|default:"-" }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -53,7 +56,12 @@
             </div>
         {% endfor %}
     {% else %}
-        <div class="alert alert-info" role="alert">No scores found for you in the current term.</div>
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-xl">
+            <div class="flex items-center gap-3">
+                <i class="bi bi-info-circle-fill text-blue-600 text-xl"></i>
+                <p class="text-blue-800 font-medium">No scores found for you in the current term.</p>
+            </div>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

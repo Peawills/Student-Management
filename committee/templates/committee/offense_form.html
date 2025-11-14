@@ -3,301 +3,24 @@
 
 {% block title %}{{ action }} Offense Record{% endblock %}
 
-{% block extra_css %}
-<style>
-    .form-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 1.5rem;
-    }
-
-    .back-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #dc2626;
-        text-decoration: none;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .back-button:hover {
-        color: #991b1b;
-        gap: 0.75rem;
-    }
-
-    .form-header {
-        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 16px;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 30px rgba(220, 38, 38, 0.3);
-    }
-
-    .form-header h1 {
-        font-size: 2rem;
-        font-weight: 800;
-        margin: 0 0 0.5rem 0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .form-header p {
-        margin: 0;
-        opacity: 0.9;
-    }
-
-    .form-card {
-        background: white;
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #f0f0f0;
-        margin-bottom: 2rem;
-    }
-
-    .section-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #1f2937;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 3px solid #f0f0f0;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .section-title i {
-        color: #dc2626;
-        font-size: 1.5rem;
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .form-group-full {
-        grid-column: 1 / -1;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #374151;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.95rem;
-    }
-
-    .form-label.required::after {
-        content: '*';
-        color: #dc2626;
-        margin-left: 0.25rem;
-    }
-
-    .form-control {
-        padding: 0.85rem 1rem;
-        border: 2px solid #e5e7eb;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        font-family: inherit;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #dc2626;
-        box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.15);
-    }
-
-    textarea.form-control {
-        resize: vertical;
-        min-height: 120px;
-        line-height: 1.6;
-    }
-
-    .form-check {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1rem;
-        background: #f9fafb;
-        border-radius: 10px;
-        border: 2px solid #e5e7eb;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .form-check:hover {
-        border-color: #dc2626;
-        background: #fee2e2;
-    }
-
-    .form-check-input {
-        width: 1.5rem;
-        height: 1.5rem;
-        cursor: pointer;
-        accent-color: #dc2626;
-    }
-
-    .form-check-label {
-        font-weight: 600;
-        color: #374151;
-        cursor: pointer;
-        flex: 1;
-    }
-
-    .help-text {
-        font-size: 0.85rem;
-        color: #6b7280;
-        margin-top: 0.25rem;
-    }
-
-    .invalid-feedback {
-        color: #dc2626;
-        font-size: 0.85rem;
-        margin-top: 0.25rem;
-        display: block;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 2rem;
-        padding-top: 2rem;
-        border-top: 2px solid #f0f0f0;
-    }
-
-    .btn-submit {
-        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-        color: white;
-        padding: 1rem 2.5rem;
-        border-radius: 10px;
-        font-weight: 700;
-        font-size: 1rem;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
-    }
-
-    .btn-cancel {
-        background: white;
-        color: #6b7280;
-        padding: 1rem 2rem;
-        border-radius: 10px;
-        font-weight: 600;
-        border: 2px solid #e5e7eb;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-cancel:hover {
-        border-color: #dc2626;
-        color: #dc2626;
-        background: #fee2e2;
-    }
-
-    .alert {
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-weight: 600;
-    }
-
-    .alert-danger {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 2px solid #fecaca;
-    }
-
-    .alert-success {
-        background: #d1fae5;
-        color: #065f46;
-        border: 2px solid #a7f3d0;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form-container {
-            padding: 1rem;
-        }
-
-        .form-header {
-            padding: 1.5rem;
-        }
-
-        .form-header h1 {
-            font-size: 1.5rem;
-        }
-
-        .form-card {
-            padding: 1.5rem;
-        }
-
-        .form-row {
-            grid-template-columns: 1fr;
-        }
-
-        .form-actions {
-            flex-direction: column;
-        }
-
-        .btn-submit,
-        .btn-cancel {
-            width: 100%;
-            justify-content: center;
-        }
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="form-container">
-    <a href="{% url 'committee:offense_list' %}" class="back-button">
+<div class="container mx-auto px-4 py-6 max-w-4xl">
+    <a href="{% url 'committee:offense_list' %}" class="inline-flex items-center gap-2 text-red-600 font-semibold hover:text-red-700 transition-colors mb-6">
         <i class="bi bi-arrow-left"></i> Back to Records
     </a>
 
-    <div class="form-header">
-        <h1>
+    <div class="bg-gradient-to-br from-red-600 to-red-800 text-white p-6 md:p-8 rounded-2xl mb-6 shadow-lg">
+        <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-3 mb-2">
             <i class="bi bi-{% if action == 'Create' %}plus-circle{% else %}pencil{% endif %}"></i>
             {{ action }} Offense Record
         </h1>
-        <p>Fill in the details of the disciplinary incident</p>
+        <p class="opacity-90">Fill in the details of the disciplinary incident</p>
     </div>
 
     {% if form.errors %}
-    <div class="alert alert-danger">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        Please correct the errors below.
+    <div class="mb-6 p-4 rounded-xl bg-red-50 text-red-800 border-l-4 border-red-500 flex items-center gap-3">
+        <i class="bi bi-exclamation-triangle-fill text-xl"></i>
+        <span>Please correct the errors below.</span>
     </div>
     {% endif %}
 
@@ -305,231 +28,193 @@
         {% csrf_token %}
 
         <!-- Student Information -->
-        <div class="form-card">
-            <h3 class="section-title">
-                <i class="bi bi-person"></i>
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3">
+                <i class="bi bi-person text-red-600"></i>
                 Student Information
             </h3>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label required">
-                        <i class="bi bi-person-badge"></i>
-                        Student Name
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="bi bi-person-badge mr-2"></i>Student Name <span class="text-red-600">*</span>
                     </label>
-                    {{ form.student_name }}
+                    <input type="text" name="student_name" value="{{ form.student_name.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.student_name.errors %}border-red-500{% endif %}">
                     {% if form.student_name.errors %}
-                    <span class="invalid-feedback">{{ form.student_name.errors.0 }}</span>
+                    <div class="mt-2 text-sm text-red-600">{{ form.student_name.errors.0 }}</div>
                     {% endif %}
                 </div>
-                <div class="form-group">
-                    <label class="form-label required">
-                        <i class="bi bi-book"></i>
-                        Student Class
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="bi bi-book mr-2"></i>Student Class <span class="text-red-600">*</span>
                     </label>
-                    {{ form.student_class }}
+                    <input type="text" name="student_class" value="{{ form.student_class.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.student_class.errors %}border-red-500{% endif %}">
                     {% if form.student_class.errors %}
-                    <span class="invalid-feedback">{{ form.student_class.errors.0 }}</span>
+                    <div class="mt-2 text-sm text-red-600">{{ form.student_class.errors.0 }}</div>
                     {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- Offense Details -->
-        <div class="form-card">
-            <h3 class="section-title">
-                <i class="bi bi-exclamation-triangle"></i>
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3">
+                <i class="bi bi-exclamation-triangle text-red-600"></i>
                 Offense Details
             </h3>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label required">
-                        <i class="bi bi-tag"></i>
-                        Event Type
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="bi bi-tag mr-2"></i>Event Type <span class="text-red-600">*</span>
                     </label>
-                    {{ form.event_type }}
+                    <select name="event_type" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.event_type.errors %}border-red-500{% endif %}">
+                        {% for value, label in form.event_type.field.choices %}
+                        <option value="{{ value }}" {% if form.event_type.value == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
                     {% if form.event_type.errors %}
-                    <span class="invalid-feedback">{{ form.event_type.errors.0 }}</span>
+                    <div class="mt-2 text-sm text-red-600">{{ form.event_type.errors.0 }}</div>
                     {% endif %}
                 </div>
-                <div class="form-group">
-                    <label class="form-label required">
-                        <i class="bi bi-calendar3"></i>
-                        Offense Date
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="bi bi-calendar3 mr-2"></i>Offense Date <span class="text-red-600">*</span>
                     </label>
-                    {{ form.offense_date }}
+                    <input type="date" name="offense_date" value="{{ form.offense_date.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.offense_date.errors %}border-red-500{% endif %}">
                     {% if form.offense_date.errors %}
-                    <span class="invalid-feedback">{{ form.offense_date.errors.0 }}</span>
+                    <div class="mt-2 text-sm text-red-600">{{ form.offense_date.errors.0 }}</div>
                     {% endif %}
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group form-group-full">
-                    <label class="form-label required">
-                        <i class="bi bi-file-text"></i>
-                        Offense Description
-                    </label>
-                    {{ form.offense_description }}
-                    {% if form.offense_description.errors %}
-                    <span class="invalid-feedback">{{ form.offense_description.errors.0 }}</span>
-                    {% endif %}
-                    <span class="help-text">Provide a detailed description of the incident</span>
-                </div>
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="bi bi-file-text mr-2"></i>Offense Description <span class="text-red-600">*</span>
+                </label>
+                <textarea name="offense_description" rows="4" required
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.offense_description.errors %}border-red-500{% endif %}">{{ form.offense_description.value|default:'' }}</textarea>
+                {% if form.offense_description.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.offense_description.errors.0 }}</div>
+                {% endif %}
+                <small class="text-gray-500 mt-1 block">Provide a detailed description of the incident</small>
             </div>
-            <div class="form-row">
-                <div class="form-group form-group-full">
-                    <label class="form-label required">
-                        <i class="bi bi-geo-alt"></i>
-                        Location
-                    </label>
-                    {{ form.location }}
-                    {% if form.location.errors %}
-                    <span class="invalid-feedback">{{ form.location.errors.0 }}</span>
-                    {% endif %}
-                </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="bi bi-geo-alt mr-2"></i>Location <span class="text-red-600">*</span>
+                </label>
+                <input type="text" name="location" value="{{ form.location.value|default:'' }}" required
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.location.errors %}border-red-500{% endif %}">
+                {% if form.location.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.location.errors.0 }}</div>
+                {% endif %}
             </div>
         </div>
 
         <!-- Involved Parties -->
-        <div class="form-card">
-            <h3 class="section-title">
-                <i class="bi bi-people"></i>
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3">
+                <i class="bi bi-people text-red-600"></i>
                 Involved Parties
             </h3>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label required">
-                        <i class="bi bi-eye"></i>
-                        Witness Name
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="bi bi-eye mr-2"></i>Witness Name <span class="text-red-600">*</span>
                     </label>
-                    {{ form.witness_name }}
+                    <input type="text" name="witness_name" value="{{ form.witness_name.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.witness_name.errors %}border-red-500{% endif %}">
                     {% if form.witness_name.errors %}
-                    <span class="invalid-feedback">{{ form.witness_name.errors.0 }}</span>
+                    <div class="mt-2 text-sm text-red-600">{{ form.witness_name.errors.0 }}</div>
                     {% endif %}
                 </div>
-                <div class="form-group">
-                    <label class="form-label required">
-                        <i class="bi bi-person-x"></i>
-                        Victim Name
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="bi bi-person-x mr-2"></i>Victim Name <span class="text-red-600">*</span>
                     </label>
-                    {{ form.victim_name }}
+                    <input type="text" name="victim_name" value="{{ form.victim_name.value|default:'' }}" required
+                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.victim_name.errors %}border-red-500{% endif %}">
                     {% if form.victim_name.errors %}
-                    <span class="invalid-feedback">{{ form.victim_name.errors.0 }}</span>
+                    <div class="mt-2 text-sm text-red-600">{{ form.victim_name.errors.0 }}</div>
                     {% endif %}
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="bi bi-book"></i>
-                        Victim Class
-                    </label>
-                    {{ form.victim_class }}
-                    {% if form.victim_class.errors %}
-                    <span class="invalid-feedback">{{ form.victim_class.errors.0 }}</span>
-                    {% endif %}
-                    <span class="help-text">Optional if victim is not a student</span>
-                </div>
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="bi bi-book mr-2"></i>Victim Class
+                </label>
+                <input type="text" name="victim_class" value="{{ form.victim_class.value|default:'' }}"
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.victim_class.errors %}border-red-500{% endif %}">
+                {% if form.victim_class.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.victim_class.errors.0 }}</div>
+                {% endif %}
+                <small class="text-gray-500 mt-1 block">Optional if victim is not a student</small>
             </div>
-            <div class="form-row">
-                <div class="form-group form-group-full">
-                    <label class="form-label required">
-                        <i class="bi bi-heart-pulse"></i>
-                        Care Given to Victim
-                    </label>
-                    {{ form.care_given_to_victim }}
-                    {% if form.care_given_to_victim.errors %}
-                    <span class="invalid-feedback">{{ form.care_given_to_victim.errors.0 }}</span>
-                    {% endif %}
-                    <span class="help-text">Describe any first aid or support provided</span>
-                </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="bi bi-heart-pulse mr-2"></i>Care Given to Victim <span class="text-red-600">*</span>
+                </label>
+                <textarea name="care_given_to_victim" rows="3" required
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.care_given_to_victim.errors %}border-red-500{% endif %}">{{ form.care_given_to_victim.value|default:'' }}</textarea>
+                {% if form.care_given_to_victim.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.care_given_to_victim.errors.0 }}</div>
+                {% endif %}
+                <small class="text-gray-500 mt-1 block">Describe any first aid or support provided</small>
             </div>
         </div>
 
         <!-- Action Taken -->
-        <div class="form-card">
-            <h3 class="section-title">
-                <i class="bi bi-shield-check"></i>
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3">
+                <i class="bi bi-shield-check text-red-600"></i>
                 Action Taken
             </h3>
-            <div class="form-row">
-                <div class="form-group form-group-full">
-                    <label class="form-label required">
-                        <i class="bi bi-gavel"></i>
-                        Sanction
-                    </label>
-                    {{ form.sanction }}
-                    {% if form.sanction.errors %}
-                    <span class="invalid-feedback">{{ form.sanction.errors.0 }}</span>
-                    {% endif %}
-                    <span class="help-text">Disciplinary action taken</span>
-                </div>
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="bi bi-gavel mr-2"></i>Sanction <span class="text-red-600">*</span>
+                </label>
+                <textarea name="sanction" rows="3" required
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.sanction.errors %}border-red-500{% endif %}">{{ form.sanction.value|default:'' }}</textarea>
+                {% if form.sanction.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.sanction.errors.0 }}</div>
+                {% endif %}
+                <small class="text-gray-500 mt-1 block">Disciplinary action taken</small>
             </div>
-            <div class="form-row">
-                <div class="form-group form-group-full">
-                    <label class="form-check">
-                        {{ form.parent_notified }}
-                        <span class="form-check-label">
-                            <i class="bi bi-telephone"></i>
-                            Parent/Guardian has been notified
-                        </span>
+            <div class="mb-6">
+                <div class="flex items-center p-4 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-red-500 transition-colors cursor-pointer">
+                    <input type="checkbox" name="parent_notified" id="id_parent_notified" {% if form.parent_notified.value %}checked{% endif %}
+                        class="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500 focus:ring-2">
+                    <label for="id_parent_notified" class="ml-3 font-semibold text-gray-700 cursor-pointer flex items-center gap-2">
+                        <i class="bi bi-telephone"></i>
+                        Parent/Guardian has been notified
                     </label>
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group form-group-full">
-                    <label class="form-label">
-                        <i class="bi bi-chat-square-text"></i>
-                        Additional Comments
-                    </label>
-                    {{ form.other_comments }}
-                    {% if form.other_comments.errors %}
-                    <span class="invalid-feedback">{{ form.other_comments.errors.0 }}</span>
-                    {% endif %}
-                    <span class="help-text">Optional: Any other relevant information</span>
-                </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="bi bi-chat-square-text mr-2"></i>Additional Comments
+                </label>
+                <textarea name="other_comments" rows="3"
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.other_comments.errors %}border-red-500{% endif %}">{{ form.other_comments.value|default:'' }}</textarea>
+                {% if form.other_comments.errors %}
+                <div class="mt-2 text-sm text-red-600">{{ form.other_comments.errors.0 }}</div>
+                {% endif %}
+                <small class="text-gray-500 mt-1 block">Optional: Any other relevant information</small>
             </div>
         </div>
 
         <!-- Form Actions -->
-        <div class="form-actions">
-            <button type="submit" class="btn-submit">
+        <div class="flex flex-col sm:flex-row gap-4">
+            <button type="submit" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all">
                 <i class="bi bi-check-circle"></i>
                 {{ action }} Record
             </button>
-            <a href="{% url 'committee:offense_list' %}" class="btn-cancel">
+            <a href="{% url 'committee:offense_list' %}" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-red-500 hover:text-red-600 transition-colors">
                 <i class="bi bi-x-circle"></i>
                 Cancel
             </a>
         </div>
     </form>
 </div>
-
-<script>
-    // Add form-control class to all inputs
-    document.querySelectorAll('input[type="text"], input[type="date"], textarea, select').forEach(input => {
-        if (!input.classList.contains('form-check-input')) {
-            input.classList.add('form-control');
-        }
-    });
-
-    // Add form-check-input class to checkboxes
-    document.querySelectorAll('input[type="checkbox"]').forEach(input => {
-        input.classList.add('form-check-input');
-    });
-
-    // Form validation feedback
-    document.querySelector('form').addEventListener('submit', function (e) {
-        const requiredFields = this.querySelectorAll('[required]');
-        let isValid = true;
-
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                isValid = false;
-                field.style.borderColor = '#dc2626';
-            } else {
-                field.style.borderColor = '#e5e7eb';
-            }
-        });
-    });
-</script>
 {% endblock %}

@@ -1,0 +1,231 @@
+{% extends 'records/base.html' %}
+{% block title %}Prepare Report Cards{% endblock %}
+
+{% block extra_css %}
+<style>
+    .student-card {
+        border-left: 4px solid #0d6efd;
+        transition: all 0.3s ease;
+    }
+    .student-card:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    .saving-indicator {
+        display: none;
+        color: #6c757d;
+        font-style: italic;
+        font-size: 0.8rem;
+    }
+    .saved-indicator {
+        display: none;
+        color: #198754;
+        font-weight: bold;
+        font-size: 0.8rem;
+    }
+    .error-indicator {
+        display: none;
+        color: #dc3545;
+        font-weight: bold;
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-pencil-square"></i> Prepare Report Cards</h2>
+            <p class="text-muted">Enter remarks and skills for each student before final generation.</p>
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Select Class and Term</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label for="id_classroom" class="form-label fw-bold">Classroom</label>
+                    {{ form.classroom }}
+                </div>
+                <div class="col-md-5">
+                    <label for="id_term" class="form-label fw-bold">Term</label>
+                    {{ form.term }}
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-people"></i> Load Students
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if classroom and term %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Entries for: <strong>{{ classroom }} - {{ term }}</strong></h4>
+        <form action="{% url 'academics:finalize_report_cards' %}" method="post" onsubmit="return confirm('Are you sure you want to finalize and generate all report cards for this class? This will calculate ranks and averages.');">
+            {% csrf_token %}
+            <input type="hidden" name="classroom_id" value="{{ classroom.id }}">
+            <input type="hidden" name="term_id" value="{{ term.id }}">
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="bi bi-check-all"></i> Finalize & Generate All Report Cards
+            </button>
+        </form>
+    </div>
+
+    {% for student in students %}
+    <div class="card shadow-sm mb-3 student-card" id="student-card-{{ student.id }}">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">{{ forloop.counter }}. {{ student.full_name }} ({{ student.admission_no }})</h6>
+            <div>
+                <span class="saving-indicator" id="saving-{{ student.id }}"><i class="bi bi-arrow-repeat"></i> Saving...</span>
+                <span class="saved-indicator" id="saved-{{ student.id }}"><i class="bi bi-check-circle-fill"></i> Saved</span>
+                <span class="error-indicator" id="error-{{ student.id }}"><i class="bi bi-x-circle-fill"></i> Error</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-3 data-form" data-student-id="{{ student.id }}">
+                <!-- Remarks -->
+                <div class="col-md-6">
+                    <label class="form-label">Class Teacher's Remarks</label>
+                    <textarea name="class_teacher_remarks" class="form-control" rows="3">{{ student.existing_report.class_teacher_remarks|default:'' }}</textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Principal's Remarks</label>
+                    <textarea name="principal_remarks" class="form-control" rows="3">{{ student.existing_report.principal_remarks|default:'' }}</textarea>
+                </div>
+
+                <!-- Attendance -->
+                <div class="col-md-6">
+                    <label class="form-label">Days Present</label>
+                    <input type="number" name="days_present" class="form-control" value="{{ student.existing_report.days_present|default:0 }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Days Absent</label>
+                    <input type="number" name="days_absent" class="form-control" value="{{ student.existing_report.days_absent|default:0 }}">
+                </div>
+
+                <!-- Skills -->
+                <div class="col-12"><hr></div>
+                <h6 class="col-12">Affective & Psychomotor Skills</h6>
+                {% for field_name, label in student.existing_report.get_skill_fields.items %}
+                <div class="col-md-4 col-lg-2">
+                    <label class="form-label">{{ label }}</label>
+                    <select name="{{ field_name }}" class="form-select">
+                        {% with current_value=student.existing_report|get_attribute:field_name %}
+                        {% for value, display in skill_choices %}
+                            <option value="{{ value }}" {% if value == current_value %}selected{% endif %}>{{ display }}</option>
+                        {% endfor %}
+                        {% endwith %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const classroomId = '{{ classroom.id|default:"" }}';
+    const termId = '{{ term.id|default:"" }}';
+    const csrftoken = getCookie('csrftoken');
+
+    // Use a timer to save data after user stops typing/changing inputs
+    let saveTimeout;
+
+    document.querySelectorAll('.data-form').forEach(form => {
+        form.addEventListener('input', function(event) {
+            clearTimeout(saveTimeout);
+            const studentId = form.dataset.studentId;
+            
+            // Show "saving" indicator
+            showIndicator(studentId, 'saving');
+
+            saveTimeout = setTimeout(() => {
+                saveStudentData(studentId, form);
+            }, 1500); // Wait 1.5 seconds after last input
+        });
+    });
+
+    function saveStudentData(studentId, formElement) {
+        const data = {
+            student_id: studentId,
+            term_id: termId,
+            classroom_id: classroomId,
+            class_teacher_remarks: formElement.querySelector('[name="class_teacher_remarks"]').value,
+            principal_remarks: formElement.querySelector('[name="principal_remarks"]').value,
+            days_present: formElement.querySelector('[name="days_present"]').value,
+            days_absent: formElement.querySelector('[name="days_absent"]').value,
+            punctuality: formElement.querySelector('[name="punctuality"]').value,
+            attendance_in_class: formElement.querySelector('[name="attendance_in_class"]').value,
+            honesty: formElement.querySelector('[name="honesty"]').value,
+            neatness: formElement.querySelector('[name="neatness"]').value,
+            handwriting: formElement.querySelector('[name="handwriting"]').value,
+            sports_and_games: formElement.querySelector('[name="sports_and_games"]').value,
+        };
+
+        fetch("{% url 'academics:ajax_save_report_card_data' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                showIndicator(studentId, 'saved');
+            } else {
+                showIndicator(studentId, 'error');
+                console.error('Save error:', result.message);
+            }
+        })
+        .catch(error => {
+            showIndicator(studentId, 'error');
+            console.error('Fetch error:', error);
+        });
+    }
+
+    function showIndicator(studentId, type) {
+        // Hide all indicators first
+        document.getElementById(`saving-${studentId}`).style.display = 'none';
+        document.getElementById(`saved-${studentId}`).style.display = 'none';
+        document.getElementById(`error-${studentId}`).style.display = 'none';
+
+        // Show the correct one
+        if (type) {
+            const indicator = document.getElementById(`${type}-${studentId}`);
+            if (indicator) {
+                indicator.style.display = 'inline';
+            }
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}

@@ -12,6 +12,7 @@ from .models import (
     Assessment,
     StudentScore,
     TermResult,
+    Timetable,
     ReportCard,
     PerformanceComment,
 )
@@ -227,6 +228,16 @@ class PerformanceCommentAdmin(admin.ModelAdmin):
         return obj.text[:50] + "..." if len(obj.text) > 50 else obj.text
 
     get_short_text.short_description = "Comment"
+
+
+@admin.register(Timetable)
+class TimetableAdmin(admin.ModelAdmin):
+    list_display = ["classroom", "term", "day_of_week", "period_number", "start_time", "end_time", "subject", "teacher", "is_active"]
+    list_filter = ["term", "classroom", "day_of_week", "is_active"]
+    search_fields = ["classroom__level", "classroom__arm", "subject__name", "teacher__first_name", "teacher__last_name"]
+    ordering = ["term__session__start_date", "classroom__level", "day_of_week", "period_number"]
+    raw_id_fields = ["classroom", "subject", "teacher", "term"]
+
 
 
 # Inline admin classes for better management

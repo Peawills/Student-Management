@@ -101,6 +101,42 @@
     </div>
 
     <!-- Statistics Cards -->
+    {% if stats.total_students|default:0 == 0 %}
+    <div class="alert alert-info d-flex align-items-center justify-content-between">
+        <div>
+            <i class="bi bi-info-circle me-2"></i>
+            No analytics data to display yet.
+            {% if used_default_filters and current_term %}
+            Showing default for current term: <strong>{{ current_term.session.name }} - {{ current_term.name }}</strong>.
+            {% endif %}
+            Add scores and calculate term results for classes, then refresh.
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'academics:performance_analytics' %}">
+                Clear Filters
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="d-flex gap-2 mb-3">
+        <a class="btn btn-outline-primary" href="{% url 'academics:export_subject_performance_csv' %}?{{ request.GET.urlencode }}">
+            <i class="bi bi-download"></i> Export Subjects CSV
+        </a>
+        <a class="btn btn-outline-info" href="{% url 'academics:export_class_performance_csv' %}?{{ request.GET.urlencode }}">
+            <i class="bi bi-download"></i> Export Classes CSV
+        </a>
+        <form method="post" action="{% url 'academics:recalculate_term_results' %}" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="term_id" value="{{ form.term.value }}">
+            <input type="hidden" name="classroom_id" value="{{ form.classroom.value }}">
+            <button type="submit" class="btn btn-warning"
+                {% if not form.term.value or not form.classroom.value %} disabled title="Select Term and Class to recalculate"{% endif %}>
+                <i class="bi bi-arrow-repeat"></i> Recalculate Term Results
+            </button>
+        </form>
+    </div>
+
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="card shadow-sm text-center stat-card primary">
@@ -272,8 +308,7 @@
                                     <td><strong>{{ performer.student.full_name }}</strong></td>
                                     <td>{{ performer.classroom }}</td>
                                     <td class="text-center">
-                                        <span class="badge bg-success fs-6">{{ performer.total_score|floatformat:0
-                                            }}</span>
+                                        <span class="badge bg-success fs-6">{{ performer.average_score|default:0|floatformat:0 }}</span>
                                     </td>
                                 </tr>
                                 {% empty %}

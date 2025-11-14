@@ -3,42 +3,60 @@
 {% block title %}{{ announcement.title }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-megaphone"></i> Announcement Details
-    </h1>
+<div class="container mx-auto px-4 py-6 max-w-4xl">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-megaphone text-primary-500"></i> Announcement Details
+        </h1>
+    </div>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'portal:announcements_list' %}">Announcements</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ announcement.title|truncatechars:30 }}</li>
+    <nav class="mb-6" aria-label="breadcrumb">
+        <ol class="flex items-center gap-2 text-sm">
+            <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><a href="{% url 'portal:announcements_list' %}" class="text-primary-600 hover:text-primary-700">Announcements</a></li>
+            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li class="text-gray-500">{{ announcement.title|truncatechars:30 }}</li>
         </ol>
     </nav>
 
-    <div class="card shadow-sm">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h5 class="m-0 font-weight-bold text-primary">{{ announcement.title }}</h5>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4 flex justify-between items-center">
+            <h5 class="text-lg font-bold">{{ announcement.title }}</h5>
             {% if announcement.is_urgent %}
-                <span class="badge bg-danger fs-6">URGENT</span>
+                <span class="px-3 py-1 bg-red-600 text-white text-sm font-semibold rounded-full">URGENT</span>
             {% endif %}
         </div>
-        <div class="card-body">
-            <p class="text-muted">
-                <i class="bi bi-calendar"></i> Published: {{ announcement.created_at|date:"F d, Y H:i" }}
+        <div class="p-6">
+            <div class="flex flex-wrap gap-4 mb-6 text-sm text-gray-600">
+                <span class="flex items-center gap-2">
+                    <i class="bi bi-calendar text-primary-500"></i>
+                    Published: {{ announcement.created_at|date:"F d, Y H:i" }}
+                </span>
                 {% if announcement.expires_at %}
-                    | <i class="bi bi-calendar-x"></i> Expires: {{ announcement.expires_at|date:"F d, Y H:i" }}
+                <span class="flex items-center gap-2">
+                    <i class="bi bi-calendar-x text-red-500"></i>
+                    Expires: {{ announcement.expires_at|date:"F d, Y H:i" }}
+                </span>
                 {% endif %}
-                | <i class="bi bi-tag"></i> Category: {{ announcement.category }}
-                | <i class="bi bi-people"></i> Target: {{ announcement.target_audience }}
-            </p>
-            <hr>
-            <div class="announcement-content">
-                {{ announcement.content|linebreaksbr }}
+                <span class="flex items-center gap-2">
+                    <i class="bi bi-tag text-blue-500"></i>
+                    Category: {{ announcement.category }}
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="bi bi-people text-green-500"></i>
+                    Target: {{ announcement.target_audience }}
+                </span>
+            </div>
+            <hr class="my-6">
+            <div class="prose max-w-none">
+                <div class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ announcement.content|linebreaksbr }}</div>
             </div>
         </div>
-        <div class="card-footer text-end">
-            <a href="{% url 'portal:announcements_list' %}" class="btn btn-secondary">Back to Announcements</a>
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+            <a href="{% url 'portal:announcements_list' %}" class="px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                Back to Announcements
+            </a>
         </div>
     </div>
 </div>

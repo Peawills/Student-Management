@@ -2,120 +2,109 @@
 
 {% block title %}{{ page_title }}{% endblock %}
 
-{% block extra_css %}
-<style>
-    .nav-tabs .nav-link {
-        color: var(--primary-color);
-        font-weight: 500;
-    }
-    .nav-tabs .nav-link.active {
-        color: #495057;
-        background-color: #fff;
-        border-color: #dee2e6 #dee2e6 #fff;
-        border-bottom: 3px solid var(--primary-color);
-    }
-    .user-role-badge {
-        font-size: 0.8rem;
-        font-weight: 600;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">{{ page_title }}</h2>
-        <a href="{% url 'accounts:user_create' %}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Create New User
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">{{ page_title }}</h2>
+        <a href="{% url 'accounts:user_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+            <i class="bi bi-plus-circle"></i> Create New User
         </a>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-light">
-            <!-- Navigation Tabs -->
-            <ul class="nav nav-tabs card-header-tabs">
-                <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'all' %}active{% endif %}" href="{% url 'accounts:user_list' %}">All Users</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'admin' %}active{% endif %}" href="{% url 'accounts:user_list' %}?type=admin">Admins</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'staff' %}active{% endif %}" href="{% url 'accounts:user_list' %}?type=staff">Staff</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'parent' %}active{% endif %}" href="{% url 'accounts:user_list' %}?type=parent">Parents</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if current_filter == 'student' %}active{% endif %}" href="{% url 'accounts:user_list' %}?type=student">Students</a>
-                </li>
-            </ul>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <!-- Navigation Tabs -->
+        <div class="bg-gray-50 border-b border-gray-200">
+            <div class="flex flex-wrap gap-2 px-6 py-4">
+                <a href="{% url 'accounts:user_list' %}" 
+                   class="px-4 py-2 rounded-lg font-medium transition-colors {% if current_filter == 'all' %}bg-primary-600 text-white{% else %}text-gray-700 hover:bg-gray-200{% endif %}">
+                    All Users
+                </a>
+                <a href="{% url 'accounts:user_list' %}?type=admin" 
+                   class="px-4 py-2 rounded-lg font-medium transition-colors {% if current_filter == 'admin' %}bg-primary-600 text-white{% else %}text-gray-700 hover:bg-gray-200{% endif %}">
+                    Admins
+                </a>
+                <a href="{% url 'accounts:user_list' %}?type=staff" 
+                   class="px-4 py-2 rounded-lg font-medium transition-colors {% if current_filter == 'staff' %}bg-primary-600 text-white{% else %}text-gray-700 hover:bg-gray-200{% endif %}">
+                    Staff
+                </a>
+                <a href="{% url 'accounts:user_list' %}?type=parent" 
+                   class="px-4 py-2 rounded-lg font-medium transition-colors {% if current_filter == 'parent' %}bg-primary-600 text-white{% else %}text-gray-700 hover:bg-gray-200{% endif %}">
+                    Parents
+                </a>
+                <a href="{% url 'accounts:user_list' %}?type=student" 
+                   class="px-4 py-2 rounded-lg font-medium transition-colors {% if current_filter == 'student' %}bg-primary-600 text-white{% else %}text-gray-700 hover:bg-gray-200{% endif %}">
+                    Students
+                </a>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Username</th>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Date Joined</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                        <tr>
-                            <td><strong>{{ user.username }}</strong></td>
-                            <td>{{ user.get_full_name|default:"N/A" }}</td>
-                            <td>{{ user.email|default:"N/A" }}</td>
-                            <td>
-                                {% if user.is_superuser %}
-                                    <span class="badge bg-danger user-role-badge">Admin</span>
-                                {% elif user.is_staff %}
-                                    <span class="badge bg-warning text-dark user-role-badge">Staff</span>
-                                {% elif user.parent_profile %}
-                                    <span class="badge bg-info user-role-badge">Parent</span>
-                                {% elif user.student_profile %}
-                                    <span class="badge bg-success user-role-badge">Student</span>
-                                {% else %}
-                                    <span class="badge bg-secondary user-role-badge">User</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if user.is_active %}
-                                    <span class="badge bg-success">Active</span>
-                                {% else %}
-                                    <span class="badge bg-danger">Inactive</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ user.date_joined|date:"Y-m-d" }}</td>
-                            <td>
-                                <a href="{% url 'accounts:user_detail' user.pk %}" class="btn btn-sm btn-outline-primary" title="View Details">
+
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Username</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Full Name</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Role</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date Joined</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for user in users %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="font-semibold text-gray-900">{{ user.username }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ user.get_full_name|default:"N/A" }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ user.email|default:"N/A" }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if user.is_superuser %}
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">Admin</span>
+                            {% elif user.is_staff %}
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Staff</span>
+                            {% elif user.parent_profile %}
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">Parent</span>
+                            {% elif user.student_profile %}
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Student</span>
+                            {% else %}
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">User</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if user.is_active %}
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Active</span>
+                            {% else %}
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ user.date_joined|date:"Y-m-d" }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{% url 'accounts:user_detail' user.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-primary-500 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'accounts:user_update' user.pk %}" class="btn btn-sm btn-outline-secondary" title="Edit User">
+                                <a href="{% url 'accounts:user_update' user.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-gray-400 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors" title="Edit User">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 {% if user.pk != request.user.pk %}
-                                <a href="{% url 'accounts:user_delete' user.pk %}" class="btn btn-sm btn-outline-danger" title="Delete User">
+                                <a href="{% url 'accounts:user_delete' user.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete User">
                                     <i class="bi bi-trash"></i>
                                 </a>
                                 {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="7" class="text-center py-4">
-                                No users found in this category.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                            No users found in this category.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

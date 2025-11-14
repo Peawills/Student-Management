@@ -1,46 +1,49 @@
 {% extends 'records/base.html' %}
 {% block title %}Academic Sessions{% endblock %}
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-calendar-range"></i> Academic Sessions</h2>
-        <a href="{% url 'academics:session_create' %}" class="btn btn-primary">
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-calendar-range text-primary-500"></i> Academic Sessions
+        </h2>
+        <a href="{% url 'academics:session_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
             <i class="bi bi-plus-circle"></i> Add Session
         </a>
     </div>
 
-    <div class="row g-3">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for session in sessions %}
-        <div class="col-md-4">
-            <div class="card shadow-sm {% if session.is_current %}border-primary{% endif %}">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h4 class="card-title">{{ session.name }}</h4>
-                        {% if session.is_current %}
-                        <span class="badge bg-primary">Current</span>
-                        {% endif %}
-                    </div>
-                    <p class="mb-2">
-                        <i class="bi bi-calendar-check"></i>
-                        {{ session.start_date|date:"M d, Y" }} - {{ session.end_date|date:"M d, Y" }}
-                    </p>
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'academics:session_update' session.pk %}"
-                            class="btn btn-sm btn-outline-warning">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
-                        <a href="{% url 'academics:session_delete' session.pk %}" class="btn btn-sm btn-outline-danger"
-                            onclick="return confirm('Delete this session?')">
-                            <i class="bi bi-trash"></i> Delete
-                        </a>
-                    </div>
+        <div class="bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden {% if session.is_current %}border-2 border-primary-500{% endif %}">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="text-xl font-bold text-gray-800">{{ session.name }}</h4>
+                    {% if session.is_current %}
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-700">Current</span>
+                    {% endif %}
+                </div>
+                <p class="text-gray-600 mb-4 flex items-center gap-2">
+                    <i class="bi bi-calendar-check text-primary-500"></i>
+                    {{ session.start_date|date:"M d, Y" }} - {{ session.end_date|date:"M d, Y" }}
+                </p>
+                <div class="flex gap-2">
+                    <a href="{% url 'academics:session_update' session.pk %}"
+                        class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 border-2 border-yellow-500 text-yellow-600 text-sm font-semibold rounded-lg hover:bg-yellow-50 transition-colors">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a href="{% url 'academics:session_delete' session.pk %}" 
+                        class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 border-2 border-red-500 text-red-600 text-sm font-semibold rounded-lg hover:bg-red-50 transition-colors"
+                        onclick="return confirm('Delete this session?')">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="col-12 text-center py-5">
-            <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
-            <p class="text-muted mt-2">No sessions found</p>
+        <div class="col-span-full">
+            <div class="bg-white rounded-2xl shadow-md p-12 text-center">
+                <i class="bi bi-inbox text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500 text-lg font-medium">No sessions found</p>
+            </div>
         </div>
         {% endfor %}
     </div>

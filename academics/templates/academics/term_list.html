@@ -1,60 +1,64 @@
 {% extends 'records/base.html' %}
 {% block title %}Terms{% endblock %}
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-bookmark"></i> Terms</h2>
-        <a href="{% url 'academics:term_create' %}" class="btn btn-primary">
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <i class="bi bi-bookmark text-primary-500"></i> Terms
+        </h2>
+        <a href="{% url 'academics:term_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
             <i class="bi bi-plus-circle"></i> Add Term
         </a>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Session</th>
-                            <th>Term</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for term in terms %}
-                        <tr>
-                            <td>{{ term.session.name }}</td>
-                            <td><strong>{{ term.name }}</strong></td>
-                            <td>{{ term.start_date|date:"M d, Y" }}</td>
-                            <td>{{ term.end_date|date:"M d, Y" }}</td>
-                            <td>
-                                {% if term.is_current %}
-                                <span class="badge bg-success">Current</span>
-                                {% else %}
-                                <span class="badge bg-secondary">Inactive</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{% url 'academics:term_update' term.pk %}"
-                                    class="btn btn-sm btn-outline-warning">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="text-center py-5">
-                                <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
-                                <p class="text-muted mt-2">No terms found</p>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Session</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Term</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Start Date</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">End Date</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for term in terms %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ term.session.name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="font-semibold text-gray-900">{{ term.name }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ term.start_date|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ term.end_date|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if term.is_current %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Current</span>
+                            {% else %}
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <a href="{% url 'academics:term_update' term.pk %}"
+                                class="inline-flex items-center justify-center w-9 h-9 border-2 border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-50 transition-colors">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-16 text-center">
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="bi bi-inbox text-6xl text-gray-300 mb-4"></i>
+                                <p class="text-gray-500 text-lg font-medium">No terms found</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

@@ -197,8 +197,9 @@
                             <td>
                                 <input type="number" name="score_{{ student.id }}" class="score-input" min="0"
                                     max="{{ assessment.max_score }}" step="1" {% if student.existing_score
-                                    %}value="{{ student.existing_score.score|floatformat:0 }}" {% endif %}
-                                    placeholder="0" onchange="this.classList.add('has-value')">
+                                    %}value="{{ student.existing_score.score|floatformat:0 }}"
+                                    {% endif %} placeholder="0"
+                                    onchange="this.classList.add('has-value')">
                             </td>
                             <td>
                                 <input type="text" name="remarks_{{ student.id }}" class="remarks-input" {% if
@@ -251,6 +252,41 @@
                 input.classList.add('has-value');
             }
         });
+
+        // Attach submit handler after DOM ready
+        const form = document.getElementById('scoreForm');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                const scoreInputs = document.querySelectorAll('.score-input');
+                let hasScores = false;
+                let invalidScores = [];
+                // ensure this is a number in JS
+                const maxScore = Number({{ assessment.max_score|default:0 }});
+
+                scoreInputs.forEach(input => {
+                    const value = input.value.trim();
+                    if (value !== '') {
+                        hasScores = true;
+                        const num = parseFloat(value);
+                        if (isNaN(num) || num < 0 || num > maxScore) {
+                            invalidScores.push(input.name);
+                        }
+                    }
+                });
+
+                if (!hasScores) {
+                    e.preventDefault();
+                    alert('Please enter at least one score before submitting.');
+                    return false;
+                }
+
+                if (invalidScores.length > 0) {
+                    e.preventDefault();
+                    alert('Invalid scores detected. Scores must be between 0 and ' + maxScore + '.');
+                    return false;
+                }
+            });
+        }
     });
 
     // Clear all scores
@@ -269,36 +305,5 @@
             });
         }
     }
-
-    // Form validation
-    document.getElementById('scoreForm').addEventListener('submit', function (e) {
-        const scoreInputs = document.querySelectorAll('.score-input');
-        let hasScores = false;
-        let invalidScores = [];
-        const maxScore = {{ assessment.max_score }
-    };
-
-    scoreInputs.forEach(input => {
-        const value = parseFloat(input.value);
-        if (input.value !== '') {
-            hasScores = true;
-            if (isNaN(value) || value < 0 || value > maxScore) {
-                invalidScores.push(input.name);
-            }
-        }
-    });
-
-    if (!hasScores) {
-        e.preventDefault();
-        alert('Please enter at least one score before submitting.');
-        return false;
-    }
-
-    if (invalidScores.length > 0) {
-        e.preventDefault();
-        alert(`Invalid scores detected. Scores must be between 0 and ${maxScore}.`);
-        return false;
-    }
-    });
 </script>
 {% endblock %}

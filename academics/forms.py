@@ -13,6 +13,7 @@ from .models import (
     Assessment,
     StudentScore,
     TermResult,
+    Timetable,
     ReportCard,
     PerformanceComment,
 )
@@ -383,6 +384,49 @@ class TermResultForm(forms.ModelForm):
         return cleaned_data
 
 
+class TimetableForm(forms.ModelForm):
+    class Meta:
+        model = Timetable
+        fields = [
+            "classroom",
+            "day_of_week",
+            "period_number",
+            "start_time",
+            "end_time",
+            "subject",
+            "teacher",
+            "term",
+            "is_active",
+        ]
+        widgets = {
+            "classroom": forms.Select(attrs={"class": "form-select"}),
+            "day_of_week": forms.Select(attrs={"class": "form-select"}),
+            "period_number": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "start_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
+            "end_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
+            "subject": forms.Select(attrs={"class": "form-select"}),
+            "teacher": forms.Select(attrs={"class": "form-select"}),
+            "term": forms.Select(attrs={"class": "form-select"}),
+            "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["teacher"].queryset = User.objects.filter(is_staff=True)
+        self.fields["subject"].queryset = Subject.objects.all().order_by('name')
+        self.fields["classroom"].queryset = ClassRoom.objects.filter(session__is_current=True).order_by('level', 'arm')
+        self.fields["term"].queryset = Term.objects.filter(is_current=True).order_by('-session__start_date', 'name')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_time = cleaned_data.get("start_time")
+        end_time = cleaned_data.get("end_time")
+
+        if start_time and end_time and end_time <= start_time:
+            raise forms.ValidationError("End time must be after start time.")
+        return cleaned_data
+
+
 # ============================================
 # Report Card Forms
 # ============================================
@@ -440,34 +484,6 @@ class BulkReportCardGenerationForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-select"}),
         label="Select Class",
     )
-    class_teacher_remarks = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                "class": "form-control",
-                "rows": 3,
-                "placeholder": "General class teacher remarks (will apply to all)",
-            }
-        ),
-        required=False,
-    )
-    principal_remarks = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                "class": "form-control",
-                "rows": 3,
-                "placeholder": "General principal remarks (will apply to all)",
-            }
-        ),
-        required=False,
-    )
-
-    # --- New: Add fields for domain skills ---
-    punctuality = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
-    attendance_in_class = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
-    honesty = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
-    neatness = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
-    handwriting = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
-    sports_and_games = forms.ChoiceField(choices=ReportCard.SKILL_RATING_CHOICES, widget=forms.Select(attrs={"class": "form-select"}), required=False)
 
 
 # ============================================
@@ -517,6 +533,18 @@ class PerformanceFilterForm(forms.Form):
         max_value=100,
         widget=forms.NumberInput(attrs={"class": "form-control", "placeholder": "100"}),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Preselect current session/term if form is not bound
+        if not self.is_bound:
+            try:
+                current_term = Term.objects.filter(is_current=True).first()
+                if current_term:
+                    self.initial.setdefault("term", current_term.id)
+                    self.initial.setdefault("session", current_term.session_id)
+            except Exception:
+                pass
 
 
 class ScoreImportForm(forms.Form):
