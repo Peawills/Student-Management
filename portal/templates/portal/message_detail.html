@@ -6,16 +6,16 @@
 <div class="container mx-auto px-4 py-6 max-w-4xl">
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <i class="bi bi-envelope-open text-primary-500"></i> Message Details
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="envelope-open text-primary-500"></svg> Message Details
         </h1>
     </div>
 
     <nav class="mb-6" aria-label="breadcrumb">
         <ol class="flex items-center gap-2 text-sm">
             <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg></li>
             <li><a href="{% url 'portal:messages_inbox' %}" class="text-primary-600 hover:text-primary-700">Inbox</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg></li>
             <li class="text-gray-500">{{ message.subject|truncatechars:30 }}</li>
         </ol>
     </nav>
@@ -66,7 +66,7 @@
                 Back to Inbox
             </a>
             <a href="{% url 'portal:reply_message' message.id %}" class="px-6 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
-                <i class="bi bi-reply"></i> Reply
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="reply"></svg> Reply
             </a>
         </div>
     </div>

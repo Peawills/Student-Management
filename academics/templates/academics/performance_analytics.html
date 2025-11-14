@@ -47,14 +47,14 @@
 <div class="container-fluid p-4">
     <!-- Header -->
     <div class="analytics-header">
-        <h2 class="mb-2"><i class="bi bi-graph-up"></i> Performance Analytics</h2>
+        <h2 class="mb-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up"></svg><!-- UNMAPPED_ICON:graph-up --> Performance Analytics</h2>
         <p class="mb-0">Comprehensive academic performance insights and statistics</p>
     </div>
 
     <!-- Filters -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-light">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters</h5>
+        <div class="card-header bg-gray-100">
+            <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="funnel"></svg><!-- UNMAPPED_ICON:funnel --> Filters</h5>
         </div>
         <div class="card-body">
             <form method="get" id="filterForm">
@@ -89,10 +89,10 @@
                     </div>
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-funnel"></i> Apply Filters
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="funnel"></svg><!-- UNMAPPED_ICON:funnel --> Apply Filters
                         </button>
                         <a href="{% url 'academics:performance_analytics' %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle"></i> Clear
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle"></svg><!-- UNMAPPED_ICON:x-circle --> Clear
                         </a>
                     </div>
                 </div>
@@ -102,9 +102,9 @@
 
     <!-- Statistics Cards -->
     {% if stats.total_students|default:0 == 0 %}
-    <div class="alert alert-info d-flex align-items-center justify-content-between">
+    <div class="alert alert-info flex items-center justify-between">
         <div>
-            <i class="bi bi-info-circle me-2"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="info-circle mr-2"></svg><!-- UNMAPPED_ICON:info-circle -->
             No analytics data to display yet.
             {% if used_default_filters and current_term %}
             Showing default for current term: <strong>{{ current_term.session.name }} - {{ current_term.name }}</strong>.
@@ -119,20 +119,20 @@
     </div>
     {% endif %}
 
-    <div class="d-flex gap-2 mb-3">
+    <div class="flex gap-2 mb-3">
         <a class="btn btn-outline-primary" href="{% url 'academics:export_subject_performance_csv' %}?{{ request.GET.urlencode }}">
-            <i class="bi bi-download"></i> Export Subjects CSV
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="download"></svg><!-- UNMAPPED_ICON:download --> Export Subjects CSV
         </a>
         <a class="btn btn-outline-info" href="{% url 'academics:export_class_performance_csv' %}?{{ request.GET.urlencode }}">
-            <i class="bi bi-download"></i> Export Classes CSV
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="download"></svg><!-- UNMAPPED_ICON:download --> Export Classes CSV
         </a>
-        <form method="post" action="{% url 'academics:recalculate_term_results' %}" class="d-inline">
+        <form method="post" action="{% url 'academics:recalculate_term_results' %}" class="inline">
             {% csrf_token %}
             <input type="hidden" name="term_id" value="{{ form.term.value }}">
             <input type="hidden" name="classroom_id" value="{{ form.classroom.value }}">
             <button type="submit" class="btn btn-warning"
                 {% if not form.term.value or not form.classroom.value %} disabled title="Select Term and Class to recalculate"{% endif %}>
-                <i class="bi bi-arrow-repeat"></i> Recalculate Term Results
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-repeat"></svg><!-- UNMAPPED_ICON:arrow-repeat --> Recalculate Term Results
             </button>
         </form>
     </div>
@@ -141,8 +141,8 @@
         <div class="col-md-3">
             <div class="card shadow-sm text-center stat-card primary">
                 <div class="card-body">
-                    <i class="bi bi-bar-chart-fill text-primary" style="font-size: 2rem;"></i>
-                    <h6 class="text-muted mt-2">Average Score</h6>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="bar-chart-fill text-primary"></svg><!-- UNMAPPED_ICON:bar-chart-fill -->
+                    <h6 class="text-gray-500 mt-2">Average Score</h6>
                     <h2 class="mb-0 text-primary">{{ stats.avg_score|floatformat:0|default:"N/A" }}</h2>
                 </div>
             </div>
@@ -150,27 +150,27 @@
         <div class="col-md-3">
             <div class="card shadow-sm text-center stat-card success">
                 <div class="card-body">
-                    <i class="bi bi-trophy-fill text-success" style="font-size: 2rem;"></i>
-                    <h6 class="text-muted mt-2">Highest Score</h6>
-                    <h2 class="mb-0 text-success">{{ stats.highest_score|floatformat:0|default:"N/A" }}</h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trophy-fill text-green-600"></svg><!-- UNMAPPED_ICON:trophy-fill -->
+                    <h6 class="text-gray-500 mt-2">Highest Score</h6>
+                    <h2 class="mb-0 text-green-600">{{ stats.highest_score|floatformat:0|default:"N/A" }}</h2>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card shadow-sm text-center stat-card warning">
                 <div class="card-body">
-                    <i class="bi bi-arrow-down-circle-fill text-warning" style="font-size: 2rem;"></i>
-                    <h6 class="text-muted mt-2">Lowest Score</h6>
-                    <h2 class="mb-0 text-warning">{{ stats.lowest_score|floatformat:0|default:"N/A" }}</h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-down-circle-fill text-yellow-600"></svg><!-- UNMAPPED_ICON:arrow-down-circle-fill -->
+                    <h6 class="text-gray-500 mt-2">Lowest Score</h6>
+                    <h2 class="mb-0 text-yellow-600">{{ stats.lowest_score|floatformat:0|default:"N/A" }}</h2>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card shadow-sm text-center stat-card info">
                 <div class="card-body">
-                    <i class="bi bi-people-fill text-info" style="font-size: 2rem;"></i>
-                    <h6 class="text-muted mt-2">Total Students</h6>
-                    <h2 class="mb-0 text-info">{{ stats.total_students|default:"0" }}</h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg>
+                    <h6 class="text-gray-500 mt-2">Total Students</h6>
+                    <h2 class="mb-0 text-blue-600">{{ stats.total_students|default:"0" }}</h2>
                 </div>
             </div>
         </div>
@@ -181,8 +181,8 @@
         <!-- Class-wise Performance -->
         <div class="col-md-8">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart-line"></i> Class-wise Performance</h5>
+                <div class="card-header bg-blue-600 text-white">
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="bar-chart-line"></svg><!-- UNMAPPED_ICON:bar-chart-line --> Class-wise Performance</h5>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -195,9 +195,9 @@
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="bi bi-check2-circle"></i> Pass / Fail Ratio</h5>
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check2-circle"></svg><!-- UNMAPPED_ICON:check2-circle --> Pass / Fail Ratio</h5>
                 </div>
-                <div class="card-body d-flex align-items-center justify-content-center">
+                <div class="card-body flex items-center justify-center">
                     <div class="chart-container" style="height: 250px; width: 250px;">
                         <canvas id="passFailChart"></canvas>
                     </div>
@@ -211,7 +211,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-book"></i> Subject Performance</h5>
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book"></svg><!-- UNMAPPED_ICON:book --> Subject Performance</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -234,8 +234,8 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="3" class="text-center py-4 text-muted">
-                                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                    <td colspan="3" class="text-center py-4 text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox"></svg><!-- UNMAPPED_ICON:inbox -->
                                         <p class="mt-2 mb-0">No data available</p>
                                     </td>
                                 </tr>
@@ -250,8 +250,8 @@
         <!-- Grade Distribution -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Grade Distribution</h5>
+                <div class="card-header bg-green-600 text-white">
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pie-chart"></svg><!-- UNMAPPED_ICON:pie-chart --> Grade Distribution</h5>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -264,8 +264,8 @@
         <!-- Performance Trend Over Time -->
         <div class="col-md-12">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="bi bi-graph-up-arrow"></i> Performance Trend Over Time</h5>
+                <div class="card-header bg-gray-800 text-white">
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up-arrow"></svg><!-- UNMAPPED_ICON:graph-up-arrow --> Performance Trend Over Time</h5>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -278,8 +278,8 @@
         <!-- Top Performers -->
         <div class="col-md-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="bi bi-star-fill"></i> Top 10 Performers</h5>
+                <div class="card-header bg-yellow-600 text-dark">
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="star-fill"></svg><!-- UNMAPPED_ICON:star-fill --> Top 10 Performers</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -298,23 +298,23 @@
                                     <td>
                                         <strong class="text-primary">#{{ forloop.counter }}</strong>
                                         {% if forloop.counter == 1 %}
-                                        <i class="bi bi-trophy-fill text-warning ms-2"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trophy-fill text-yellow-600 ml-2"></svg><!-- UNMAPPED_ICON:trophy-fill -->
                                         {% elif forloop.counter == 2 %}
-                                        <i class="bi bi-trophy-fill text-secondary ms-2"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trophy-fill text-secondary ml-2"></svg><!-- UNMAPPED_ICON:trophy-fill -->
                                         {% elif forloop.counter == 3 %}
-                                        <i class="bi bi-trophy-fill text-info ms-2"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trophy-fill text-blue-600 ml-2"></svg><!-- UNMAPPED_ICON:trophy-fill -->
                                         {% endif %}
                                     </td>
                                     <td><strong>{{ performer.student.full_name }}</strong></td>
                                     <td>{{ performer.classroom }}</td>
                                     <td class="text-center">
-                                        <span class="badge bg-success fs-6">{{ performer.average_score|default:0|floatformat:0 }}</span>
+                                        <span class="badge bg-green-600 fs-6">{{ performer.average_score|default:0|floatformat:0 }}</span>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center py-4 text-muted">
-                                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                    <td colspan="4" class="text-center py-4 text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox"></svg><!-- UNMAPPED_ICON:inbox -->
                                         <p class="mt-2 mb-0">No performance data available</p>
                                     </td>
                                 </tr>

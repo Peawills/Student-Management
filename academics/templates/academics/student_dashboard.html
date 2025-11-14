@@ -75,7 +75,7 @@
 {% block content %}
 <!-- Dashboard Header -->
 <div class="dashboard-header">
-    <h2><i class="bi bi-person-circle"></i> Welcome, {{ student.full_name }}</h2>
+    <h2><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-circle"></svg> Welcome, {{ student.full_name }}</h2>
     <p class="mb-0" style="opacity: 0.95;">
         This is your personal dashboard. Here you can find your academic information and updates.
     </p>
@@ -85,7 +85,7 @@
     <!-- Student Information -->
     <div class="col-md-5">
         <div class="info-card">
-            <h3 class="info-card-title"><i class="bi bi-person-vcard"></i> Your Information</h3>
+            <h3 class="info-card-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-vcard"></svg> Your Information</h3>
             <div class="info-item">
                 <span class="info-label">Admission No.</span>
                 <span class="info-value">{{ student.admission_no }}</span>
@@ -104,12 +104,12 @@
     <!-- Placeholder for other features -->
     <div class="col-md-7">
         <div class="info-card">
-            <h3 class="info-card-title"><i class="bi bi-graph-up"></i> Recent Grades</h3>
-            <p class="text-muted">Your recent grades will appear here.</p>
+            <h3 class="info-card-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up"></svg> Recent Grades</h3>
+            <p class="text-gray-500">Your recent grades will appear here.</p>
         </div>
         <div class="info-card">
-            <h3 class="info-card-title"><i class="bi bi-calendar-event"></i> Upcoming Assignments</h3>
-            <p class="text-muted">Your upcoming assignments will be listed here.</p>
+            <h3 class="info-card-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-event"></svg> Upcoming Assignments</h3>
+            <p class="text-gray-500">Your upcoming assignments will be listed here.</p>
         </div>
     </div>
 </div>

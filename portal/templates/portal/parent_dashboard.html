@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-6">
     <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white p-6 md:p-8 rounded-2xl mb-6 shadow-lg">
         <h2 class="text-2xl md:text-3xl font-bold flex items-center gap-3 mb-2">
-            <i class="bi bi-person-circle"></i> Welcome, {{ request.user.get_full_name|default:request.user.username }}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-circle"></svg><!-- UNMAPPED_ICON:person-circle --> Welcome, {{ request.user.get_full_name|default:request.user.username }}
         </h2>
         <p class="opacity-95">
             This is your Parent Portal dashboard. Here you can find information about your children.
@@ -16,7 +16,7 @@
     <div class="grid grid-cols-1 gap-6">
         <div class="bg-white rounded-2xl shadow-lg p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                <i class="bi bi-people text-primary-500"></i> Your Children
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people text-primary-500"></svg><!-- UNMAPPED_ICON:people --> Your Children
             </h3>
             {% if students %}
                 <div class="space-y-3">
@@ -36,7 +36,7 @@
 
         <div class="bg-white rounded-2xl shadow-lg p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                <i class="bi bi-megaphone text-primary-500"></i> Latest Announcements
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> Latest Announcements
             </h3>
             {% if announcements %}
                 <div class="space-y-3">

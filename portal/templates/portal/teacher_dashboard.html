@@ -12,10 +12,10 @@
         </div>
         <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <a href="{% url 'academics:take_attendance' %}" class="px-4 py-2 border-2 border-primary-500 text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-colors flex items-center justify-center gap-2">
-                <i class="bi bi-check2-circle"></i> Take Attendance
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check2-circle"></svg><!-- UNMAPPED_ICON:check2-circle --> Take Attendance
             </a>
             <a href="{{ attendance_report_url }}" class="px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2">
-                <i class="bi bi-graph-up"></i> View Attendance Report
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up"></svg><!-- UNMAPPED_ICON:graph-up --> View Attendance Report
             </a>
         </div>
     </div>
@@ -24,7 +24,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-white rounded-2xl shadow-md p-6 flex items-center gap-6 hover:shadow-lg hover:-translate-y-1 transition-all">
             <div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-2xl flex-shrink-0">
-                <i class="bi bi-person-workspace"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-workspace"></svg><!-- UNMAPPED_ICON:person-workspace -->
             </div>
             <div>
                 <div class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Homeroom Classes</div>
@@ -33,7 +33,7 @@
         </div>
         <div class="bg-white rounded-2xl shadow-md p-6 flex items-center gap-6 hover:shadow-lg hover:-translate-y-1 transition-all">
             <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white text-2xl flex-shrink-0">
-                <i class="bi bi-journal-bookmark"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="journal-bookmark"></svg><!-- UNMAPPED_ICON:journal-bookmark -->
             </div>
             <div>
                 <div class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Subjects Taught</div>
@@ -42,7 +42,7 @@
         </div>
         <div class="bg-white rounded-2xl shadow-md p-6 flex items-center gap-6 hover:shadow-lg hover:-translate-y-1 transition-all">
             <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-2xl flex-shrink-0">
-                <i class="bi bi-people-fill"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg>
             </div>
             <div>
                 <div class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Students</div>
@@ -55,7 +55,7 @@
         <!-- Today's Schedule -->
         <div class="bg-white rounded-2xl shadow-md overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center gap-3">
-                <i class="bi bi-calendar-day text-primary-500 text-2xl"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-day text-primary-500 text-2xl"></svg><!-- UNMAPPED_ICON:calendar-day -->
                 <h2 class="text-xl font-semibold text-gray-800">Today's Schedule ({{ today_str }})</h2>
             </div>
             <div class="p-6">
@@ -72,7 +72,7 @@
                     </div>
                     {% empty %}
                     <div class="text-center py-12 text-gray-500">
-                        <i class="bi bi-cup-hot text-5xl mb-3 opacity-50"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="cup-hot text-5xl mb-3 opacity-50"></svg><!-- UNMAPPED_ICON:cup-hot -->
                         <p>No classes scheduled for today. Enjoy your break!</p>
                     </div>
                     {% endfor %}
@@ -83,7 +83,7 @@
         <!-- My Classes & Subjects -->
         <div class="bg-white rounded-2xl shadow-md overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center gap-3">
-                <i class="bi bi-collection text-primary-500 text-2xl"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="collection text-primary-500 text-2xl"></svg><!-- UNMAPPED_ICON:collection -->
                 <h2 class="text-xl font-semibold text-gray-800">My Classes & Subjects</h2>
             </div>
             <div class="p-6">
@@ -96,10 +96,10 @@
                             <span class="font-medium text-gray-900">{{ classroom }}</span>
                             <div class="hidden group-hover:flex gap-2">
                                 <a href="{% url 'academics:take_attendance' %}?classroom={{ classroom.id }}" class="px-3 py-1.5 bg-primary-600 text-white text-xs font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-                                    <i class="bi bi-check2-circle"></i> Attendance
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check2-circle"></svg><!-- UNMAPPED_ICON:check2-circle --> Attendance
                                 </a>
                                 <a href="{% url 'academics:classroom_detail' classroom.id %}" class="px-3 py-1.5 bg-gray-600 text-white text-xs font-semibold rounded-lg hover:bg-gray-700 transition-colors">
-                                    <i class="bi bi-people"></i> Students
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people"></svg><!-- UNMAPPED_ICON:people --> Students
                                 </a>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                         </div>
                         {% empty %}
                         <div class="text-center py-12 text-gray-500">
-                            <i class="bi bi-journal-x text-5xl mb-3 opacity-50"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="journal-x text-5xl mb-3 opacity-50"></svg><!-- UNMAPPED_ICON:journal-x -->
                             <p>You are not assigned to any subjects for the current term.</p>
                         </div>
                         {% endfor %}

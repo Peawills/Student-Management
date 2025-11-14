@@ -7,7 +7,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-800">{{ page_title }}</h2>
         <a href="{% url 'accounts:user_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-            <i class="bi bi-plus-circle"></i> Create New User
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg> Create New User
         </a>
     </div>
 
@@ -83,14 +83,14 @@
                         <td class="px-6 py-4 whitespace-nowrap text-center">
                             <div class="flex items-center justify-center gap-2">
                                 <a href="{% url 'accounts:user_detail' user.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-primary-500 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors" title="View Details">
-                                    <i class="bi bi-eye"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/></svg>
                                 </a>
                                 <a href="{% url 'accounts:user_update' user.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-gray-400 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors" title="Edit User">
-                                    <i class="bi bi-pencil"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil"></svg><!-- UNMAPPED_ICON:pencil -->
                                 </a>
                                 {% if user.pk != request.user.pk %}
                                 <a href="{% url 'accounts:user_delete' user.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete User">
-                                    <i class="bi bi-trash"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 6v12a2 2 0 002 2h4a2 2 0 002-2V6"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
                                 </a>
                                 {% endif %}
                             </div>

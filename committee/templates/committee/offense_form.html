@@ -6,12 +6,12 @@
 {% block content %}
 <div class="container mx-auto px-4 py-6 max-w-4xl">
     <a href="{% url 'committee:offense_list' %}" class="inline-flex items-center gap-2 text-red-600 font-semibold hover:text-red-700 transition-colors mb-6">
-        <i class="bi bi-arrow-left"></i> Back to Records
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-left"></svg><!-- UNMAPPED_ICON:arrow-left --> Back to Records
     </a>
 
     <div class="bg-gradient-to-br from-red-600 to-red-800 text-white p-6 md:p-8 rounded-2xl mb-6 shadow-lg">
         <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-3 mb-2">
-            <i class="bi bi-{% if action == 'Create' %}plus-circle{% else %}pencil{% endif %}"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="{% if action =="></svg><!-- UNMAPPED_ICON:{% -->
             {{ action }} Offense Record
         </h1>
         <p class="opacity-90">Fill in the details of the disciplinary incident</p>
@@ -19,7 +19,7 @@
 
     {% if form.errors %}
     <div class="mb-6 p-4 rounded-xl bg-red-50 text-red-800 border-l-4 border-red-500 flex items-center gap-3">
-        <i class="bi bi-exclamation-triangle-fill text-xl"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="exclamation-triangle-fill text-xl"></svg><!-- UNMAPPED_ICON:exclamation-triangle-fill -->
         <span>Please correct the errors below.</span>
     </div>
     {% endif %}
@@ -30,13 +30,13 @@
         <!-- Student Information -->
         <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6">
             <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3">
-                <i class="bi bi-person text-red-600"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person text-red-600"></svg><!-- UNMAPPED_ICON:person -->
                 Student Information
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        <i class="bi bi-person-badge mr-2"></i>Student Name <span class="text-red-600">*</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-badge mr-2"></svg><!-- UNMAPPED_ICON:person-badge -->Student Name <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="student_name" value="{{ form.student_name.value|default:'' }}" required
                         class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.student_name.errors %}border-red-500{% endif %}">
@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        <i class="bi bi-book mr-2"></i>Student Class <span class="text-red-600">*</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book mr-2"></svg><!-- UNMAPPED_ICON:book -->Student Class <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="student_class" value="{{ form.student_class.value|default:'' }}" required
                         class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.student_class.errors %}border-red-500{% endif %}">
@@ -60,13 +60,13 @@
         <!-- Offense Details -->
         <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6">
             <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3">
-                <i class="bi bi-exclamation-triangle text-red-600"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01"/></svg>
                 Offense Details
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        <i class="bi bi-tag mr-2"></i>Event Type <span class="text-red-600">*</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="tag mr-2"></svg><!-- UNMAPPED_ICON:tag -->Event Type <span class="text-red-600">*</span>
                     </label>
                     <select name="event_type" required
                         class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.event_type.errors %}border-red-500{% endif %}">
@@ -80,7 +80,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        <i class="bi bi-calendar3 mr-2"></i>Offense Date <span class="text-red-600">*</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar3 mr-2"></svg><!-- UNMAPPED_ICON:calendar3 -->Offense Date <span class="text-red-600">*</span>
                     </label>
                     <input type="date" name="offense_date" value="{{ form.offense_date.value|default:'' }}" required
                         class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.offense_date.errors %}border-red-500{% endif %}">
@@ -91,7 +91,7 @@
             </div>
             <div class="mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <i class="bi bi-file-text mr-2"></i>Offense Description <span class="text-red-600">*</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-text mr-2"></svg><!-- UNMAPPED_ICON:file-text -->Offense Description <span class="text-red-600">*</span>
                 </label>
                 <textarea name="offense_description" rows="4" required
                     class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.offense_description.errors %}border-red-500{% endif %}">{{ form.offense_description.value|default:'' }}</textarea>
@@ -102,7 +102,7 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <i class="bi bi-geo-alt mr-2"></i>Location <span class="text-red-600">*</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="geo-alt mr-2"></svg><!-- UNMAPPED_ICON:geo-alt -->Location <span class="text-red-600">*</span>
                 </label>
                 <input type="text" name="location" value="{{ form.location.value|default:'' }}" required
                     class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.location.errors %}border-red-500{% endif %}">
@@ -115,13 +115,13 @@
         <!-- Involved Parties -->
         <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6">
             <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3">
-                <i class="bi bi-people text-red-600"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people text-red-600"></svg><!-- UNMAPPED_ICON:people -->
                 Involved Parties
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        <i class="bi bi-eye mr-2"></i>Witness Name <span class="text-red-600">*</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/></svg>Witness Name <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="witness_name" value="{{ form.witness_name.value|default:'' }}" required
                         class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.witness_name.errors %}border-red-500{% endif %}">
@@ -131,7 +131,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        <i class="bi bi-person-x mr-2"></i>Victim Name <span class="text-red-600">*</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-x mr-2"></svg><!-- UNMAPPED_ICON:person-x -->Victim Name <span class="text-red-600">*</span>
                     </label>
                     <input type="text" name="victim_name" value="{{ form.victim_name.value|default:'' }}" required
                         class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.victim_name.errors %}border-red-500{% endif %}">
@@ -142,7 +142,7 @@
             </div>
             <div class="mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <i class="bi bi-book mr-2"></i>Victim Class
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book mr-2"></svg><!-- UNMAPPED_ICON:book -->Victim Class
                 </label>
                 <input type="text" name="victim_class" value="{{ form.victim_class.value|default:'' }}"
                     class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.victim_class.errors %}border-red-500{% endif %}">
@@ -153,7 +153,7 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <i class="bi bi-heart-pulse mr-2"></i>Care Given to Victim <span class="text-red-600">*</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="heart-pulse mr-2"></svg><!-- UNMAPPED_ICON:heart-pulse -->Care Given to Victim <span class="text-red-600">*</span>
                 </label>
                 <textarea name="care_given_to_victim" rows="3" required
                     class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.care_given_to_victim.errors %}border-red-500{% endif %}">{{ form.care_given_to_victim.value|default:'' }}</textarea>
@@ -167,12 +167,12 @@
         <!-- Action Taken -->
         <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6">
             <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-gray-200 flex items-center gap-3">
-                <i class="bi bi-shield-check text-red-600"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="shield-check text-red-600"></svg><!-- UNMAPPED_ICON:shield-check -->
                 Action Taken
             </h3>
             <div class="mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <i class="bi bi-gavel mr-2"></i>Sanction <span class="text-red-600">*</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="gavel mr-2"></svg><!-- UNMAPPED_ICON:gavel -->Sanction <span class="text-red-600">*</span>
                 </label>
                 <textarea name="sanction" rows="3" required
                     class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.sanction.errors %}border-red-500{% endif %}">{{ form.sanction.value|default:'' }}</textarea>
@@ -186,14 +186,14 @@
                     <input type="checkbox" name="parent_notified" id="id_parent_notified" {% if form.parent_notified.value %}checked{% endif %}
                         class="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500 focus:ring-2">
                     <label for="id_parent_notified" class="ml-3 font-semibold text-gray-700 cursor-pointer flex items-center gap-2">
-                        <i class="bi bi-telephone"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="telephone"></svg><!-- UNMAPPED_ICON:telephone -->
                         Parent/Guardian has been notified
                     </label>
                 </div>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <i class="bi bi-chat-square-text mr-2"></i>Additional Comments
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chat-square-text mr-2"></svg><!-- UNMAPPED_ICON:chat-square-text -->Additional Comments
                 </label>
                 <textarea name="other_comments" rows="3"
                     class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all {% if form.other_comments.errors %}border-red-500{% endif %}">{{ form.other_comments.value|default:'' }}</textarea>
@@ -207,11 +207,11 @@
         <!-- Form Actions -->
         <div class="flex flex-col sm:flex-row gap-4">
             <button type="submit" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                <i class="bi bi-check-circle"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check-circle"></svg><!-- UNMAPPED_ICON:check-circle -->
                 {{ action }} Record
             </button>
             <a href="{% url 'committee:offense_list' %}" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 hover:border-red-500 hover:text-red-600 transition-colors">
-                <i class="bi bi-x-circle"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle"></svg><!-- UNMAPPED_ICON:x-circle -->
                 Cancel
             </a>
         </div>

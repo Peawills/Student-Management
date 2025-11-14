@@ -7,7 +7,7 @@
     <!-- Dashboard Header -->
     <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white p-6 md:p-8 rounded-2xl mb-6 shadow-lg">
         <h2 class="text-2xl md:text-3xl font-bold flex items-center gap-3 mb-2">
-            <i class="bi bi-person-circle"></i> Welcome, {{ student.full_name }}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-circle"></svg><!-- UNMAPPED_ICON:person-circle --> Welcome, {{ student.full_name }}
         </h2>
         <p class="opacity-95">
             This is your personal dashboard. Here you can find your academic information and updates.
@@ -19,7 +19,7 @@
         <div class="lg:col-span-5">
             <div class="bg-white rounded-2xl shadow-lg p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                    <i class="bi bi-person-vcard text-primary-500"></i> Your Information
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-vcard text-primary-500"></svg><!-- UNMAPPED_ICON:person-vcard --> Your Information
                 </h3>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center py-3 border-b border-gray-200">
@@ -42,7 +42,7 @@
         <div class="lg:col-span-7 space-y-6">
             <div class="bg-white rounded-2xl shadow-lg p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                    <i class="bi bi-graph-up text-primary-500"></i> Recent Grades
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up text-primary-500"></svg><!-- UNMAPPED_ICON:graph-up --> Recent Grades
                 </h3>
                 {% if recent_scores %}
                 <div class="space-y-4">
@@ -64,7 +64,7 @@
 
             <div class="bg-white rounded-2xl shadow-lg p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                    <i class="bi bi-calendar-event text-primary-500"></i> Upcoming Assignments
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-event text-primary-500"></svg><!-- UNMAPPED_ICON:calendar-event --> Upcoming Assignments
                 </h3>
                 {% if upcoming_assignments %}
                 <div class="space-y-4">
@@ -89,7 +89,7 @@
         <div class="lg:col-span-12">
             <div class="bg-white rounded-2xl shadow-lg p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                    <i class="bi bi-megaphone text-primary-500"></i> Latest Announcements
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> Latest Announcements
                 </h3>
                 {% if announcements %}
                 <div class="space-y-3">

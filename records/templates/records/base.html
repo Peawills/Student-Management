@@ -70,12 +70,12 @@
         <nav class="bg-white rounded-2xl shadow-md mb-4 px-4 py-3">
             <div class="flex flex-wrap items-center justify-between">
                 <a href="{% url 'records:home' %}" class="flex items-center gap-2 text-2xl font-bold text-primary-500 hover:text-secondary-500 transition-colors">
-                    <i class="bi bi-mortarboard-fill text-3xl"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="mortarboard-fill text-3xl"></svg><!-- UNMAPPED_ICON:mortarboard-fill -->
                     <span>SchoolAdmin</span>
                 </a>
                 
                 <button type="button" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100" onclick="toggleMobileMenu()">
-                    <i class="bi bi-list text-2xl" id="menuIcon"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="list text-2xl"></svg><!-- UNMAPPED_ICON:list -->
                 </button>
 
                 <div class="hidden md:flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0" id="navbarContent">
@@ -85,14 +85,14 @@
                         {% if request.user.is_staff %}
                             <!-- Staff/Admin Links -->
                             <a href="{% url 'portal:dashboard' %}" class="nav-link">
-                                <i class="bi bi-speedometer2"></i> Dashboard
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Dashboard
                             </a>
                             {% if not request.user.is_teacher %}
                                 <!-- Student Management Dropdown -->
                                 <div class="relative group">
                                     <button class="nav-link flex items-center gap-1">
-                                        <i class="bi bi-people-fill"></i> Students
-                                        <i class="bi bi-chevron-down text-xs"></i>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg> Students
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M6 8l4 4 4-4"/></svg>
                                     </button>
                                     <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                         <a href="{% url 'records:student_list' %}" class="dropdown-item">All Students</a>
@@ -107,20 +107,20 @@
                             {% endif %}
 
                             <a href="{% url 'academics:dashboard' %}" class="nav-link">
-                                <i class="bi bi-journal-bookmark-fill"></i> Academics
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="journal-bookmark-fill"></svg><!-- UNMAPPED_ICON:journal-bookmark-fill --> Academics
                             </a>
                             
                             {% if request.user.is_teacher %}
                             <a href="{% url 'portal:teacher_dashboard' %}" class="nav-link">
-                                <i class="bi bi-easel2-fill"></i> Teacher Dashboard
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="easel2-fill"></svg><!-- UNMAPPED_ICON:easel2-fill --> Teacher Dashboard
                             </a>
                             {% endif %}
 
                             {% if request.user.is_superuser %}
                             <div class="relative group">
                                 <button class="nav-link flex items-center gap-1">
-                                    <i class="bi bi-person-gear"></i> Manage Users
-                                    <i class="bi bi-chevron-down text-xs"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-gear"></svg><!-- UNMAPPED_ICON:person-gear --> Manage Users
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M6 8l4 4 4-4"/></svg>
                                 </button>
                                 <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                     <a href="{% url 'accounts:user_list' %}" class="dropdown-item">All Users</a>
@@ -136,12 +136,12 @@
                         {% elif request.user.parent_profile %}
                             <!-- Parent Links -->
                             <a href="{% url 'portal:dashboard' %}" class="nav-link">
-                                <i class="bi bi-speedometer2"></i> Dashboard
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Dashboard
                             </a>
                             <div class="relative group">
                                 <button class="nav-link flex items-center gap-1">
-                                    <i class="bi bi-people-fill"></i> My Children
-                                    <i class="bi bi-chevron-down text-xs"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg> My Children
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M6 8l4 4 4-4"/></svg>
                                 </button>
                                 <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                     {% for student in request.user.parent_profile.students.all %}
@@ -151,31 +151,31 @@
                                 </div>
                             </div>
                             <a href="{% url 'portal:parent_fees' %}" class="nav-link">
-                                <i class="bi bi-cash-coin"></i> Fees
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="cash-coin"></svg><!-- UNMAPPED_ICON:cash-coin --> Fees
                             </a>
                             <a href="{% url 'portal:announcements_list' %}" class="nav-link">
-                                <i class="bi bi-megaphone"></i> Announcements
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> Announcements
                             </a>
 
                         {% elif request.user.student_profile %}
                             <!-- Student Links -->
                             <a href="{% url 'portal:dashboard' %}" class="nav-link">
-                                <i class="bi bi-speedometer2"></i> Dashboard
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Dashboard
                             </a>
                             <a href="{% url 'portal:student_scores' %}" class="nav-link">
-                                <i class="bi bi-journal-check"></i> My Scores
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="journal-check"></svg><!-- UNMAPPED_ICON:journal-check --> My Scores
                             </a>
                             <a href="{% url 'portal:student_attendance' %}" class="nav-link">
-                                <i class="bi bi-calendar-check"></i> My Attendance
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-check"></svg><!-- UNMAPPED_ICON:calendar-check --> My Attendance
                             </a>
                             <a href="{% url 'portal:student_timetable' %}" class="nav-link">
-                                <i class="bi bi-table"></i> My Timetable
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="table"></svg><!-- UNMAPPED_ICON:table --> My Timetable
                             </a>
                             <a href="{% url 'portal:student_reports' %}" class="nav-link">
-                                <i class="bi bi-file-earmark-text"></i> My Reports
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-text"></svg><!-- UNMAPPED_ICON:file-earmark-text --> My Reports
                             </a>
                             <a href="{% url 'portal:announcements_list' %}" class="nav-link">
-                                <i class="bi bi-megaphone"></i> Announcements
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> Announcements
                             </a>
                         {% endif %}
                     </div>
@@ -187,22 +187,22 @@
                         <!-- Portal Dropdown -->
                         <div class="relative group">
                             <button class="nav-link flex items-center gap-1">
-                                <i class="bi bi-box-arrow-in-right"></i> Portal Login
-                                <i class="bi bi-chevron-down text-xs"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="box-arrow-in-right"></svg><!-- UNMAPPED_ICON:box-arrow-in-right --> Portal Login
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M6 8l4 4 4-4"/></svg>
                             </button>
                             <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                 <a href="{% url 'accounts:login' %}?type=student" class="dropdown-item">
-                                    <i class="bi bi-person"></i> Student Portal
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person"></svg><!-- UNMAPPED_ICON:person --> Student Portal
                                 </a>
                                 <a href="{% url 'accounts:login' %}?type=parent" class="dropdown-item">
-                                    <i class="bi bi-people"></i> Parent Portal
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people"></svg><!-- UNMAPPED_ICON:people --> Parent Portal
                                 </a>
                                 <div class="border-t border-gray-200 my-1"></div>
                                 <a href="{% url 'accounts:login' %}?type=staff" class="dropdown-item">
-                                    <i class="bi bi-person-workspace"></i> Staff Portal
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-workspace"></svg><!-- UNMAPPED_ICON:person-workspace --> Staff Portal
                                 </a>
                                 <a href="{% url 'accounts:login' %}?type=admin" class="dropdown-item">
-                                    <i class="bi bi-shield-lock"></i> Admin Portal
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="shield-lock"></svg><!-- UNMAPPED_ICON:shield-lock --> Admin Portal
                                 </a>
                             </div>
                         </div>
@@ -212,22 +212,22 @@
                         <!-- User Menu -->
                         <div class="relative group">
                             <button class="nav-link flex items-center gap-2">
-                                <i class="bi bi-person-circle text-xl"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-circle text-xl"></svg><!-- UNMAPPED_ICON:person-circle -->
                                 <span class="hidden lg:inline">{{ request.user.get_full_name|default:request.user.username }}</span>
                             </button>
                             <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                 <a href="{% url 'portal:profile' %}" class="dropdown-item">
-                                    <i class="bi bi-person-vcard"></i> My Profile
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-vcard"></svg><!-- UNMAPPED_ICON:person-vcard --> My Profile
                                 </a>
                                 <a href="{% url 'portal:messages_inbox' %}" class="dropdown-item">
-                                    <i class="bi bi-envelope"></i> Messages
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 8v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8"/></svg> Messages
                                 </a>
                                 <a href="{% url 'portal:change_password' %}" class="dropdown-item">
-                                    <i class="bi bi-key"></i> Change Password
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="key"></svg><!-- UNMAPPED_ICON:key --> Change Password
                                 </a>
                                 <div class="border-t border-gray-200 my-1"></div>
                                 <a href="{% url 'accounts:logout' %}" class="dropdown-item text-red-600 hover:bg-red-50">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="box-arrow-right"></svg><!-- UNMAPPED_ICON:box-arrow-right --> Logout
                                 </a>
                             </div>
                         </div>
@@ -241,7 +241,7 @@
         {% if request.user.is_staff %}
         <nav class="hidden md:flex items-center gap-2 bg-white rounded-xl shadow-sm px-4 py-3 mb-4 overflow-x-auto" id="academics-subnav">
             <a href="{% url 'academics:dashboard' %}" class="academics-nav-link">
-                <i class="bi bi-speedometer2"></i> Dashboard
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Dashboard
             </a>
             <div class="w-px h-5 bg-gray-300 mx-1"></div>
             <a href="{% url 'academics:session_list' %}" class="academics-nav-link">Sessions</a>
@@ -269,10 +269,10 @@
         <div class="mb-4 space-y-2">
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} flex items-center gap-3 p-4 rounded-xl shadow-sm animate-fadeIn" role="alert">
-                <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}exclamation-triangle{% elif message.tags == 'warning' %}exclamation-circle{% else %}info-circle{% endif %}-fill text-xl flex-shrink-0"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="{% if message.tags =="></svg><!-- UNMAPPED_ICON:{% -->
                 <span class="flex-1">{{ message }}</span>
                 <button type="button" class="text-gray-500 hover:text-gray-700" onclick="this.parentElement.remove()">
-                    <i class="bi bi-x-lg"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-lg"></svg><!-- UNMAPPED_ICON:x-lg -->
                 </button>
             </div>
             {% endfor %}
@@ -289,7 +289,7 @@
     <footer class="bg-white border-t border-gray-200 py-6 mt-auto">
         <div class="container mx-auto px-4 text-center text-gray-600">
             <p class="mb-2">
-                <i class="bi bi-mortarboard-fill text-primary-500"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="mortarboard-fill text-primary-500"></svg><!-- UNMAPPED_ICON:mortarboard-fill -->
                 <strong class="text-primary-600">Student Management System</strong>
             </p>
             <p class="text-sm">

@@ -7,7 +7,7 @@
   {% if assessment_types %}
     <ul class="list-group">{% for at in assessment_types %}<li class="list-group-item">{{ at.name }}</li>{% endfor %}</ul>
   {% else %}
-    <p class="text-muted">No assessment types yet.</p>
+    <p class="text-gray-500">No assessment types yet.</p>
   {% endif %}
   <a class="btn btn-primary mt-3" href="{% url 'academics:assessment_type_create' %}">Create Assessment Type</a>
 </div>

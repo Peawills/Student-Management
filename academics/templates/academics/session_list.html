@@ -4,10 +4,10 @@
 <div class="container mx-auto px-4 py-6">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <i class="bi bi-calendar-range text-primary-500"></i> Academic Sessions
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-range text-primary-500"></svg><!-- UNMAPPED_ICON:calendar-range --> Academic Sessions
         </h2>
         <a href="{% url 'academics:session_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-            <i class="bi bi-plus-circle"></i> Add Session
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg> Add Session
         </a>
     </div>
 
@@ -22,18 +22,18 @@
                     {% endif %}
                 </div>
                 <p class="text-gray-600 mb-4 flex items-center gap-2">
-                    <i class="bi bi-calendar-check text-primary-500"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-check text-primary-500"></svg><!-- UNMAPPED_ICON:calendar-check -->
                     {{ session.start_date|date:"M d, Y" }} - {{ session.end_date|date:"M d, Y" }}
                 </p>
                 <div class="flex gap-2">
                     <a href="{% url 'academics:session_update' session.pk %}"
                         class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 border-2 border-yellow-500 text-yellow-600 text-sm font-semibold rounded-lg hover:bg-yellow-50 transition-colors">
-                        <i class="bi bi-pencil"></i> Edit
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil"></svg><!-- UNMAPPED_ICON:pencil --> Edit
                     </a>
                     <a href="{% url 'academics:session_delete' session.pk %}" 
                         class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 border-2 border-red-500 text-red-600 text-sm font-semibold rounded-lg hover:bg-red-50 transition-colors"
                         onclick="return confirm('Delete this session?')">
-                        <i class="bi bi-trash"></i> Delete
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 6v12a2 2 0 002 2h4a2 2 0 002-2V6"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg> Delete
                     </a>
                 </div>
             </div>
@@ -41,7 +41,7 @@
         {% empty %}
         <div class="col-span-full">
             <div class="bg-white rounded-2xl shadow-md p-12 text-center">
-                <i class="bi bi-inbox text-6xl text-gray-300 mb-4"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox text-6xl text-gray-300 mb-4"></svg><!-- UNMAPPED_ICON:inbox -->
                 <p class="text-gray-500 text-lg font-medium">No sessions found</p>
             </div>
         </div>

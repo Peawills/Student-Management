@@ -2,10 +2,10 @@
 {% block title %}Import Scores{% endblock %}
 {% block content %}
 <div class="container py-4" style="max-width: 800px;">
-    <h2 class="mb-4"><i class="bi bi-upload"></i> Import Scores from Excel/CSV</h2>
+    <h2 class="mb-4"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="upload"></svg> Import Scores from Excel/CSV</h2>
 
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-info text-white">
+        <div class="card-header bg-blue-600 text-white">
             <h5 class="mb-0">Instructions</h5>
         </div>
         <div class="card-body">
@@ -30,7 +30,7 @@
                     <label class="form-label">Select Assessment *</label>
                     {{ form.assessment }}
                     {% if form.assessment.errors %}
-                    <div class="text-danger small">{{ form.assessment.errors.0 }}</div>
+                    <div class="text-red-600 small">{{ form.assessment.errors.0 }}</div>
                     {% endif %}
                 </div>
 
@@ -38,14 +38,14 @@
                     <label class="form-label">Upload File *</label>
                     {{ form.file }}
                     {% if form.file.errors %}
-                    <div class="text-danger small">{{ form.file.errors.0 }}</div>
+                    <div class="text-red-600 small">{{ form.file.errors.0 }}</div>
                     {% endif %}
-                    <small class="text-muted d-block mt-1">Accepted: .xlsx, .xls, .csv (Max: 5MB)</small>
+                    <small class="text-gray-500 block mt-1">Accepted: .xlsx, .xls, .csv (Max: 5MB)</small>
                 </div>
 
-                <div class="d-flex gap-2">
+                <div class="flex gap-2">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-upload"></i> Import Scores
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="upload"></svg> Import Scores
                     </button>
                     <a href="{% url 'academics:assessment_list' %}" class="btn btn-secondary">Cancel</a>
                 </div>

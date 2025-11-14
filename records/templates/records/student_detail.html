@@ -13,7 +13,7 @@
     <div class="my-6">
         <a href="{% url 'records:student_list' %}"
             class="inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-secondary-500 transition-colors">
-            <i class="bi bi-arrow-left-circle"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-left-circle"></svg><!-- UNMAPPED_ICON:arrow-left-circle -->
             Back to Student List
         </a>
     </div>
@@ -38,28 +38,28 @@
                 <h1 class="text-3xl md:text-4xl font-bold">{{ student.full_name }}</h1>
                 <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
                     <div class="profile-badge">
-                        <i class="bi bi-card-text"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="card-text"></svg><!-- UNMAPPED_ICON:card-text -->
                         {{ student.admission_no }}
                     </div>
                     <div class="profile-badge">
-                        <i class="bi bi-book"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book"></svg><!-- UNMAPPED_ICON:book -->
                         {{ student.class_at_present }}
                     </div>
                     <div class="profile-badge">
-                        <i class="bi bi-calendar"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><rect x="3" y="4" width="18" height="18" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18"/></svg>
                         {{ student.age }} years old
                     </div>
                     <div class="profile-badge">
-                        <i class="bi bi-gender-{{ student.sex|lower }}"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="gender-{{ student.sex|lower }}"></svg><!-- UNMAPPED_ICON:gender-{{ -->
                         {{ student.sex }}
                     </div>
                     <div
                         class="profile-badge {% if student.is_active %}bg-green-500/80{% else %}bg-gray-500/80{% endif %}">
                         {% if student.is_active %}
-                        <i class="bi bi-check-circle"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check-circle"></svg><!-- UNMAPPED_ICON:check-circle -->
                         Active
                         {% else %}
-                        <i class="bi bi-archive"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="archive"></svg><!-- UNMAPPED_ICON:archive -->
                         Archived
                         {% endif %}
                     </div>
@@ -67,11 +67,11 @@
 
                 <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-6">
                     <a href="{% url 'records:upload_document' student.id %}" class="action-btn bg-white text-primary-600">
-                        <i class="bi bi-cloud-upload"></i> Upload Document
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="cloud-upload"></svg><!-- UNMAPPED_ICON:cloud-upload --> Upload Document
                     </a>
 
                     <a href="{% url 'records:student_update' student.pk %}" class="action-btn bg-yellow-500 text-white">
-                        <i class="bi bi-pencil"></i> Edit
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil"></svg><!-- UNMAPPED_ICON:pencil --> Edit
                     </a>
                     {% if request.user.is_superuser %}
                     <form action="{% url 'academics:generate_single_report_card' %}" method="post">
@@ -82,7 +82,7 @@
                         {% endif %}
                         <button type="submit" class="action-btn bg-blue-500 text-white"
                             title="Generate report card for current term">
-                            <i class="bi bi-file-earmark-plus"></i> Generate Report Card
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-plus"></svg><!-- UNMAPPED_ICON:file-earmark-plus --> Generate Report Card
                         </button>
                     </form>
                     {% endif %}
@@ -91,18 +91,18 @@
                         {% if student.is_active %}
                         <button type="submit" class="action-btn bg-orange-500 text-white"
                             onclick="return confirm('Are you sure you want to archive this student?')">
-                            <i class="bi bi-archive"></i> Archive
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="archive"></svg><!-- UNMAPPED_ICON:archive --> Archive
                         </button>
                         {% else %}
                         <button type="submit" class="action-btn bg-green-500 text-white"
                             onclick="return confirm('Are you sure you want to reactivate this student?')">
-                            <i class="bi bi-arrow-counterclockwise"></i> Reactivate
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-counterclockwise"></svg><!-- UNMAPPED_ICON:arrow-counterclockwise --> Reactivate
                         </button>
                         {% endif %}
                     </form>
                     <a href="{% url 'records:student_delete' student.pk %}" class="action-btn bg-red-600 text-white"
                         onclick="return confirm('Are you sure you want to delete this student? This action cannot be undone.')">
-                        <i class="bi bi-trash"></i> Delete
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 6v12a2 2 0 002 2h4a2 2 0 002-2V6"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg> Delete
                     </a>
                 </div>
             </div>
@@ -112,7 +112,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Personal Information -->
         <div class="info-card">
-            <h3 class="section-title"><i class="bi bi-person-badge"></i>Personal Information</h3>
+            <h3 class="section-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-badge"></svg><!-- UNMAPPED_ICON:person-badge -->Personal Information</h3>
             <div class="info-grid">
                 <div class="info-item">
                     <div class="info-label">Date of Birth</div>
@@ -155,7 +155,7 @@
         <!-- Contact & Academic -->
         <div class="space-y-8">
             <div class="info-card">
-                <h3 class="section-title"><i class="bi bi-building"></i>Academic Information</h3>
+                <h3 class="section-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="building"></svg><!-- UNMAPPED_ICON:building -->Academic Information</h3>
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Date of Entry</div>
@@ -173,7 +173,7 @@
             </div>
 
             <div class="info-card">
-                <h3 class="section-title"><i class="bi bi-geo-alt"></i>Contact Information</h3>
+                <h3 class="section-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="geo-alt"></svg><!-- UNMAPPED_ICON:geo-alt -->Contact Information</h3>
                 <div class="info-grid grid-cols-1">
                     <div class="info-item">
                         <div class="info-label">Residential Address</div>
@@ -192,17 +192,17 @@
 
     <!-- Parent/Guardian Information -->
     <div class="info-card">
-        <h3 class="section-title"><i class="bi bi-people"></i>Parent/Guardian Information</h3>
+        <h3 class="section-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people"></svg><!-- UNMAPPED_ICON:people -->Parent/Guardian Information</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="space-y-4">
-                <h4 class="parent-title"><i class="bi bi-person"></i> Father</h4>
+                <h4 class="parent-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person"></svg><!-- UNMAPPED_ICON:person --> Father</h4>
                 <div class="info-item"><span class="info-label">Name</span><span class="info-value">{{ student.father_name }}</span></div>
                 {% if student.father_occupation %}<div class="info-item"><span class="info-label">Occupation</span><span class="info-value">{{ student.father_occupation }}</span></div>{% endif %}
                 {% if student.father_mobile %}<div class="info-item"><span class="info-label">Mobile</span><span class="info-value">{{ student.father_mobile }}</span></div>{% endif %}
             </div>
 
             <div class="space-y-4">
-                <h4 class="parent-title"><i class="bi bi-person"></i> Mother</h4>
+                <h4 class="parent-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person"></svg><!-- UNMAPPED_ICON:person --> Mother</h4>
                 <div class="info-item"><span class="info-label">Name</span><span class="info-value">{{ student.mother_name }}</span></div>
                 {% if student.mother_occupation %}<div class="info-item"><span class="info-label">Occupation</span><span class="info-value">{{ student.mother_occupation }}</span></div>{% endif %}
                 {% if student.mother_mobile %}<div class="info-item"><span class="info-label">Mobile</span><span class="info-value">{{ student.mother_mobile }}</span></div>{% endif %}
@@ -210,7 +210,7 @@
 
             {% if student.guardian_name %}
             <div class="space-y-4">
-                <h4 class="parent-title"><i class="bi bi-person-check"></i> Guardian</h4>
+                <h4 class="parent-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-check"></svg><!-- UNMAPPED_ICON:person-check --> Guardian</h4>
                 <div class="info-item"><span class="info-label">Name</span><span class="info-value">{{ student.guardian_name }}</span></div>
                 {% if student.guardian_occupation %}<div class="info-item"><span class="info-label">Occupation</span><span class="info-value">{{ student.guardian_occupation }}</span></div>{% endif %}
                 {% if student.guardian_mobile %}<div class="info-item"><span class="info-label">Mobile</span><span class="info-value">{{ student.guardian_mobile }}</span></div>{% endif %}
@@ -222,19 +222,19 @@
     <!-- Health Status -->
     {% if student.visually_impaired or student.deaf or student.physically_disabled or student.mentally_impaired or student.others %}
     <div class="info-card">
-        <h3 class="section-title"><i class="bi bi-heart-pulse"></i>Special Health Status</h3>
+        <h3 class="section-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="heart-pulse"></svg><!-- UNMAPPED_ICON:heart-pulse -->Special Health Status</h3>
         <div class="flex flex-wrap gap-4">
             {% if student.visually_impaired %}
-            <div class="health-badge"><i class="bi bi-eye-slash"></i> Visually Impaired</div>
+            <div class="health-badge"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="eye-slash"></svg><!-- UNMAPPED_ICON:eye-slash --> Visually Impaired</div>
             {% endif %}
             {% if student.deaf %}
-            <div class="health-badge"><i class="bi bi-ear-slash"></i> Deaf</div>
+            <div class="health-badge"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="ear-slash"></svg><!-- UNMAPPED_ICON:ear-slash --> Deaf</div>
             {% endif %}
             {% if student.physically_disabled %}
-            <div class="health-badge"><i class="bi bi-person-wheelchair"></i> Physically Disabled</div>
+            <div class="health-badge"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-wheelchair"></svg><!-- UNMAPPED_ICON:person-wheelchair --> Physically Disabled</div>
             {% endif %}
             {% if student.mentally_impaired %}
-            <div class="health-badge"><i class="bi bi-brain"></i> Mentally Impaired</div>
+            <div class="health-badge"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="brain"></svg><!-- UNMAPPED_ICON:brain --> Mentally Impaired</div>
             {% endif %}
         </div>
         {% if student.others %}
@@ -248,13 +248,13 @@
 
     <!-- Documents Section -->
     <div class="info-card">
-        <h3 class="section-title"><i class="bi bi-file-earmark-text"></i>Documents ({{ document_count }})</h3>
+        <h3 class="section-title"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-text"></svg><!-- UNMAPPED_ICON:file-earmark-text -->Documents ({{ document_count }})</h3>
 
         {% if grouped_documents %}
         {% for doc_type, docs in grouped_documents.items %}
         <div class="mb-8 last:mb-0">
             <div class="bg-primary-50 p-4 rounded-xl mb-4">
-                <h4 class="text-lg font-bold text-primary-700 flex items-center gap-3"><i class="bi bi-folder2-open"></i>{{ doc_type }} ({{ docs|length }})</h4>
+                <h4 class="text-lg font-bold text-primary-700 flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="folder2-open"></svg><!-- UNMAPPED_ICON:folder2-open -->{{ doc_type }} ({{ docs|length }})</h4>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -265,33 +265,33 @@
                         {% if document.is_image %}
                         <img src="{{ document.file.url }}" alt="{{ document.name }}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <i class="bi bi-zoom-in text-white text-4xl"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="zoom-in text-white text-4xl"></svg><!-- UNMAPPED_ICON:zoom-in -->
                         </div>
                         {% elif document.is_pdf %}
-                        <i class="bi bi-file-earmark-pdf text-5xl text-red-500"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-pdf text-5xl text-red-500"></svg><!-- UNMAPPED_ICON:file-earmark-pdf -->
                         {% else %}
-                        <i class="bi bi-file-earmark-text text-5xl text-primary-500"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-text text-5xl text-primary-500"></svg><!-- UNMAPPED_ICON:file-earmark-text -->
                         {% endif %}
                     </div>
 
                     <div class="p-4">
                         <h5 class="font-bold text-gray-800 truncate">{{ document.name }}</h5>
                         <div class="text-xs text-gray-500 mt-2 space-y-1">
-                            <p><i class="bi bi-calendar3 mr-1.5"></i>{{ document.uploaded_at|date:"M d, Y" }}</p>
-                            <p><i class="bi bi-hdd mr-1.5"></i>{{ document.file_size_mb }} MB</p>
+                            <p><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar3 mr-1.5"></svg><!-- UNMAPPED_ICON:calendar3 -->{{ document.uploaded_at|date:"M d, Y" }}</p>
+                            <p><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="hdd mr-1.5"></svg><!-- UNMAPPED_ICON:hdd -->{{ document.file_size_mb }} MB</p>
                         </div>
                         {% if document.notes %}
-                        <p class="text-xs text-gray-600 mt-2 p-2 bg-gray-100 rounded-md truncate" title="{{ document.notes }}"><i class="bi bi-chat-square-text mr-1.5"></i>{{ document.notes }}</p>
+                        <p class="text-xs text-gray-600 mt-2 p-2 bg-gray-100 rounded-md truncate" title="{{ document.notes }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chat-square-text mr-1.5"></svg><!-- UNMAPPED_ICON:chat-square-text -->{{ document.notes }}</p>
                         {% endif %}
 
                         <div class="flex gap-2 mt-4">
                             <a href="{{ document.file.url }}" target="_blank" class="doc-action-btn bg-primary-600 hover:bg-primary-700">
-                                <i class="bi bi-eye"></i> View
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/></svg> View
                             </a>
                             <a href="{% url 'records:delete_document' student.id document.id %}"
                                 class="doc-action-btn bg-red-600 hover:bg-red-700"
                                 onclick="return confirm('Are you sure you want to delete this document?')">
-                                <i class="bi bi-trash"></i> Delete
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 6v12a2 2 0 002 2h4a2 2 0 002-2V6"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg> Delete
                             </a>
                         </div>
                     </div>
@@ -303,7 +303,7 @@
         {% else %}
         <div class="text-center py-16">
             <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center text-4xl text-gray-400">
-                <i class="bi bi-inbox"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox"></svg><!-- UNMAPPED_ICON:inbox -->
             </div>
             <h4 class="text-lg font-semibold text-gray-700 mb-2">No Documents Uploaded</h4>
             <p class="text-gray-500">Upload documents for this student using the button above.</p>

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-calendar3"></i> Timetable for {{ student.full_name }}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar3"></svg> Timetable for {{ student.full_name }}
     </h1>
 
     <nav aria-label="breadcrumb">
@@ -29,11 +29,11 @@
                                 <ul class="list-group list-group-flush">
                                     {% for entry in timetable_by_day|get_item:day %}
                                         <li class="list-group-item">
-                                            <div class="d-flex justify-content-between">
+                                            <div class="flex justify-between">
                                                 <div>
                                                     <strong>{{ entry.subject.name }}</strong>
                                                     <br>
-                                                    <small class="text-muted">{{ entry.start_time|time:"H:i" }} - {{ entry.end_time|time:"H:i" }}</small>
+                                                    <small class="text-gray-500">{{ entry.start_time|time:"H:i" }} - {{ entry.end_time|time:"H:i" }}</small>
                                                 </div>
                                                 <span class="badge bg-secondary">{{ entry.teacher.get_full_name|default:entry.teacher.username }}</span>
                                             </div>
@@ -41,7 +41,7 @@
                                     {% endfor %}
                                 </ul>
                             {% else %}
-                                <p class="text-muted">No classes scheduled for {{ day }}.</p>
+                                <p class="text-gray-500">No classes scheduled for {{ day }}.</p>
                             {% endif %}
                         </div>
                     </div>

@@ -6,16 +6,16 @@
 <div class="container mx-auto px-4 py-6 max-w-3xl">
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <i class="bi bi-pencil-square text-primary-500"></i> Compose New Message
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil-square text-primary-500"></svg> Compose New Message
         </h1>
     </div>
 
     <nav class="mb-6" aria-label="breadcrumb">
         <ol class="flex items-center gap-2 text-sm">
             <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg></li>
             <li><a href="{% url 'portal:messages_inbox' %}" class="text-primary-600 hover:text-primary-700">Inbox</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg></li>
             <li class="text-gray-500">Compose</li>
         </ol>
     </nav>
@@ -46,7 +46,7 @@
                 </div>
                 <div class="mt-6 flex gap-3">
                     <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-                        <i class="bi bi-send"></i> Send Message
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="send"></svg> Send Message
                     </button>
                     <a href="{% url 'portal:messages_inbox' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
                         Cancel

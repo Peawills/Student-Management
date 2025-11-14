@@ -5,7 +5,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
             <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-                <i class="bi bi-door-open text-primary-500"></i> Classes
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="door-open text-primary-500"></svg><!-- UNMAPPED_ICON:door-open --> Classes
             </h2>
             {% if current_session %}
             <p class="text-gray-600 mt-1">{{ current_session.name }}</p>
@@ -13,7 +13,7 @@
         </div>
         {% if user.is_superuser %}
         <a href="{% url 'academics:classroom_create' %}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg shadow-md hover:bg-primary-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-            <i class="bi bi-plus-circle"></i> Add Class
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg> Add Class
         </a>
         {% endif %}
     </div>
@@ -25,24 +25,24 @@
                 <h4 class="text-xl font-bold text-gray-800 mb-4">{{ classroom }}</h4>
                 <div class="space-y-3">
                     <p class="text-gray-600 flex items-center gap-2">
-                        <i class="bi bi-person text-primary-500"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person text-primary-500"></svg><!-- UNMAPPED_ICON:person -->
                         <span class="font-medium">Class Teacher:</span>
                         <span>{{ classroom.class_teacher.get_full_name|default:"Not Assigned" }}</span>
                     </p>
                     <p class="text-gray-600 flex items-center gap-2">
-                        <i class="bi bi-calendar text-primary-500"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><rect x="3" y="4" width="18" height="18" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18"/></svg>
                         {{ classroom.session.name }}
                     </p>
                 </div>
             </div>
             <div class="px-6 pb-6 flex gap-3">
                 <a href="{% url 'academics:classroom_detail' classroom.pk %}" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-                    <i class="bi bi-eye"></i> View
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/></svg> View
                 </a>
                 {% if user.is_superuser %}
                 <a href="{% url 'academics:classroom_update' classroom.pk %}"
                     class="inline-flex items-center justify-center w-10 h-10 border-2 border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-50 transition-colors">
-                    <i class="bi bi-pencil"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil"></svg><!-- UNMAPPED_ICON:pencil -->
                 </a>
                 {% endif %}
             </div>
@@ -50,7 +50,7 @@
         {% empty %}
         <div class="col-span-full">
             <div class="bg-white rounded-2xl shadow-md p-12 text-center">
-                <i class="bi bi-inbox text-6xl text-gray-300 mb-4"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox text-6xl text-gray-300 mb-4"></svg><!-- UNMAPPED_ICON:inbox -->
                 <p class="text-gray-500 text-lg font-medium">No classes found for current session</p>
             </div>
         </div>

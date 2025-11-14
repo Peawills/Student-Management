@@ -190,7 +190,7 @@
 <div class="delete-container">
     <div class="delete-card">
         <div class="delete-icon">
-            <i class="bi bi-exclamation-triangle-fill"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="exclamation-triangle-fill"></svg>
         </div>
 
         <h1 class="delete-title">Delete Offense Record?</h1>
@@ -218,7 +218,7 @@
         </div>
 
         <div class="warning-box">
-            <i class="bi bi-exclamation-circle-fill"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="exclamation-circle-fill"></svg>
             <div>
                 <div class="warning-text">
                     <strong>Warning:</strong> All associated teacher reports will also be permanently deleted.
@@ -230,11 +230,11 @@
             {% csrf_token %}
             <div class="delete-actions">
                 <button type="submit" class="btn-delete-confirm">
-                    <i class="bi bi-trash-fill"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trash-fill"></svg>
                     Yes, Delete Record
                 </button>
                 <a href="{% url 'committee:offense_detail' offense.id %}" class="btn-cancel">
-                    <i class="bi bi-x-circle"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle"></svg>
                     Cancel
                 </a>
             </div>

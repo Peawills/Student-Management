@@ -5,8 +5,8 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-journal-check"></i> Scores for {{ student.full_name }}
-        {% if current_term %}<small class="text-muted">({{ current_term }})</small>{% endif %}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="journal-check"></svg> Scores for {{ student.full_name }}
+        {% if current_term %}<small class="text-gray-500">({{ current_term }})</small>{% endif %}
     </h1>
 
     <nav aria-label="breadcrumb">

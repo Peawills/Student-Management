@@ -7,7 +7,7 @@
   {% if comments %}
     <ul class="list-group">{% for c in comments %}<li class="list-group-item">{{ c.text }}</li>{% endfor %}</ul>
   {% else %}
-    <p class="text-muted">No comments yet.</p>
+    <p class="text-gray-500">No comments yet.</p>
   {% endif %}
   <a class="btn btn-primary mt-3" href="{% url 'academics:comment_create' %}">Create Comment</a>
 </div>

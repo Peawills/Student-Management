@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-6">
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <i class="bi bi-journal-check text-primary-500"></i> My Scores
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="journal-check text-primary-500"></svg> My Scores
             {% if current_term %}<small class="text-gray-600 text-lg font-normal">({{ current_term }})</small>{% endif %}
         </h1>
     </div>
@@ -14,7 +14,7 @@
     <nav class="mb-6" aria-label="breadcrumb">
         <ol class="flex items-center gap-2 text-sm">
             <li><a href="{% url 'portal:student_dashboard' %}" class="text-primary-600 hover:text-primary-700">Student Dashboard</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg></li>
             <li class="text-gray-500">My Scores</li>
         </ol>
     </nav>
@@ -58,7 +58,7 @@
     {% else %}
         <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-xl">
             <div class="flex items-center gap-3">
-                <i class="bi bi-info-circle-fill text-blue-600 text-xl"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="info-circle-fill text-blue-600 text-xl"></svg>
                 <p class="text-blue-800 font-medium">No scores found for you in the current term.</p>
             </div>
         </div>

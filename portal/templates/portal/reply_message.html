@@ -3,40 +3,77 @@
 {% block title %}Reply to Message{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-reply"></i> Reply to Message
-    </h1>
+<div class="container mx-auto px-4 py-6 max-w-3xl">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="reply text-primary-500"></svg> Reply to Message
+        </h1>
+    </div>
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'portal:dashboard' %}">Portal Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'portal:messages_inbox' %}">Inbox</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Reply</li>
+    <nav class="mb-6" aria-label="breadcrumb">
+        <ol class="flex items-center gap-2 text-sm">
+            <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg></li>
+            <li><a href="{% url 'portal:messages_inbox' %}" class="text-primary-600 hover:text-primary-700">Inbox</a></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg></li>
+            <li class="text-gray-500">Reply</li>
         </ol>
     </nav>
 
-    <div class="card shadow-sm">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Replying to: {{ original_message.subject }}</h6>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4">
+            <h6 class="text-lg font-bold">Replying to: {{ original_message.subject }}</h6>
         </div>
-        <div class="card-body">
-            <div class="original-message bg-light p-3 rounded mb-4 border">
-                <p><strong>From:</strong> {{ original_message.sender.get_full_name }}</p>
-                <p><strong>Date:</strong> {{ original_message.created_at|date:"F d, Y H:i" }}</p>
-                <hr>
-                <p class="mb-0">{{ original_message.message|linebreaksbr }}</p>
+        <div class="p-6">
+            <div class="bg-gray-50 p-4 rounded-xl mb-6 border-l-4 border-primary-500">
+                <div class="space-y-2 mb-4">
+                    <p class="text-sm"><strong class="text-gray-700">From:</strong> <span class="text-gray-900">{{ original_message.sender.get_full_name }}</span></p>
+                    <p class="text-sm"><strong class="text-gray-700">Date:</strong> <span class="text-gray-900">{{ original_message.created_at|date:"F d, Y H:i" }}</span></p>
+                </div>
+                <hr class="my-4">
+                <p class="text-gray-800 whitespace-pre-wrap">{{ original_message.message|linebreaksbr }}</p>
             </div>
 
             <form method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <div class="mt-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-reply-fill"></i> Send Reply</button>
-                    <a href="{% url 'portal:message_detail' original_message.pk %}" class="btn btn-secondary">Cancel</a>
+                <div class="space-y-5">
+                    {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ field.label }}
+                            {% if field.field.required %}<span class="text-red-600">*</span>{% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</div>
+                        {% endif %}
+                        {% if field.help_text %}
+                        <small class="text-gray-500 text-xs mt-1 block">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="reply-fill"></svg> Send Reply
+                    </button>
+                    <a href="{% url 'portal:message_detail' original_message.pk %}" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                        Cancel
+                    </a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    .form-input,
+    .form-textarea {
+        @apply block w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all;
+    }
+    .form-textarea {
+        @apply resize-y min-h-[150px];
+    }
+</style>
 {% endblock %}

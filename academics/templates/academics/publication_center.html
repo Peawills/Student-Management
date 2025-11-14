@@ -2,179 +2,200 @@
 {% block title %}Publication Center{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-megaphone"></i> Publication Center</h2>
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> Publication Center
+        </h2>
     </div>
 
     <!-- Filters -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label for="term" class="form-label">Term</label>
-                    <select name="term" id="term" class="form-select">
-                        <option value="">All Terms</option>
-                        {% for term in terms %}
-                        <option value="{{ term.id }}" {% if term.id == selected_term_id %}selected{% endif %}>
-                            {{ term }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="classroom" class="form-label">Classroom</label>
-                    <select name="classroom" id="classroom" class="form-select">
-                        <option value="">All Classrooms</option>
-                        {% for classroom in classrooms %}
-                        <option value="{{ classroom.id }}" {% if classroom.id == selected_classroom_id %}selected{% endif %}>
-                            {{ classroom }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-funnel"></i> Filter
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <a href="{% url 'academics:publication_center' %}" class="btn btn-outline-secondary w-100">
-                        <i class="bi bi-x-circle"></i> Clear
-                    </a>
-                </div>
-            </form>
-        </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+            <div class="md:col-span-4">
+                <label for="term" class="block text-sm font-semibold text-gray-700 mb-2">Term</label>
+                <select name="term" id="term"
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all">
+                    <option value="">All Terms</option>
+                    {% for term in terms %}
+                    <option value="{{ term.id }}" {% if term.id == selected_term_id %}selected{% endif %}>{{ term }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="md:col-span-4">
+                <label for="classroom" class="block text-sm font-semibold text-gray-700 mb-2">Classroom</label>
+                <select name="classroom" id="classroom"
+                    class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all">
+                    <option value="">All Classrooms</option>
+                    {% for classroom in classrooms %}
+                    <option value="{{ classroom.id }}" {% if classroom.id == selected_classroom_id %}selected{% endif %}>{{ classroom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="md:col-span-2">
+                <button type="submit" class="w-full px-4 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="funnel"></svg><!-- UNMAPPED_ICON:funnel --> Filter
+                </button>
+            </div>
+            <div class="md:col-span-2">
+                <a href="{% url 'academics:publication_center' %}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle"></svg><!-- UNMAPPED_ICON:x-circle --> Clear
+                </a>
+            </div>
+        </form>
     </div>
 
     <!-- Tabs -->
-    <ul class="nav nav-tabs nav-fill mb-3" id="publicationTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="assessments-tab" data-bs-toggle="tab" data-bs-target="#assessments"
-                type="button" role="tab" aria-controls="assessments" aria-selected="true">
-                <i class="bi bi-card-checklist"></i> Assessments (Scores)
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="report-cards-tab" data-bs-toggle="tab" data-bs-target="#report-cards"
-                type="button" role="tab" aria-controls="report-cards" aria-selected="false">
-                <i class="bi bi-file-earmark-text"></i> Report Cards
-            </button>
-        </li>
-    </ul>
-
-    <div class="tab-content" id="publicationTabsContent">
-        <!-- Assessments Tab -->
-        <div class="tab-pane fade show active" id="assessments" role="tabpanel" aria-labelledby="assessments-tab">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5 class="mb-0">Assessments</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Class</th>
-                                    <th>Subject</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for assessment in assessments %}
-                                <tr>
-                                    <td><a href="{% url 'academics:assessment_detail' assessment.pk %}">{{ assessment.title }}</a></td>
-                                    <td>{{ assessment.assignment.classroom }}</td>
-                                    <td>{{ assessment.assignment.subject.name }}</td>
-                                    <td>{{ assessment.date|date:"M d, Y" }}</td>
-                                    <td>
-                                        {% if assessment.is_published %}
-                                        <span class="badge bg-success">Published</span>
-                                        {% else %}
-                                        <span class="badge bg-warning text-dark">Draft</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        {% if assessment.is_published %}
-                                        <form action="{% url 'academics:unpublish_assessment' assessment.pk %}" method="post" class="d-inline">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye-slash"></i> Unpublish</button>
-                                        </form>
-                                        {% else %}
-                                        <form action="{% url 'academics:publish_assessment' assessment.pk %}" method="post" class="d-inline">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-send-check"></i> Publish</button>
-                                        </form>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted">No assessments found for the selected filters.</td></tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="border-b border-gray-200">
+            <div class="flex flex-wrap">
+                <button onclick="showTab('assessments')" id="assessments-tab-btn" class="px-6 py-4 font-semibold text-gray-700 border-b-2 border-primary-500 text-primary-600 transition-colors flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="card-checklist"></svg><!-- UNMAPPED_ICON:card-checklist --> Assessments (Scores)
+                </button>
+                <button onclick="showTab('report-cards')" id="report-cards-tab-btn" class="px-6 py-4 font-semibold text-gray-700 border-b-2 border-transparent hover:text-primary-600 hover:border-primary-300 transition-colors flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-text"></svg><!-- UNMAPPED_ICON:file-earmark-text --> Report Cards
+                </button>
             </div>
         </div>
 
-        <!-- Report Cards Tab -->
-        <div class="tab-pane fade" id="report-cards" role="tabpanel" aria-labelledby="report-cards-tab">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5 class="mb-0">Report Cards</h5>
+        <div class="p-6">
+            <!-- Assessments Tab -->
+            <div id="assessments-tab" class="tab-content">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Class</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Subject</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for assessment in assessments %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{% url 'academics:assessment_detail' assessment.pk %}" class="text-primary-600 hover:text-primary-700 font-medium hover:underline">{{ assessment.title }}</a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ assessment.assignment.classroom }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ assessment.assignment.subject.name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ assessment.date|date:"M d, Y" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {% if assessment.is_published %}
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Published</span>
+                                    {% else %}
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Draft</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    {% if assessment.is_published %}
+                                    <form action="{% url 'academics:unpublish_assessment' assessment.pk %}" method="post" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 border-2 border-gray-300 text-gray-700 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="eye-slash"></svg><!-- UNMAPPED_ICON:eye-slash --> Unpublish
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <form action="{% url 'academics:publish_assessment' assessment.pk %}" method="post" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 bg-green-600 text-white text-xs font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="send-check"></svg><!-- UNMAPPED_ICON:send-check --> Publish
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="px-6 py-12 text-center text-gray-500">No assessments found for the selected filters.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Class</th>
-                                    <th>Term</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for report in report_cards %}
-                                <tr>
-                                    <td><a href="{% url 'academics:report_card_detail' report.pk %}">{{ report.student.full_name }}</a></td>
-                                    <td>{{ report.classroom }}</td>
-                                    <td>{{ report.term }}</td>
-                                    <td>
-                                        {% if report.is_published %}
-                                        <span class="badge bg-success">Published</span>
-                                        {% else %}
-                                        <span class="badge bg-warning text-dark">Draft</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        {% if report.is_published %}
-                                        <form action="{% url 'academics:unpublish_report_card' report.pk %}" method="post" class="d-inline">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye-slash"></i> Unpublish</button>
-                                        </form>
-                                        {% else %}
-                                        <form action="{% url 'academics:publish_report_card' report.pk %}" method="post" class="d-inline">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-send-check"></i> Publish</button>
-                                        </form>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr><td colspan="5" class="text-center py-4 text-muted">No report cards found for the selected filters.</td></tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+
+            <!-- Report Cards Tab -->
+            <div id="report-cards-tab" class="tab-content hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Class</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Term</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for report in report_cards %}
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{% url 'academics:report_card_detail' report.pk %}" class="text-primary-600 hover:text-primary-700 font-medium hover:underline">{{ report.student.full_name }}</a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ report.classroom }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ report.term }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {% if report.is_published %}
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Published</span>
+                                    {% else %}
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">Draft</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    {% if report.is_published %}
+                                    <form action="{% url 'academics:unpublish_report_card' report.pk %}" method="post" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 border-2 border-gray-300 text-gray-700 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="eye-slash"></svg><!-- UNMAPPED_ICON:eye-slash --> Unpublish
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <form action="{% url 'academics:publish_report_card' report.pk %}" method="post" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 bg-green-600 text-white text-xs font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="send-check"></svg><!-- UNMAPPED_ICON:send-check --> Publish
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-500">No report cards found for the selected filters.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function showTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.add('hidden');
+        });
+        
+        // Remove active state from all buttons
+        document.querySelectorAll('[id$="-tab-btn"]').forEach(btn => {
+            btn.classList.remove('border-primary-500', 'text-primary-600');
+            btn.classList.add('border-transparent', 'text-gray-700');
+        });
+        
+        // Show selected tab
+        document.getElementById(tabName + '-tab').classList.remove('hidden');
+        
+        // Activate selected button
+        const activeBtn = document.getElementById(tabName + '-tab-btn');
+        activeBtn.classList.remove('border-transparent', 'text-gray-700');
+        activeBtn.classList.add('border-primary-500', 'text-primary-600');
+    }
+</script>
 {% endblock %}

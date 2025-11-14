@@ -5,8 +5,8 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-calendar-check"></i> Attendance for {{ student.full_name }}
-        {% if current_term %}<small class="text-muted">({{ current_term }})</small>{% endif %}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-check"></svg> Attendance for {{ student.full_name }}
+        {% if current_term %}<small class="text-gray-500">({{ current_term }})</small>{% endif %}
     </h1>
 
     <nav aria-label="breadcrumb">
@@ -29,19 +29,19 @@
                 </div>
                 <div class="col-md-3">
                     <h5>Present</h5>
-                    <p class="h4 text-success">{{ stats.present_days }}</p>
+                    <p class="h4 text-green-600">{{ stats.present_days }}</p>
                 </div>
                 <div class="col-md-3">
                     <h5>Absent</h5>
-                    <p class="h4 text-danger">{{ stats.absent_days }}</p>
+                    <p class="h4 text-red-600">{{ stats.absent_days }}</p>
                 </div>
                 <div class="col-md-3">
                     <h5>Late</h5>
-                    <p class="h4 text-warning">{{ stats.late_days }}</p>
+                    <p class="h4 text-yellow-600">{{ stats.late_days }}</p>
                 </div>
             </div>
             <hr>
-            <p class="text-center h5">Attendance Rate: <span class="text-info">{{ stats.attendance_rate|floatformat:1 }}%</span></p>
+            <p class="text-center h5">Attendance Rate: <span class="text-blue-600">{{ stats.attendance_rate|floatformat:1 }}%</span></p>
         </div>
     </div>
 

@@ -22,7 +22,7 @@
 <div class="container-fluid p-4">
     <!-- Header -->
     <div class="analytics-header">
-        <h2 class="mb-2"><i class="bi bi-bar-chart-line-fill"></i> Disciplinary Analytics Dashboard</h2>
+        <h2 class="mb-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="bar-chart-line-fill"></svg> Disciplinary Analytics Dashboard</h2>
         <p class="mb-0">Insights into student behavior and incident trends</p>
     </div>
 
@@ -31,10 +31,10 @@
         <!-- Offenses by Type -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="bi bi-pie-chart-fill"></i> Offenses by Type</h5>
+                <div class="card-header bg-red-600 text-white">
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pie-chart-fill"></svg> Offenses by Type</h5>
                 </div>
-                <div class="card-body d-flex align-items-center justify-content-center">
+                <div class="card-body flex items-center justify-center">
                     <div class="chart-container" style="height: 300px; width: 300px;">
                         <canvas id="offensesByTypeChart"></canvas>
                     </div>
@@ -45,8 +45,8 @@
         <!-- Offenses Over Time -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Monthly Incident Trend</h5>
+                <div class="card-header bg-yellow-600 text-dark">
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up"></svg> Monthly Incident Trend</h5>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -62,8 +62,8 @@
         <!-- Hotspots -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-geo-alt-fill"></i> Incident Hotspots</h5>
+                <div class="card-header bg-blue-600 text-white">
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="geo-alt-fill"></svg> Incident Hotspots</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -78,11 +78,11 @@
                                 {% for spot in hotspots %}
                                 <tr>
                                     <td><strong>{{ spot.location }}</strong></td>
-                                    <td class="text-center"><span class="badge bg-info">{{ spot.count }}</span></td>
+                                    <td class="text-center"><span class="badge bg-blue-600">{{ spot.count }}</span></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="2" class="text-center text-muted py-4">No location data available.</td>
+                                    <td colspan="2" class="text-center text-gray-500 py-4">No location data available.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -95,8 +95,8 @@
         <!-- Repeat Offenders -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="bi bi-person-exclamation"></i> Repeat Offenders</h5>
+                <div class="card-header bg-gray-800 text-white">
+                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-exclamation"></svg> Repeat Offenders</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -113,11 +113,11 @@
                                 <tr>
                                     <td><strong>{{ offender.student_name }}</strong></td>
                                     <td>{{ offender.student_class }}</td>
-                                    <td class="text-center"><span class="badge bg-danger">{{ offender.count }}</span></td>
+                                    <td class="text-center"><span class="badge bg-red-600">{{ offender.count }}</span></td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="3" class="text-center text-muted py-4">No repeat offenders found.</td>
+                                    <td colspan="3" class="text-center text-gray-500 py-4">No repeat offenders found.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

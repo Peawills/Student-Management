@@ -6,14 +6,14 @@
 <div class="container mx-auto px-4 py-6">
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <i class="bi bi-megaphone text-primary-500"></i> School Announcements
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> School Announcements
         </h1>
     </div>
 
     <nav class="mb-6" aria-label="breadcrumb">
         <ol class="flex items-center gap-2 text-sm">
             <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg><!-- UNMAPPED_ICON:chevron-right --></li>
             <li class="text-gray-500">Announcements</li>
         </ol>
     </nav>
@@ -44,7 +44,7 @@
             {% else %}
                 <div class="bg-blue-50 border-l-4 border-blue-500 p-8 rounded-xl">
                     <div class="text-center">
-                        <i class="bi bi-megaphone text-5xl text-blue-500 mb-4 opacity-50"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg>
                         <h4 class="text-lg font-bold text-blue-800 mb-2">No Announcements Yet!</h4>
                         <p class="text-blue-700">There are no active announcements to display at this time. Please check back later.</p>
                     </div>

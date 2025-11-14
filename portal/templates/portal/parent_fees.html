@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-cash-stack"></i> Fee Payments
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="cash-stack"></svg> Fee Payments
     </h1>
 
     <nav aria-label="breadcrumb">
@@ -23,15 +23,15 @@
             <div class="row text-center">
                 <div class="col-md-4">
                     <h5>Total Due</h5>
-                    <p class="h4 text-danger">${{ total_due|floatformat:2 }}</p>
+                    <p class="h4 text-red-600">${{ total_due|floatformat:2 }}</p>
                 </div>
                 <div class="col-md-4">
                     <h5>Total Paid</h5>
-                    <p class="h4 text-success">${{ total_paid|floatformat:2 }}</p>
+                    <p class="h4 text-green-600">${{ total_paid|floatformat:2 }}</p>
                 </div>
                 <div class="col-md-4">
                     <h5>Balance</h5>
-                    <p class="h4 text-warning">${{ total_balance|floatformat:2 }}</p>
+                    <p class="h4 text-yellow-600">${{ total_balance|floatformat:2 }}</p>
                 </div>
             </div>
         </div>

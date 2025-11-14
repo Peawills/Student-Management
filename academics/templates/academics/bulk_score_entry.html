@@ -3,224 +3,103 @@
 
 {% block title %}Enter Scores - {{ assessment.title }}{% endblock %}
 
-{% block extra_css %}
-<style>
-    .score-entry-container {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .assessment-info {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-    }
-
-    .score-table {
-        width: 100%;
-        margin-top: 1rem;
-    }
-
-    .score-table th {
-        background: #f8f9fa;
-        padding: 1rem;
-        font-weight: 600;
-        border-bottom: 2px solid #dee2e6;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    .score-table td {
-        padding: 0.75rem;
-        border-bottom: 1px solid #e9ecef;
-        vertical-align: middle;
-    }
-
-    .score-input {
-        width: 100px;
-        padding: 0.5rem;
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        text-align: center;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .score-input:focus {
-        border-color: #667eea;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .score-input.has-value {
-        background: #f0f9ff;
-        border-color: #3b82f6;
-    }
-
-    .remarks-input {
-        width: 100%;
-        padding: 0.5rem;
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        transition: all 0.3s ease;
-    }
-
-    .remarks-input:focus {
-        border-color: #667eea;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .student-row {
-        transition: background 0.2s ease;
-    }
-
-    .student-row:hover {
-        background: #f8f9fa;
-    }
-
-    .btn-save {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 0.75rem 2rem;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-save:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        color: white;
-    }
-
-    .existing-score-badge {
-        background: #dcfce7;
-        color: #166534;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .table-container {
-        max-height: 600px;
-        overflow-y: auto;
-        position: relative;
-    }
-
-    .sticky-header {
-        position: sticky;
-        top: 0;
-        background: white;
-        z-index: 100;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="container-fluid p-4">
+<div class="container mx-auto px-4 py-6">
     <!-- Header -->
-    <div class="mb-4">
-        <a href="{% url 'academics:assessment_detail' assessment.pk %}" class="btn btn-outline-secondary mb-3">
-            <i class="bi bi-arrow-left"></i> Back to Assessment
+    <div class="mb-6">
+        <a href="{% url 'academics:assessment_detail' assessment.pk %}" class="inline-flex items-center gap-2 px-4 py-2 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-left"></svg><!-- UNMAPPED_ICON:arrow-left --> Back to Assessment
         </a>
-        <h2><i class="bi bi-pencil-square"></i> Enter Scores</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil-square text-primary-500"></svg><!-- UNMAPPED_ICON:pencil-square --> Enter Scores
+        </h2>
     </div>
 
     <!-- Assessment Info Card -->
-    <div class="assessment-info">
-        <div class="row">
-            <div class="col-md-8">
-                <h4 class="mb-2">{{ assessment.title }}</h4>
-                <p class="mb-1">
-                    <i class="bi bi-book"></i> <strong>Subject:</strong> {{ assessment.assignment.subject.name }}
-                </p>
-                <p class="mb-1">
-                    <i class="bi bi-people"></i> <strong>Class:</strong> {{ assessment.assignment.classroom }}
-                </p>
-                <p class="mb-0">
-                    <i class="bi bi-calendar"></i> <strong>Date:</strong> {{ assessment.date|date:"M d, Y" }}
-                </p>
+    <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white p-6 rounded-2xl mb-6 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="md:col-span-8">
+                <h4 class="text-xl font-bold mb-3">{{ assessment.title }}</h4>
+                <div class="space-y-2">
+                    <p class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book"></svg><!-- UNMAPPED_ICON:book --> <strong>Subject:</strong> {{ assessment.assignment.subject.name }}
+                    </p>
+                    <p class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people"></svg><!-- UNMAPPED_ICON:people --> <strong>Class:</strong> {{ assessment.assignment.classroom }}
+                    </p>
+                    <p class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><rect x="3" y="4" width="18" height="18" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18"/></svg> <strong>Date:</strong> {{ assessment.date|date:"M d, Y" }}
+                    </p>
+                </div>
             </div>
-            <div class="col-md-4 text-end">
-                <h2 class="mb-0">Max Score: {{ assessment.max_score|floatformat:0 }}</h2>
-                <p class="mb-0">{{ assessment.assessment_type.name }}</p>
+            <div class="md:col-span-4 text-center md:text-right">
+                <h2 class="text-3xl font-bold mb-1">Max Score: {{ assessment.max_score|floatformat:0 }}</h2>
+                <p class="opacity-90">{{ assessment.assessment_type.name }}</p>
             </div>
         </div>
     </div>
 
     <!-- Score Entry Form -->
-    <div class="score-entry-container">
+    <div class="bg-white rounded-2xl shadow-lg p-6">
         <form method="post" id="scoreForm">
             {% csrf_token %}
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5>Student List ({{ students|length }} students)</h5>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-secondary" onclick="clearAllScores()">
-                        <i class="bi bi-x-circle"></i> Clear All
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <h5 class="text-lg font-bold text-gray-800">Student List ({{ students|length }} students)</h5>
+                <div class="flex gap-3">
+                    <button type="button" onclick="clearAllScores()" class="px-4 py-2 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle"></svg><!-- UNMAPPED_ICON:x-circle --> Clear All
                     </button>
-                    <button type="submit" class="btn btn-save">
-                        <i class="bi bi-check-circle"></i> Save Scores
+                    <button type="submit" class="px-6 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check-circle"></svg><!-- UNMAPPED_ICON:check-circle --> Save Scores
                     </button>
                 </div>
             </div>
 
-            <div class="table-container">
-                <table class="table score-table table-hover">
-                    <thead class="sticky-header">
+            <div class="max-h-[600px] overflow-y-auto border border-gray-200 rounded-lg">
+                <table class="w-full">
+                    <thead class="bg-gray-50 sticky top-0 z-10">
                         <tr>
-                            <th style="width: 50px;">#</th>
-                            <th style="width: 250px;">Student Name</th>
-                            <th style="width: 150px;">Admission No</th>
-                            <th style="width: 120px;">Score ({{ assessment.max_score|floatformat:0 }})</th>
-                            <th>Remarks</th>
-                            <th style="width: 100px;">Current</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-12">#</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student Name</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Admission No</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-32">Score ({{ assessment.max_score|floatformat:0 }})</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Remarks</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-24">Current</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         {% for student in students %}
-                        <tr class="student-row">
-                            <td>{{ forloop.counter }}</td>
-                            <td>
-                                <strong>{{ student.surname }} {{ student.other_name }}</strong>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-3 text-gray-700">{{ forloop.counter }}</td>
+                            <td class="px-4 py-3">
+                                <strong class="text-gray-900">{{ student.surname }} {{ student.other_name }}</strong>
                             </td>
-                            <td>{{ student.admission_no }}</td>
-                            <td>
-                                <input type="number" name="score_{{ student.id }}" class="score-input" min="0"
-                                    max="{{ assessment.max_score }}" step="1" {% if student.existing_score
-                                    %}value="{{ student.existing_score.score|floatformat:0 }}"
-                                    {% endif %} placeholder="0"
-                                    onchange="this.classList.add('has-value')">
+                            <td class="px-4 py-3 text-gray-700">{{ student.admission_no }}</td>
+                            <td class="px-4 py-3">
+                                <input type="number" name="score_{{ student.id }}" class="score-input w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-center font-semibold focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all" min="0"
+                                    max="{{ assessment.max_score }}" step="1" {% if student.existing_score %}value="{{ student.existing_score.score|floatformat:0 }}"{% endif %} placeholder="0"
+                                    onchange="this.classList.add('bg-blue-50', 'border-blue-500')">
                             </td>
-                            <td>
-                                <input type="text" name="remarks_{{ student.id }}" class="remarks-input" {% if
-                                    student.existing_score %}value="{{ student.existing_score.remarks }}" {% endif %}
+                            <td class="px-4 py-3">
+                                <input type="text" name="remarks_{{ student.id }}" class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all text-sm" {% if student.existing_score %}value="{{ student.existing_score.remarks }}"{% endif %}
                                     placeholder="Optional remarks" maxlength="200">
                             </td>
-                            <td>
+                            <td class="px-4 py-3">
                                 {% if student.existing_score %}
-                                <span class="existing-score-badge">
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
                                     {{ student.existing_score.score|floatformat:0 }}
                                 </span>
                                 {% else %}
-                                <span class="text-muted">-</span>
+                                <span class="text-gray-400">-</span>
                                 {% endif %}
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
-                                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
-                                <p class="mt-2 mb-0">No students found in this class.</p>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox text-5xl mb-4 opacity-50"></svg><!-- UNMAPPED_ICON:inbox -->
+                                <p class="mt-2">No students found in this class.</p>
                             </td>
                         </tr>
                         {% endfor %}
@@ -228,13 +107,13 @@
                 </table>
             </div>
 
-            <div class="mt-4 d-flex justify-content-between align-items-center">
-                <div class="text-muted">
-                    <i class="bi bi-info-circle"></i>
-                    Scores must be between 0 and {{ assessment.max_score|floatformat:0 }}
+            <div class="mt-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pt-6 border-t border-gray-200">
+                <div class="text-gray-600 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="info-circle"></svg><!-- UNMAPPED_ICON:info-circle -->
+                    <span class="text-sm">Scores must be between 0 and {{ assessment.max_score|floatformat:0 }}</span>
                 </div>
-                <button type="submit" class="btn btn-save btn-lg">
-                    <i class="bi bi-check-circle"></i> Save All Scores
+                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check-circle"></svg><!-- UNMAPPED_ICON:check-circle --> Save All Scores
                 </button>
             </div>
         </form>
@@ -244,12 +123,12 @@
 
 {% block extra_js %}
 <script>
-    // Add 'has-value' class to inputs with values on page load
+    // Add styling to inputs with values on page load
     document.addEventListener('DOMContentLoaded', function () {
         const scoreInputs = document.querySelectorAll('.score-input');
         scoreInputs.forEach(input => {
             if (input.value && input.value !== '') {
-                input.classList.add('has-value');
+                input.classList.add('bg-blue-50', 'border-blue-500');
             }
         });
 
@@ -260,7 +139,6 @@
                 const scoreInputs = document.querySelectorAll('.score-input');
                 let hasScores = false;
                 let invalidScores = [];
-                // ensure this is a number in JS
                 const maxScore = Number({{ assessment.max_score|default:0 }});
 
                 scoreInputs.forEach(input => {
@@ -293,11 +171,11 @@
     function clearAllScores() {
         if (confirm('Are you sure you want to clear all scores? This will not delete saved scores.')) {
             const scoreInputs = document.querySelectorAll('.score-input');
-            const remarksInputs = document.querySelectorAll('.remarks-input');
+            const remarksInputs = document.querySelectorAll('input[name^="remarks_"]');
 
             scoreInputs.forEach(input => {
                 input.value = '';
-                input.classList.remove('has-value');
+                input.classList.remove('bg-blue-50', 'border-blue-500');
             });
 
             remarksInputs.forEach(input => {

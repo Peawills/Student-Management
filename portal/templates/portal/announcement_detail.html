@@ -6,16 +6,16 @@
 <div class="container mx-auto px-4 py-6 max-w-4xl">
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <i class="bi bi-megaphone text-primary-500"></i> Announcement Details
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> Announcement Details
         </h1>
     </div>
 
     <nav class="mb-6" aria-label="breadcrumb">
         <ol class="flex items-center gap-2 text-sm">
             <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg><!-- UNMAPPED_ICON:chevron-right --></li>
             <li><a href="{% url 'portal:announcements_list' %}" class="text-primary-600 hover:text-primary-700">Announcements</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg><!-- UNMAPPED_ICON:chevron-right --></li>
             <li class="text-gray-500">{{ announcement.title|truncatechars:30 }}</li>
         </ol>
     </nav>
@@ -30,21 +30,21 @@
         <div class="p-6">
             <div class="flex flex-wrap gap-4 mb-6 text-sm text-gray-600">
                 <span class="flex items-center gap-2">
-                    <i class="bi bi-calendar text-primary-500"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><rect x="3" y="4" width="18" height="18" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18"/></svg>
                     Published: {{ announcement.created_at|date:"F d, Y H:i" }}
                 </span>
                 {% if announcement.expires_at %}
                 <span class="flex items-center gap-2">
-                    <i class="bi bi-calendar-x text-red-500"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-x text-red-500"></svg><!-- UNMAPPED_ICON:calendar-x -->
                     Expires: {{ announcement.expires_at|date:"F d, Y H:i" }}
                 </span>
                 {% endif %}
                 <span class="flex items-center gap-2">
-                    <i class="bi bi-tag text-blue-500"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="tag text-blue-500"></svg><!-- UNMAPPED_ICON:tag -->
                     Category: {{ announcement.category }}
                 </span>
                 <span class="flex items-center gap-2">
-                    <i class="bi bi-people text-green-500"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people text-green-500"></svg><!-- UNMAPPED_ICON:people -->
                     Target: {{ announcement.target_audience }}
                 </span>
             </div>

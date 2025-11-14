@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="h3 mb-4 text-gray-800">
-        <i class="bi bi-file-earmark-bar-graph"></i> My Report Cards
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-bar-graph"></svg> My Report Cards
     </h1>
 
     <nav aria-label="breadcrumb">
@@ -43,7 +43,7 @@
                                     <td>{{ rc.generated_at|date:"M d, Y" }}</td>
                                     <td>
                                         <a href="{% url 'academics:report_card_pdf' rc.id %}" class="btn btn-sm btn-outline-primary" target="_blank" title="Download PDF">
-                                            <i class="bi bi-file-earmark-pdf"></i> PDF
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-pdf"></svg> PDF
                                         </a>
                                     </td>
                                 </tr>

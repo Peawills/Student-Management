@@ -6,14 +6,14 @@
 <div class="container mx-auto px-4 py-6">
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <i class="bi bi-person-circle text-primary-500"></i> My Profile
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-circle text-primary-500"></svg> My Profile
         </h1>
     </div>
 
     <nav class="mb-6" aria-label="breadcrumb">
         <ol class="flex items-center gap-2 text-sm">
             <li><a href="{% url 'portal:dashboard' %}" class="text-primary-600 hover:text-primary-700">Portal Dashboard</a></li>
-            <li><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="chevron-right text-gray-400"></svg></li>
             <li class="text-gray-500">Profile</li>
         </ol>
     </nav>
@@ -49,10 +49,10 @@
             <hr class="my-6">
             <div class="flex flex-col sm:flex-row gap-3">
                 <a href="{% url 'portal:update_profile' %}" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-                    <i class="bi bi-pencil"></i> Edit Profile
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil"></svg> Edit Profile
                 </a>
                 <a href="{% url 'portal:change_password' %}" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors">
-                    <i class="bi bi-key"></i> Change Password
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="key"></svg> Change Password
                 </a>
             </div>
         </div>

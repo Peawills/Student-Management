@@ -8,7 +8,7 @@
     <!-- Dashboard Header -->
     <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white p-8 rounded-2xl mb-6 shadow-lg">
         <h2 class="text-3xl font-bold mb-2 flex items-center gap-3">
-            <i class="bi bi-speedometer2"></i> Academics Dashboard
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Academics Dashboard
         </h2>
         <p class="opacity-95">
             Welcome back! Here's an overview of your academic activities and performance.
@@ -21,7 +21,7 @@
             <div class="absolute top-0 right-0 w-24 h-24 bg-primary-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
             <div class="relative">
                 <div class="text-4xl mb-3 text-primary-500">
-                    <i class="bi bi-calendar3"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar3"></svg><!-- UNMAPPED_ICON:calendar3 -->
                 </div>
                 <div class="text-3xl font-bold text-gray-800 mb-1">{{ total_sessions|default:0 }}</div>
                 <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Sessions</div>
@@ -32,7 +32,7 @@
             <div class="absolute top-0 right-0 w-24 h-24 bg-secondary-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
             <div class="relative">
                 <div class="text-4xl mb-3 text-secondary-500">
-                    <i class="bi bi-clock-history"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="clock-history"></svg><!-- UNMAPPED_ICON:clock-history -->
                 </div>
                 <div class="text-2xl font-bold text-gray-800 mb-1">{{ current_term_name|default:'-' }}</div>
                 <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Current Term</div>
@@ -43,7 +43,7 @@
             <div class="absolute top-0 right-0 w-24 h-24 bg-green-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
             <div class="relative">
                 <div class="text-4xl mb-3 text-green-500">
-                    <i class="bi bi-door-open"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="door-open"></svg><!-- UNMAPPED_ICON:door-open -->
                 </div>
                 <div class="text-3xl font-bold text-gray-800 mb-1">{{ total_classes|default:0 }}</div>
                 <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Classes</div>
@@ -54,7 +54,7 @@
             <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
             <div class="relative">
                 <div class="text-4xl mb-3 text-yellow-500">
-                    <i class="bi bi-book"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book"></svg><!-- UNMAPPED_ICON:book -->
                 </div>
                 <div class="text-3xl font-bold text-gray-800 mb-1">{{ total_subjects|default:0 }}</div>
                 <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Subjects</div>
@@ -65,7 +65,7 @@
             <div class="absolute top-0 right-0 w-24 h-24 bg-red-100 rounded-full transform translate-x-6 -translate-y-6 opacity-50"></div>
             <div class="relative">
                 <div class="text-4xl mb-3 text-red-500">
-                    <i class="bi bi-clipboard-check"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="clipboard-check"></svg><!-- UNMAPPED_ICON:clipboard-check -->
                 </div>
                 <div class="text-3xl font-bold text-gray-800 mb-1">{{ pending_assessments|default:0 }}</div>
                 <div class="text-sm font-semibold text-gray-600 uppercase tracking-wider">Pending</div>
@@ -79,7 +79,7 @@
         <div class="lg:col-span-2 space-y-6">
             <div class="bg-white rounded-2xl shadow-md p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <i class="bi bi-clipboard-data text-primary-500 text-2xl"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="clipboard-data text-primary-500 text-2xl"></svg><!-- UNMAPPED_ICON:clipboard-data -->
                     Recent Assessments
                 </h3>
                 {% if recent_assessments %}
@@ -113,7 +113,7 @@
                 </div>
                 {% else %}
                 <div class="text-center py-12 text-gray-500">
-                    <i class="bi bi-inbox text-5xl mb-3 opacity-50"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox text-5xl mb-3 opacity-50"></svg><!-- UNMAPPED_ICON:inbox -->
                     <p>No assessments found</p>
                 </div>
                 {% endif %}
@@ -122,7 +122,7 @@
             <!-- Recent Scores -->
             <div class="bg-white rounded-2xl shadow-md p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <i class="bi bi-graph-up-arrow text-primary-500 text-2xl"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up-arrow text-primary-500 text-2xl"></svg><!-- UNMAPPED_ICON:graph-up-arrow -->
                     Recent Student Scores
                 </h3>
                 {% if recent_scores %}
@@ -152,7 +152,7 @@
                 </div>
                 {% else %}
                 <div class="text-center py-12 text-gray-500">
-                    <i class="bi bi-inbox text-5xl mb-3 opacity-50"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox text-5xl mb-3 opacity-50"></svg><!-- UNMAPPED_ICON:inbox -->
                     <p>No recent scores</p>
                 </div>
                 {% endif %}
@@ -164,7 +164,7 @@
             <!-- Classes Snapshot -->
             <div class="bg-white rounded-2xl shadow-md p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <i class="bi bi-people text-primary-500 text-2xl"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people text-primary-500 text-2xl"></svg><!-- UNMAPPED_ICON:people -->
                     Classes Overview
                 </h3>
                 {% if classes_snapshot %}
@@ -175,11 +175,11 @@
                             <div>
                                 <div class="font-bold text-gray-800 text-lg">{{ c.classroom }}</div>
                                 <div class="text-sm text-gray-600 mt-1">
-                                    <i class="bi bi-person-badge"></i> {{ c.class_teacher_name|default:"No Teacher" }}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-badge"></svg><!-- UNMAPPED_ICON:person-badge --> {{ c.class_teacher_name|default:"No Teacher" }}
                                 </div>
                             </div>
                             <span class="px-3 py-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-sm font-semibold rounded-full">
-                                {{ c.student_count|default:0 }} <i class="bi bi-people-fill"></i>
+                                {{ c.student_count|default:0 }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg>
                             </span>
                         </div>
                     </div>
@@ -187,7 +187,7 @@
                 </div>
                 {% else %}
                 <div class="text-center py-12 text-gray-500">
-                    <i class="bi bi-inbox text-5xl mb-3 opacity-50"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox text-5xl mb-3 opacity-50"></svg><!-- UNMAPPED_ICON:inbox -->
                     <p>No classes found</p>
                 </div>
                 {% endif %}
@@ -196,28 +196,28 @@
             <!-- Quick Actions -->
             <div class="bg-white rounded-2xl shadow-md p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <i class="bi bi-lightning text-primary-500 text-2xl"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="lightning text-primary-500 text-2xl"></svg><!-- UNMAPPED_ICON:lightning -->
                     Quick Actions
                 </h3>
                 <div class="space-y-3">
                     <a href="{% url 'academics:assessment_create' %}" class="block w-full px-4 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-xl hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-3">
-                        <i class="bi bi-plus-circle-fill"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="plus-circle-fill"></svg><!-- UNMAPPED_ICON:plus-circle-fill -->
                         <span>Create Assessment</span>
                     </a>
                     <a href="{% url 'academics:session_list' %}" class="block w-full px-4 py-3 border-2 border-primary-500 text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-all flex items-center gap-3">
-                        <i class="bi bi-calendar3"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar3"></svg><!-- UNMAPPED_ICON:calendar3 -->
                         <span>Manage Sessions</span>
                     </a>
                     <a href="{% url 'academics:classroom_list' %}" class="block w-full px-4 py-3 border-2 border-gray-400 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all flex items-center gap-3">
-                        <i class="bi bi-door-open"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="door-open"></svg><!-- UNMAPPED_ICON:door-open -->
                         <span>Manage Classes</span>
                     </a>
                     <a href="{% url 'academics:subject_list' %}" class="block w-full px-4 py-3 border-2 border-green-500 text-green-600 font-semibold rounded-xl hover:bg-green-50 transition-all flex items-center gap-3">
-                        <i class="bi bi-book"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book"></svg><!-- UNMAPPED_ICON:book -->
                         <span>Manage Subjects</span>
                     </a>
                     <a href="{% url 'academics:performance_analytics' %}" class="block w-full px-4 py-3 border-2 border-blue-500 text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all flex items-center gap-3">
-                        <i class="bi bi-graph-up"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up"></svg><!-- UNMAPPED_ICON:graph-up -->
                         <span>View Analytics</span>
                     </a>
                 </div>

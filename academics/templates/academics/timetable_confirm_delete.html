@@ -4,22 +4,22 @@
 {% block content %}
 <div class="container mt-4">
     <div class="card shadow-sm border-danger">
-        <div class="card-header bg-danger text-white">
-            <h4 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Confirm Deletion</h4>
+        <div class="card-header bg-red-600 text-white">
+            <h4 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01"/></svg> Confirm Deletion</h4>
         </div>
         <div class="card-body">
             <p class="lead">Are you sure you want to delete the timetable entry:</p>
-            <h5 class="text-danger">{{ timetable }}</h5>
+            <h5 class="text-red-600">{{ timetable }}</h5>
             <p class="mb-4">This action cannot be undone.</p>
 
             <form method="post">
                 {% csrf_token %}
-                <div class="d-flex justify-content-between">
+                <div class="flex justify-between">
                     <a href="{% url 'academics:timetable_list' %}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Cancel
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-left"></svg><!-- UNMAPPED_ICON:arrow-left --> Cancel
                     </a>
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> Delete
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 6v12a2 2 0 002 2h4a2 2 0 002-2V6"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg> Delete
                     </button>
                 </div>
             </form>
