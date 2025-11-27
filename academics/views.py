@@ -49,6 +49,12 @@ from .forms import (
     PerformanceCommentForm,
 )
 from records.models import Student
+from .lock_views import (
+    lock_assessment_scores,
+    unlock_assessment_scores,
+    lock_management_dashboard,
+    validate_assessment_constraints,
+)
 
 
 # ============================================
@@ -2520,3 +2526,68 @@ def attendance_report(request):
         "end_date": end_date_str,
     }
     return render(request, "academics/attendance_report.html", context)
+
+
+# ============================================
+# REPORT CARD DETAIL VIEWS
+# ============================================
+
+
+@login_required
+def report_card_detail_interactive(request, pk):
+    """Interactive detailed view of report card with tabs."""
+    report_card = get_object_or_404(ReportCard, pk=pk)
+
+    # Get all term results for this student's term
+    term_results = (
+        TermResult.objects.filter(student=report_card.student, term=report_card.term)
+        .select_related("subject")
+        .order_by("subject__name")
+    )
+
+    context = {
+        "report_card": report_card,
+        "term_results": term_results,
+    }
+
+    return render(request, "academics/report_card_detail_interactive.html", context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def bulk_publish_report_cards(request):
+    """Publish selected report cards via AJAX or form POST."""
+    ids = request.POST.getlist("ids[]") or request.POST.getlist("ids")
+    if not ids:
+        return JsonResponse(
+            {"status": "error", "message": "No report card IDs provided."}, status=400
+        )
+
+    updated = ReportCard.objects.filter(id__in=ids).update(
+        status="Published", is_published=True, published_at=timezone.now()
+    )
+    return JsonResponse({"status": "ok", "updated": updated})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+@require_POST
+def change_report_card_status(request, pk):
+    rc = get_object_or_404(ReportCard, pk=pk)
+    form = ReportCardStatusForm(request.POST)
+    if form.is_valid():
+        rc.status = form.cleaned_data["status"]
+        rc.save(update_fields=["status"])
+        if form.cleaned_data.get("notify_student") and rc.is_published:
+            # TODO: send notification to student/parent (email or in-app)
+            pass
+        messages.success(request, f"Report card status updated to {rc.status}.")
+    else:
+        messages.error(request, "Invalid data provided.")
+
+    return redirect(
+        request.META.get(
+            "HTTP_REFERER", reverse("academics:report_card_detail", args=[rc.pk])
+        )
+    )

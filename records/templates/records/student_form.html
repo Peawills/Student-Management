@@ -7,10 +7,15 @@
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-left-circle"></svg>
       Back to Student List
     </a>
-    <div class="flex items-center gap-4">
-      <div
-        class="w-16 h-16 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-2xl shadow-lg text-3xl">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-{% if student %}pencil{% else %}plus-circle{% endif %}"></svg>
+    <div class="flex items-start gap-4">
+      <div class="w-20 h-20 flex-shrink-0 rounded-2xl shadow-lg overflow-hidden bg-gray-50 flex items-center justify-center">
+        {% comment %} Image preview (falls back to an inline SVG when empty) {% endcomment %}
+        <div class="relative">
+          <img id="imagePreview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%23e9ecef' width='120' height='120'/%3E%3Ctext fill='%23adb5bd' font-family='sans-serif' font-size='48' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3E%3F%3C/text%3E%3C/svg%3E" alt="Student image preview" class="w-20 h-20 object-cover">
+          <button id="clearImageBtn" type="button" class="absolute -top-1 -right-1 bg-white border rounded-full p-1 shadow hidden" title="Remove image">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
       </div>
       <div>
         <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
@@ -25,8 +30,8 @@
   </div>
 
   {% if form.errors %}
-  <div class="alert-modern alert-danger mb-6">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="exclamation-triangle-fill"></svg>
+  <div class="alert-modern alert-danger mb-6 p-4 bg-red-50 border border-red-100 rounded-lg flex items-start gap-3">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5 text-red-600"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01"/></svg>
     <div>
       <h4 class="font-bold">Please fix the errors below</h4>
       <ul class="list-disc list-inside text-sm mt-2">
@@ -35,8 +40,8 @@
           {% endfor %}
       </ul>
     </div>
-    <button onclick="this.parentElement.remove()" class="ml-auto hover:bg-white/20 p-1 rounded transition-colors">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-lg"></svg>
+    <button onclick="this.closest('.alert-modern').remove()" class="ml-auto hover:bg-white/20 p-1 rounded transition-colors text-gray-500" aria-label="Dismiss">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
   </div>
   {% endif %}
@@ -62,143 +67,83 @@
     {% endfor %}
     </div>
     <div class="mt-8 flex justify-start gap-4 flex-wrap">
-      <button type="submit"
-        class="inline-flex items-center gap-2 px-8 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 hover:-translate-y-0.5 transition-all">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check-circle"></svg>
-        {% if student %}Update Student{% else %}Register Student{% endif %}
+      <button type="submit" id="submitBtn" class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
+        <span id="submitLabel">{% if student %}Update Student{% else %}Register Student{% endif %}</span>
       </button>
 
       {% if student %}
-      <a href="{% url 'records:student_detail' student.pk %}"
-        class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-all">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle"></svg>Cancel
+      <a href="{% url 'records:student_detail' student.pk %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-all"> 
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Cancel
       </a>
       {% else %}
-      <button type="reset"
-        class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-all">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-counterclockwise"></svg>Reset
+      <button type="reset" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10a9 9 0 1118 0 9 9 0 01-18 0zm12-4v4h4"/></svg> Reset
       </button>
       {% endif %}
     </div>
   </form>
 </div>
 
-<style>
-  /* Custom styles for form elements to match Tailwind theme */
-  .form-input,
-  .form-select,
-  .form-textarea {
-    @apply block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-colors;
-  }
-
-  .form-label {
-    @apply block text-sm font-semibold text-gray-700 mb-1;
-  }
-
-  .form-input:focus,
-  .form-select:focus,
-  .form-textarea:focus {
-    border-color: #667eea;
-  }
-
-  .form-checkbox {
-    @apply h-5 w-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500;
-  }
-
-  .input-group {
-    @apply flex items-center;
-  }
-
-  .input-group-icon {
-    @apply px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-500;
-  }
-
-  .input-group .form-input,
-  .input-group .form-select {
-    @apply rounded-l-none;
-  }
-
-  .input-group:focus-within .input-group-icon {
-    @apply bg-primary-50 border-primary-500 text-primary-600;
-  }
-
-  /* Apply styles to Django form widgets */
-  {% for field in form %}
-  {% if field.field.widget.input_type == 'text' or field.field.widget.input_type == 'email' or field.field.widget.input_type == 'number' or field.field.widget.input_type == 'date' %}
-  #{{ field.auto_id }} {
-    @apply form-input;
-  }
-
-  {% elif field.field.widget.input_type == 'select' %}
-  #{{ field.auto_id }} {
-    @apply form-select;
-  }
-
-  {% elif field.field.widget.input_type == 'checkbox' %}
-  #{{ field.auto_id }} {
-    @apply form-checkbox;
-  }
-
-  {% elif field.field.widget.input_type == 'file' %}
-  #{{ field.auto_id }} {
-    @apply block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100;
-  }
-
-  {% elif field.field.widget.input_type == 'textarea' %}
-  #{{ field.auto_id }} {
-    @apply form-textarea;
-  }
-  {% endif %}
-  {% endfor %}
-</style>
-
 <script>
-  const studentImageInput = document.querySelector('input[name="student_image"]');
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('studentForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitLabel = document.getElementById('submitLabel');
+
+  // Image preview handling
+  const studentImageInput = form ? form.querySelector('input[type="file"][name="student_image"]') : null;
   const imagePreview = document.getElementById('imagePreview');
   const clearImageBtn = document.getElementById('clearImageBtn');
 
   if (studentImageInput && imagePreview) {
     studentImageInput.addEventListener('change', function (e) {
-      const file = e.target.files[0];
+      const file = e.target.files && e.target.files[0];
       if (file) {
-        // Simple validation
         const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (!validTypes.includes(file.type)) {
           alert('Please upload a valid image file (JPG, PNG)');
           this.value = '';
           return;
         }
-
-        // Simple size validation (2MB)
         if (file.size > 2 * 1024 * 1024) {
           alert('Image size must be less than 2MB');
           this.value = '';
           return;
         }
-
         const reader = new FileReader();
         reader.onload = function (ev) {
           imagePreview.src = ev.target.result;
-          if (clearImageBtn) clearImageBtn.style.display = 'inline-block';
-        }
+          if (clearImageBtn) clearImageBtn.classList.remove('hidden');
+        };
         reader.readAsDataURL(file);
       }
     });
 
     if (clearImageBtn) {
       clearImageBtn.addEventListener('click', function () {
-        studentImageInput.value = '';
+        if (studentImageInput) studentImageInput.value = '';
         imagePreview.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%23e9ecef' width='120' height='120'/%3E%3Ctext fill='%23adb5bd' font-family='sans-serif' font-size='48' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3E%3F%3C/text%3E%3C/svg%3E";
-        this.style.display = 'none';
+        this.classList.add('hidden');
       });
     }
   }
 
   // Prevent accidental form abandonment
   let formModified = false;
-  document.getElementById('studentForm').addEventListener('input', function () {
-    formModified = true;
-  });
+  if (form) {
+    form.addEventListener('input', function () {
+      formModified = true;
+    });
+
+    form.addEventListener('submit', function () {
+      formModified = false;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitLabel.textContent = 'Submitting...';
+      }
+    });
+  }
 
   window.addEventListener('beforeunload', function (e) {
     if (formModified) {
@@ -207,10 +152,6 @@
       return e.returnValue;
     }
   });
-
-  // Clear flag on submit
-  document.getElementById('studentForm').addEventListener('submit', function () {
-    formModified = false;
-  });
+});
 </script>
 {% endblock %}

@@ -1,402 +1,741 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 {% load static %}
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Student Management System">
+    <meta name="description" content="Modern Student Management System">
     <title>{% block title %}Student Management{% endblock %}</title>
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         primary: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
                             500: '#667eea',
-                            600: '#5568d3',
-                            700: '#4c51bf',
-                            800: '#4338ca',
-                            900: '#3730a3',
+                            600: '#0d8476',
+                            700: '#0d7377',
+                            800: '#155e75',
+                            900: '#164e63',
                         },
                         secondary: {
-                            50: '#faf5ff',
-                            100: '#f3e8ff',
-                            200: '#e9d5ff',
-                            300: '#d8b4fe',
-                            400: '#c084fc',
                             500: '#764ba2',
-                            600: '#9333ea',
-                            700: '#7e22ce',
-                            800: '#6b21a8',
-                            900: '#581c87',
-                        }
-                    },
-                    animation: {
-                        'fadeIn': 'fadeIn 0.5s ease-in',
-                        'slideUp': 'slideUp 0.3s ease-out',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                            600: '#ea580c',
+                            700: '#c2410c',
                         },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        sidebar: {
+                            bg: '#0f172a',
+                            hover: '#1e293b',
+                            active: '#667eea',
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5568d3;
+        }
+
+        /* Sidebar animations */
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Content fade in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dropdown animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sidebar-enter {
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        .content-fade {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .dropdown-enter {
+            animation: slideDown 0.2s ease-out;
+        }
+
+        /* Sidebar link styles */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0.75rem;
+            border-radius: 0.5rem;
+            color: #d1d5db;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-link:hover {
+            background-color: #252b48;
+            color: white;
+        }
+
+        .sidebar-link:hover svg {
+            transform: scale(1.1);
+        }
+
+        .sidebar-link.active {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Alert styles */
+        .alert-modern {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert-success {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            color: #166534;
+        }
+
+        .alert-error,
+        .alert-danger {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background-color: #fefce8;
+            border-left: 4px solid #eab308;
+            color: #854d0e;
+        }
+
+        .alert-info {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+    </style>
 
     {% block extra_css %}{% endblock %}
 </head>
 
-<body class="min-h-screen bg-gray-50 flex flex-col font-sans">
-    <div class="container mx-auto px-4 py-4 mb-5 flex-1">
-        <!-- Main Navigation Bar -->
-        <nav class="bg-white rounded-2xl shadow-md mb-4 px-4 py-3">
-            <div class="flex flex-wrap items-center justify-between">
-                <a href="{% url 'records:home' %}" class="flex items-center gap-2 text-2xl font-bold text-primary-500 hover:text-secondary-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="mortarboard-fill text-3xl"></svg><!-- UNMAPPED_ICON:mortarboard-fill -->
-                    <span>SchoolAdmin</span>
-                </a>
-                
-                <button type="button" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100" onclick="toggleMobileMenu()">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="list text-2xl"></svg><!-- UNMAPPED_ICON:list -->
-                </button>
+<body class="h-full bg-gray-50">
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 z-50 w-72 bg-sidebar-bg text-white transform transition-transform duration-300 lg:translate-x-0 -translate-x-full overflow-hidden sidebar-enter {% if 'login' in request.path %}hidden{% endif %}{% block hide_sidebar %}{% endblock %}">
+            <div class="flex flex-col h-full">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 px-6 py-6 border-b border-gray-700/50">
+                    <div class="bg-gradient-to-br from-primary-500 to-secondary-500 p-2.5 rounded-xl shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">SchoolAdmin</h1>
+                        <p class="text-xs text-gray-400">Management Portal</p>
+                    </div>
+                </div>
 
-                <div class="hidden md:flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0" id="navbarContent">
+                <!-- Navigation -->
+                <nav class="flex-1 px-4 py-6 overflow-y-auto">
                     {% if request.user.is_authenticated %}
-                    <!-- Role-Specific Navigation -->
-                    <div class="flex flex-wrap items-center gap-2">
-                        {% if request.user.is_staff %}
-                            <!-- Staff/Admin Links -->
-                            <a href="{% url 'portal:dashboard' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Dashboard
-                            </a>
-                            {% if not request.user.is_teacher %}
-                                <!-- Student Management Dropdown -->
-                                <div class="relative group">
-                                    <button class="nav-link flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg> Students
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M6 8l4 4 4-4"/></svg>
-                                    </button>
-                                    <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                        <a href="{% url 'records:student_list' %}" class="dropdown-item">All Students</a>
-                                        <a href="{% url 'committee:offense_list' %}" class="dropdown-item">Disciplinary Records</a>
-                                        {% if request.user.is_superuser %}
-                                        <div class="border-t border-gray-200 my-1"></div>
-                                        <a href="{% url 'records:alumni_list' %}" class="dropdown-item">Alumni Records</a>
-                                        <a href="{% url 'committee:analytics_dashboard' %}" class="dropdown-item">Disciplinary Analytics</a>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% endif %}
 
-                            <a href="{% url 'academics:dashboard' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="journal-bookmark-fill"></svg><!-- UNMAPPED_ICON:journal-bookmark-fill --> Academics
-                            </a>
-                            
-                            {% if request.user.is_teacher %}
-                            <a href="{% url 'portal:teacher_dashboard' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="easel2-fill"></svg><!-- UNMAPPED_ICON:easel2-fill --> Teacher Dashboard
-                            </a>
-                            {% endif %}
+                    <!-- Dashboard -->
+                    <a href="{% url 'portal:dashboard' %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
 
-                            {% if request.user.is_superuser %}
-                            <div class="relative group">
-                                <button class="nav-link flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-gear"></svg><!-- UNMAPPED_ICON:person-gear --> Manage Users
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M6 8l4 4 4-4"/></svg>
-                                </button>
-                                <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                    <a href="{% url 'accounts:user_list' %}" class="dropdown-item">All Users</a>
-                                    <div class="border-t border-gray-200 my-1"></div>
-                                    <a href="{% url 'accounts:user_list' %}?type=admin" class="dropdown-item">Admins</a>
-                                    <a href="{% url 'accounts:user_list' %}?type=staff" class="dropdown-item">Staff</a>
-                                    <a href="{% url 'accounts:user_list' %}?type=parent" class="dropdown-item">Parents</a>
-                                    <a href="{% url 'accounts:user_list' %}?type=student" class="dropdown-item">Students</a>
-                                </div>
-                            </div>
-                            {% endif %}
-
-                        {% elif request.user.parent_profile %}
-                            <!-- Parent Links -->
-                            <a href="{% url 'portal:dashboard' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Dashboard
-                            </a>
-                            <div class="relative group">
-                                <button class="nav-link flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg> My Children
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M6 8l4 4 4-4"/></svg>
-                                </button>
-                                <div class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                    {% for student in request.user.parent_profile.students.all %}
-                                    <a href="{% url 'portal:parent_student_detail' student.id %}" class="dropdown-item">{{ student.full_name }}</a>
-                                    {% if not forloop.last %}<div class="border-t border-gray-200 my-1"></div>{% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <a href="{% url 'portal:parent_fees' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="cash-coin"></svg><!-- UNMAPPED_ICON:cash-coin --> Fees
-                            </a>
-                            <a href="{% url 'portal:announcements_list' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> Announcements
-                            </a>
-
-                        {% elif request.user.student_profile %}
-                            <!-- Student Links -->
-                            <a href="{% url 'portal:dashboard' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Dashboard
-                            </a>
-                            <a href="{% url 'portal:student_scores' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="journal-check"></svg><!-- UNMAPPED_ICON:journal-check --> My Scores
-                            </a>
-                            <a href="{% url 'portal:student_attendance' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-check"></svg><!-- UNMAPPED_ICON:calendar-check --> My Attendance
-                            </a>
-                            <a href="{% url 'portal:student_timetable' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="table"></svg><!-- UNMAPPED_ICON:table --> My Timetable
-                            </a>
-                            <a href="{% url 'portal:student_reports' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-text"></svg><!-- UNMAPPED_ICON:file-earmark-text --> My Reports
-                            </a>
-                            <a href="{% url 'portal:announcements_list' %}" class="nav-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M4 10v4a2 2 0 002 2h1l5 3V5L7 8H6a2 2 0 00-2 2z"/></svg> Announcements
-                            </a>
+                    {% if request.user.is_staff %}
+                    <!-- Students Section -->
+                    {% if not request.user.is_teacher %}
+                    <div class="mt-6">
+                        <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Students</p>
+                        <a href="{% url 'records:student_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                            </svg>
+                            <span>All Students</span>
+                        </a>
+                        <a href="{% url 'committee:offense_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>
+                            <span>Disciplinary Records</span>
+                        </a>
+                        {% if request.user.is_superuser %}
+                        <a href="{% url 'records:alumni_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+                            </svg>
+                            <span>Alumni</span>
+                        </a>
                         {% endif %}
                     </div>
                     {% endif %}
 
-                    <!-- Right Side Navigation -->
-                    <div class="flex items-center gap-3 ml-auto">
-                        {% if not request.user.is_authenticated %}
-                        <!-- Portal Dropdown -->
-                        <div class="relative group">
-                            <button class="nav-link flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="box-arrow-in-right"></svg><!-- UNMAPPED_ICON:box-arrow-in-right --> Portal Login
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M6 8l4 4 4-4"/></svg>
-                            </button>
-                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                <a href="{% url 'accounts:login' %}?type=student" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person"></svg><!-- UNMAPPED_ICON:person --> Student Portal
-                                </a>
-                                <a href="{% url 'accounts:login' %}?type=parent" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people"></svg><!-- UNMAPPED_ICON:people --> Parent Portal
-                                </a>
-                                <div class="border-t border-gray-200 my-1"></div>
-                                <a href="{% url 'accounts:login' %}?type=staff" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-workspace"></svg><!-- UNMAPPED_ICON:person-workspace --> Staff Portal
-                                </a>
-                                <a href="{% url 'accounts:login' %}?type=admin" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="shield-lock"></svg><!-- UNMAPPED_ICON:shield-lock --> Admin Portal
-                                </a>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if request.user.is_authenticated %}
-                        <!-- User Menu -->
-                        <div class="relative group">
-                            <button class="nav-link flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-circle text-xl"></svg><!-- UNMAPPED_ICON:person-circle -->
-                                <span class="hidden lg:inline">{{ request.user.get_full_name|default:request.user.username }}</span>
-                            </button>
-                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                <a href="{% url 'portal:profile' %}" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-vcard"></svg><!-- UNMAPPED_ICON:person-vcard --> My Profile
-                                </a>
-                                <a href="{% url 'portal:messages_inbox' %}" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 8v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8"/></svg> Messages
-                                </a>
-                                <a href="{% url 'portal:change_password' %}" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="key"></svg><!-- UNMAPPED_ICON:key --> Change Password
-                                </a>
-                                <div class="border-t border-gray-200 my-1"></div>
-                                <a href="{% url 'accounts:logout' %}" class="dropdown-item text-red-600 hover:bg-red-50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="box-arrow-right"></svg><!-- UNMAPPED_ICON:box-arrow-right --> Logout
-                                </a>
-                            </div>
-                        </div>
-                        {% endif %}
+                    <!-- Academics Section -->
+                    <div class="mt-6">
+                        <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Academics</p>
+                        <a href="{% url 'academics:dashboard' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                            </svg>
+                            <span>Overview</span>
+                        </a>
+                        <!-- Sessions -->
+                        <!-- <a href="{% url 'academics:session_create' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            <span>Create Session</span> -->
+                        </a>
+                        <a href="{% url 'academics:session_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0121 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                            </svg>
+                            <span>All Sessions</span>
+                        </a>
+                        <!-- Terms -->
+                        <!-- <a href="{% url 'academics:term_create' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            <span>Create Term</span>
+                        </a> -->
+                        <a href="{% url 'academics:term_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v6h4.5m4.5-15a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>All Terms</span>
+                        </a>
+                        <a href="{% url 'academics:classroom_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                            </svg>
+                            <span>Classes</span>
+                        </a>
+                        <a href="{% url 'academics:subject_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            </svg>
+                            <span>Subjects</span>
+                        </a>
+                        <a href="{% url 'academics:assessment_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                            </svg>
+                            <span>Assessments</span>
+                        </a>
+                        <a href="{% url 'academics:performance_analytics' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                            </svg>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="{% url 'academics:report_card_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
+                            <span>Report Cards</span>
+                        </a>
+                        <a href="{% url 'academics:timetable_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                            </svg>
+                            <span>Timetables</span>
+                        </a>
                     </div>
+
+                    <!-- Teacher Section -->
+                    {% if request.user.is_teacher %}
+                    <div class="mt-6">
+                        <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Teacher Tools</p>
+                        <a href="{% url 'portal:teacher_dashboard' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6.253v13m0-13C6.5 6.253 2.015 10.738 2.015 16.25m0 0c0 5.512 4.485 9.997 9.985 9.997 5.5 0 9.985-4.485 9.985-9.997m0 0C21.985 10.738 17.5 6.253 12 6.253" />
+                            </svg>
+                            <span>My Dashboard</span>
+                        </a>
+                        <a href="{% url 'academics:classroom_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6h1.5m-1.5 3h1.5m-1.5 3h1.5M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                            </svg>
+                            <span>My Classes</span>
+                        </a>
+                        <a href="{% url 'academics:assessment_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                            </svg>
+                            <span>Assessments</span>
+                        </a>
+                        <a href="{% url 'academics:timetable_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0121 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                            </svg>
+                            <span>Timetable</span>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- Admin Section -->
+                    {% if request.user.is_superuser %}
+                    <div class="mt-6">
+                        <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Administration
+                        </p>
+                        <a href="{% url 'accounts:user_list' %}" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>
+                            <span>Users</span>
+                        </a>
+                        <a href="{% url 'accounts:user_list' %}?type=staff" class="sidebar-link"
+                            style="padding-left: 2.75rem;">
+                            <span>Staff</span>
+                        </a>
+                        <a href="{% url 'accounts:user_list' %}?type=parent" class="sidebar-link"
+                            style="padding-left: 2.75rem;">
+                            <span>Parents</span>
+                        </a>
+                        <a href="/admin/" class="sidebar-link">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.612c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.041.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.42.34.545.96.262 1.436l-1.297 2.247a1.125 1.125 0 01-1.369.491l-1.216-.456c-.356-.133-.751-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.542-.56.941-1.11.941h-2.612c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.005-.828a1.125 1.125 0 01-.26-1.431l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.145-.086.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>Django Admin</span>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- Parent Navigation -->
+                    {% elif request.user.parent_profile %}
+                    <a href="{% url 'portal:parent_dashboard' %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="{% url 'portal:parent_student_detail' student_id=request.user.parent_profile.student.id %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                        </svg>
+                        <span>Child Profile</span>
+                    </a>
+                    <a href="{% url 'portal:parent_student_scores' student_id=request.user.parent_profile.student.id %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                        </svg>
+                        <span>Scores</span>
+                    </a>
+                    <a href="{% url 'portal:parent_student_reports' student_id=request.user.parent_profile.student.id %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                            </svg>
+                            <span>Report Cards</span>
+                        </a>
+                    <a href="{% url 'portal:parent_student_attendance' student_id=request.user.parent_profile.student.id %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0121 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                        </svg>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="{% url 'portal:parent_fees' %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                        </svg>
+                        <span>Fees</span>
+                    </a>
+                    <a href="{% url 'portal:announcements_list' %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46" />
+                        </svg>
+                        <span>Announcements</span>
+                    </a>
+
+                    <!-- Student Navigation -->
+                    {% elif request.user.student_profile %}
+                    <a href="{% url 'portal:student_scores' %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                        </svg>
+                        <span>My Scores</span>
+                    </a>
+                    <a href="{% url 'portal:student_attendance' %}" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                        </svg>
+                        <span>Attendance</span>
+                    </a>
+                    {% endif %}
+                    {% endif %}
+                </nav>
+
+                <!-- User Profile Section -->
+                <div class="p-4 border-t border-gray-700/50">
+                    {% if request.user.is_authenticated %}
+                    <div class="relative group">
+                        <button
+                            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-sidebar-hover transition-colors">
+                            <div
+                                class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                                {{ request.user.first_name|slice:":1"|upper }}{{ request.user.last_name|slice:":1"|upper
+                                }}
+                            </div>
+                            <div class="flex-1 text-left">
+                                <p class="font-medium text-sm truncate">{{ request.user.get_full_name }}</p>
+                                <p class="text-xs text-gray-400 truncate">{{ request.user.email }}</p>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                            </svg>
+                        </button>
+
+                        <!-- User Dropdown -->
+                        <div
+                            class="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 hidden group-hover:block dropdown-enter">
+                            <a href="{% url 'portal:profile' %}"
+                                class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                                <span class="text-sm">My Profile</span>
+                            </a>
+                            <a href="{% url 'portal:messages_inbox' %}"
+                                class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                </svg>
+                                <span class="text-sm">Messages</span>
+                            </a>
+                            <div class="border-t border-gray-200 my-1"></div>
+                            <a href="{% url 'accounts:logout' %}"
+                                class="flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                                </svg>
+                                <span class="text-sm">Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Login Button -->
+                    <a href="{% url 'accounts:login' %}"
+                        class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                        <span class="font-semibold">Login</span>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
-        </nav>
+        </aside>
 
-        <!-- Secondary Academics Navbar (for Staff) -->
-        {% if request.user.is_staff %}
-        <nav class="hidden md:flex items-center gap-2 bg-white rounded-xl shadow-sm px-4 py-3 mb-4 overflow-x-auto" id="academics-subnav">
-            <a href="{% url 'academics:dashboard' %}" class="academics-nav-link">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 --> Dashboard
-            </a>
-            <div class="w-px h-5 bg-gray-300 mx-1"></div>
-            <a href="{% url 'academics:session_list' %}" class="academics-nav-link">Sessions</a>
-            <a href="{% url 'academics:term_list' %}" class="academics-nav-link">Terms</a>
-            <a href="{% url 'academics:classroom_list' %}" class="academics-nav-link">Classes</a>
-            <a href="{% url 'academics:subject_list' %}" class="academics-nav-link">Subjects</a>
-            <a href="{% url 'academics:assignment_list' %}" class="academics-nav-link">Assignments</a>
-            <div class="w-px h-5 bg-gray-300 mx-1"></div>
-            <a href="{% url 'academics:assessment_list' %}" class="academics-nav-link">Assessments</a>
-            <a href="{% url 'academics:assessment_type_list' %}" class="academics-nav-link">Types</a>
-            <a href="{% url 'academics:import_scores' %}" class="academics-nav-link">Import</a>
-            <div class="w-px h-5 bg-gray-300 mx-1"></div>
-            <a href="{% url 'academics:report_card_list' %}" class="academics-nav-link">Report Cards</a>
-            <a href="{% url 'academics:performance_analytics' %}" class="academics-nav-link">Analytics</a>
-            <a href="{% url 'academics:comment_list' %}" class="academics-nav-link">Comments</a>
-            <div class="w-px h-5 bg-gray-300 mx-1"></div>
-            <a href="{% url 'academics:timetable_list' %}" class="academics-nav-link">Timetable</a>
-            <a href="{% url 'academics:publication_center' %}" class="academics-nav-link">Publications</a>
-            <a href="{% url 'academics:attendance_report' %}" class="academics-nav-link">Attendance</a>
-        </nav>
-        {% endif %}
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col {% block main_margin %}lg:ml-72{% endblock %}">
+            <!-- Top Bar -->
+            <header class="sticky top-0 z-40 bg-white border-b border-gray-200 backdrop-blur-sm bg-white/95 shadow-sm {% block hide_header %}{% endblock %}">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <!-- Mobile Menu Button -->
+                    <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Toggle sidebar menu" aria-label="Toggle sidebar navigation menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
 
-        <!-- Messages/Alerts -->
-        {% if messages %}
-        <div class="mb-4 space-y-2">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} flex items-center gap-3 p-4 rounded-xl shadow-sm animate-fadeIn" role="alert">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="{% if message.tags =="></svg><!-- UNMAPPED_ICON:{% -->
-                <span class="flex-1">{{ message }}</span>
-                <button type="button" class="text-gray-500 hover:text-gray-700" onclick="this.parentElement.remove()">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-lg"></svg><!-- UNMAPPED_ICON:x-lg -->
-                </button>
+                    <!-- Page Title -->
+                    <h1 class="text-2xl font-bold text-gray-800">{% block page_title %}Dashboard{% endblock %}</h1>
+
+                    <!-- Right Actions -->
+                    <div class="flex items-center gap-3">
+                        <!-- Search -->
+                        <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Search">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                        </button>
+
+                        <!-- Notifications -->
+                        <button class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                            title="Notifications">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                            </svg>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Alert Messages -->
+            {% if messages %}
+            <div class="px-6 pt-4">
+                <div class="space-y-3" id="alerts-container">
+                    {% for message in messages %}
+                    <div class="alert-modern alert-{{ message.tags }} dropdown-enter">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5 flex-shrink-0">
+                            {% if message.tags == 'success' %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            {% elif message.tags == 'error' or message.tags == 'danger' %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                            {% elif message.tags == 'warning' %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            {% else %}
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                            {% endif %}
+                        </svg>
+                        <span class="flex-1">{{ message }}</span>
+                        <button onclick="this.parentElement.remove()"
+                            class="hover:bg-white/20 p-1 rounded transition-colors" title="Close message" aria-label="Close alert message">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+            {% endif %}
 
-        <!-- Main Content -->
-        <div class="content-wrapper animate-fadeIn">
-            {% block content %}{% endblock %}
+            <!-- Main Content -->
+                <main class="flex-1 overflow-y-auto p-6 content-fade">
+                                {% block content %}{% endblock %}
+            </main>
+
+            <!-- Footer -->
+            <footer class="bg-white border-t border-gray-200 px-6 py-4">
+                <div class="flex flex-col sm:flex-row items-center justify-between text-sm text-gray-600 gap-2">
+                    <p>&copy; {% now "Y" %} SchoolAdmin. All rights reserved.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="hover:text-primary-600 transition-colors">Privacy</a>
+                        <a href="#" class="hover:text-primary-600 transition-colors">Terms</a>
+                        <a href="#" class="hover:text-primary-600 transition-colors">Support</a>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 py-6 mt-auto">
-        <div class="container mx-auto px-4 text-center text-gray-600">
-            <p class="mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="mortarboard-fill text-primary-500"></svg><!-- UNMAPPED_ICON:mortarboard-fill -->
-                <strong class="text-primary-600">Student Management System</strong>
-            </p>
-            <p class="text-sm">
-                &copy; {% now "Y" %} All rights reserved. |
-                <a href="#" class="text-primary-600 hover:text-primary-700 hover:underline">Privacy Policy</a> |
-                <a href="#" class="text-primary-600 hover:text-primary-700 hover:underline">Terms of Service</a>
-            </p>
-        </div>
-    </footer>
+    <!-- Sidebar Overlay (Mobile) -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden hidden"></div>
 
-    <style>
-        .nav-link {
-            @apply flex items-center gap-2 px-4 py-2 text-gray-700 rounded-lg font-medium transition-all duration-200 hover:bg-primary-50 hover:text-primary-600;
-        }
-        .nav-link.active {
-            @apply bg-primary-100 text-primary-700;
-        }
-        .dropdown-item {
-            @apply block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors flex items-center gap-2;
-        }
-        .academics-nav-link {
-            @apply px-3 py-1.5 text-sm font-medium text-gray-600 rounded-lg whitespace-nowrap transition-all duration-200 hover:bg-gray-100 hover:text-primary-600;
-        }
-        .academics-nav-link.active {
-            @apply bg-primary-100 text-primary-600;
-        }
-        .alert-success {
-            @apply bg-green-50 text-green-800 border-l-4 border-green-500;
-        }
-        .alert-error, .alert-danger {
-            @apply bg-red-50 text-red-800 border-l-4 border-red-500;
-        }
-        .alert-warning {
-            @apply bg-yellow-50 text-yellow-800 border-l-4 border-yellow-500;
-        }
-        .alert-info {
-            @apply bg-blue-50 text-blue-800 border-l-4 border-blue-500;
-        }
-    </style>
-
+    <!-- JavaScript -->
     <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('navbarContent');
-            const icon = document.getElementById('menuIcon');
-            menu.classList.toggle('hidden');
-            menu.classList.toggle('flex');
-            menu.classList.toggle('flex-col');
-            if (icon.classList.contains('bi-list')) {
-                icon.classList.remove('bi-list');
-                icon.classList.add('bi-x-lg');
-            } else {
-                icon.classList.remove('bi-x-lg');
-                icon.classList.add('bi-list');
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
-            // Auto-hide alerts after 5 seconds
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                setTimeout(() => {
-                    alert.style.transition = 'opacity 0.5s ease-out';
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                }, 5000);
-            });
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
 
-            // Set active navigation links
-            setActiveNav();
-
-            // Show/hide academics sub-navigation
-            handleAcademicsNav();
-        });
-
-        function setActiveNav() {
-            const currentPath = window.location.pathname;
-
-            // Main navigation
-            const mainNavLinks = document.querySelectorAll('.nav-link');
-            mainNavLinks.forEach(link => {
-                if (link.href) {
-                    const linkPath = new URL(link.href).pathname;
-                    if (currentPath.startsWith(linkPath) && linkPath !== '/') {
-                        link.classList.add('active');
-                    }
-                }
-            });
-
-            // Academics sub-navigation
-            const academicsNavLinks = document.querySelectorAll('.academics-nav-link');
-            academicsNavLinks.forEach(link => {
-                if (link.href) {
-                    const linkPath = new URL(link.href).pathname;
-                    if (currentPath === linkPath || (linkPath !== '/' && currentPath.startsWith(linkPath))) {
-                        link.classList.add('active');
-                    }
-                }
-            });
-        }
-
-        function handleAcademicsNav() {
-            const academicsSubnav = document.getElementById('academics-subnav');
-            if (academicsSubnav && window.location.pathname.startsWith('/academics/')) {
-                academicsSubnav.classList.remove('hidden');
-                academicsSubnav.classList.add('flex');
+            // Mobile sidebar toggle
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebarOverlay.classList.toggle('hidden');
             }
-        }
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', toggleSidebar);
+            }
+
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', toggleSidebar);
+            }
+
+            // Auto-hide alerts after 5 seconds
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert-modern');
+                alerts.forEach(alert => {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => alert.remove(), 300);
+                });
+            }, 5000);
+
+            // Set active sidebar link
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && (currentPath === href || (currentPath.startsWith(href) && href !== '/'))) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function (event) {
+                if (window.innerWidth < 1024) {
+                    const isClickInsideSidebar = sidebar.contains(event.target);
+                    const isClickOnToggle = sidebarToggle && sidebarToggle.contains(event.target);
+
+                    if (!isClickInsideSidebar && !isClickOnToggle && !sidebar.classList.contains('-translate-x-full')) {
+                        toggleSidebar();
+                    }
+                }
+            });
+
+            // Prevent body scroll when sidebar is open on mobile
+            const mediaQuery = window.matchMedia('(max-width: 1023px)');
+            const handleSidebarScroll = () => {
+                if (mediaQuery.matches && !sidebar.classList.contains('-translate-x-full')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            };
+
+            // Watch for sidebar changes
+            const observer = new MutationObserver(handleSidebarScroll);
+            observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+        });
     </script>
 
     {% block extra_js %}{% endblock %}

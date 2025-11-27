@@ -1,384 +1,637 @@
-{% extends "records/base.html" %}
-{% block content %}
-<div class="p-4 md:p-6 space-y-8">
-  <!-- Hero Header -->
-  <div class="p-8 bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-2xl shadow-lg">
-    <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-      <div>
-        <div class="inline-flex items-center gap-2 bg-white/20 px-4 py-1.5 rounded-full font-semibold mb-3 text-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="stars"></svg><!-- UNMAPPED_ICON:stars -->
-          <span>Welcome Back</span>
-        </div>
-        <h1 class="text-4xl font-bold flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="speedometer2"></svg><!-- UNMAPPED_ICON:speedometer2 -->
-          Admin Dashboard
-        </h1>
-        <p class="mt-2 text-lg opacity-90">Manage and monitor your student records with ease</p>
-      </div>
-      <div>
-        <a href="{% url 'records:student_create' %}"
-          class="flex items-center gap-2 px-6 py-3 bg-white text-primary-600 font-bold rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="plus-circle-fill"></svg><!-- UNMAPPED_ICON:plus-circle-fill -->
-          <span>Add New Student</span>
-        </a>
-      </div>
-    </div>
-  </div>
+{% extends 'records/base.html' %}
+{% load static %}
 
-  <!-- Statistics Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Total Students Card -->
-    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
-      <div class="flex justify-between items-start">
-        <div class="space-y-1">
-          <p class="text-sm font-semibold text-gray-500 uppercase">Total Students</p>
-          <h2 class="text-4xl font-bold text-gray-800">{{ total_students }}</h2>
-          <div class="flex items-center text-sm text-green-600 bg-green-100 px-2 py-1 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-up mr-1"></svg><!-- UNMAPPED_ICON:arrow-up -->
-            <span>All time</span>
-          </div>
-        </div>
-        <div
-          class="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-2xl shadow-lg text-3xl">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg>
-        </div>
-      </div>
-      <div class="mt-4 pt-4 border-t border-gray-200">
-        <a href="{% url 'records:student_list' %}"
-          class="text-primary-600 font-semibold hover:text-secondary-500 transition-colors">
-          View all <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-    </div>
+{% block page_title %}Admin Dashboard{% endblock %}
 
-    <!-- Male Students Card -->
-    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
-      <div class="flex justify-between items-start">
-        <div class="space-y-1">
-          <p class="text-sm font-semibold text-gray-500 uppercase">Male Students</p>
-          <h2 class="text-4xl font-bold text-gray-800">{{ male_count }}</h2>
-          <span class="text-sm text-gray-500">{% widthratio male_count total_students 100 %}% of total</span>
-        </div>
-        <div
-          class="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl shadow-lg text-3xl">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="gender-male"></svg><!-- UNMAPPED_ICON:gender-male -->
-        </div>
-      </div>
-      <div class="mt-4 pt-4 border-t border-gray-200">
-        <div class="w-full bg-gray-200 rounded-full h-2.5">
-          <div class="bg-blue-500 h-2.5 rounded-full" style="width: {% widthratio male_count total_students 100 %}%">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Female Students Card -->
-    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
-      <div class="flex justify-between items-start">
-        <div class="space-y-1">
-          <p class="text-sm font-semibold text-gray-500 uppercase">Female Students</p>
-          <h2 class="text-4xl font-bold text-gray-800">{{ female_count }}</h2>
-          <span class="text-sm text-gray-500">{% widthratio female_count total_students 100 %}% of total</span>
-        </div>
-        <div
-          class="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-pink-500 to-red-500 text-white rounded-2xl shadow-lg text-3xl">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="gender-female"></svg><!-- UNMAPPED_ICON:gender-female -->
-        </div>
-      </div>
-      <div class="mt-4 pt-4 border-t border-gray-200">
-        <div class="w-full bg-gray-200 rounded-full h-2.5">
-          <div class="bg-pink-500 h-2.5 rounded-full"
-            style="width: {% widthratio female_count total_students 100 %}%"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Recent Students Section -->
-  <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-    <div class="p-6 border-b border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <div class="flex items-center gap-4">
-        <div
-          class="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-2xl shadow-lg text-2xl">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="clock-history"></svg><!-- UNMAPPED_ICON:clock-history -->
-        </div>
-        <div>
-          <h3 class="text-xl font-bold text-gray-800">Recently Added Students</h3>
-          <p class="text-gray-500">Latest additions to your database</p>
-        </div>
-      </div>
-      <div class="relative w-full md:w-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></svg><!-- UNMAPPED_ICON:search -->
-        <input type="text" placeholder="Quick search..." id="searchInput"
-          class="pl-10 pr-10 py-2 border-2 border-gray-200 rounded-xl w-full md:w-80 focus:border-primary-500 focus:ring-primary-500/20 focus:ring-2 outline-none transition-all">
-        <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" id="clearSearch"
-          style="display: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle-fill"></svg><!-- UNMAPPED_ICON:x-circle-fill -->
-        </button>
-      </div>
-    </div>
-
-    <!-- Desktop Table View -->
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm text-left text-gray-500" id="studentsTable">
-        <thead class="text-xs text-white uppercase bg-gradient-to-r from-primary-500 to-secondary-500">
-          <tr>
-            <th scope="col" class="px-6 py-4"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person mr-1"></svg><!-- UNMAPPED_ICON:person --> Student</th>
-            <th scope="col" class="px-6 py-4"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="hash mr-1"></svg><!-- UNMAPPED_ICON:hash --> Admission</th>
-            <th scope="col" class="px-6 py-4"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book mr-1"></svg><!-- UNMAPPED_ICON:book --> Class</th>
-            <th scope="col" class="px-6 py-4"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar3 mr-1"></svg><!-- UNMAPPED_ICON:calendar3 --> Date Added</th>
-            <th scope="col" class="px-6 py-4 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for student in recent_students %}
-          <!-- Desktop Row -->
-          <tr class="bg-white border-b hover:bg-gray-50 transition-colors student-row"
-            data-name="{{ student.surname|lower }} {{ student.other_name|lower }}"
-            data-admission="{{ student.admission_no|lower }}" data-class="{{ student.class_at_present|lower }}">
-            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold flex-shrink-0">
-                  {{ student.surname|slice:":1" }}{{ student.other_name|slice:":1" }}
-                </div>
-                <div>
-                  <div class="font-semibold">{{ student.surname }} {{ student.other_name }}</div>
-                  <div class="text-xs text-gray-500">{{ student.email|default:"No email" }}</div>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full text-xs">{{
-                student.admission_no }}</span>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full text-xs">{{
-                student.class_at_present }}</span>
-            </td>
-            <td class="px-6 py-4">
-              <span class="text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-check mr-1"></svg><!-- UNMAPPED_ICON:calendar-check -->
-                {{ student.created_at|date:"M d, Y"|default:"N/A" }}
-              </span>
-            </td>
-            <td class="px-6 py-4 text-right">
-              <div class="flex items-center justify-end gap-2">
-                <a href="{% url 'records:student_detail' student.id %}"
-                  class="px-3 py-2 text-xs font-medium text-center text-white bg-primary-600 rounded-lg hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 transition-all">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/></svg> <span class="hidden md:inline">View</span>
-                </a>
-                <a href="{% url 'records:student_update' student.id %}"
-                  class="px-3 py-2 text-xs font-medium text-center text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 transition-all">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil"></svg><!-- UNMAPPED_ICON:pencil --> <span class="hidden md:inline">Edit</span>
-                </a>
-              </div>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="5">
-              <div class="text-center py-16 px-6">
-                <div
-                  class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center text-4xl text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox"></svg><!-- UNMAPPED_ICON:inbox -->
-                </div>
-                <h4 class="text-lg font-semibold text-gray-700 mb-2">No Students Yet</h4>
-                <p class="text-gray-500 mb-4">Start by adding your first student to the system</p>
-                <a href="{% url 'records:student_create' %}"
-                  class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg>
-                  Add First Student
-                </a>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    <div class="p-6 border-t border-gray-200 flex justify-between items-center">
-      <div class="text-sm text-gray-600" id="searchResults">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="info-circle mr-1"></svg><!-- UNMAPPED_ICON:info-circle -->
-        Showing {{ recent_students|length }} student{{ recent_students|length|pluralize }}
-      </div>
-      <a href="{% url 'records:student_list' %}"
-        class="font-semibold text-primary-600 hover:text-secondary-500 transition-colors flex items-center gap-1">
-        View all students
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-  </div>
-</div>
-  <!-- Attendance Report Card -->
-  <div class="mt-6">
-    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border-l-4 border-blue-500">
-      <div class="flex items-center justify-between">
-        <div>
-          <div class="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">
-            Reports
-          </div>
-          <div class="text-lg font-bold text-gray-800">
-            <a href="{% url 'academics:attendance_report' %}" class="text-gray-800 hover:text-primary-600 transition-colors">
-              Attendance Report
-            </a>
-          </div>
-        </div>
-        <div class="text-4xl text-gray-300">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-check"></svg><!-- UNMAPPED_ICON:calendar-check -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  // Search functionality
-  const searchInput = document.getElementById('searchInput');
-  const clearSearch = document.getElementById('clearSearch');
-  const searchResults = document.getElementById('searchResults');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', function (e) {
-      const searchTerm = e.target.value.toLowerCase().trim();
-      const rows = document.querySelectorAll('.student-row');
-      let visibleCount = 0;
-
-      // Show/hide clear button
-      clearSearch.style.display = searchTerm ? 'flex' : 'none';
-
-      rows.forEach(row => {
-        const name = row.dataset.name || '';
-        const admission = row.dataset.admission || '';
-        const studentClass = row.dataset.class || '';
-        const searchableText = `${name} ${admission} ${studentClass}`;
-
-        if (searchableText.includes(searchTerm) || searchTerm === '') {
-          row.style.display = '';
-          visibleCount++;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-
-      // Update results count (divide by 2 because of desktop + mobile rows)
-      const totalRows = rows.length / 2;
-      const actualVisible = visibleCount / 2;
-
-      if (searchTerm === '') {
-        searchResults.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="info-circle"></svg><!-- UNMAPPED_ICON:info-circle --> Showing ${totalRows} student${totalRows !== 1 ? 's' : ''}`;
-      } else {
-        searchResults.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="search"></svg><!-- UNMAPPED_ICON:search --> Found ${actualVisible} student${actualVisible !== 1 ? 's' : ''}`;
-      }
-
-      // Show "no results" message
-      if (visibleCount === 0 && searchTerm !== '') {
-        const tbody = document.querySelector('#studentsTable tbody');
-        const existingNoResults = tbody.querySelector('.no-results-row');
-
-        if (!existingNoResults) {
-          const noResultsRow = document.createElement('tr');
-          noResultsRow.className = 'no-results-row';
-          noResultsRow.innerHTML = `
-            <td colspan="5">
-              <div class="empty-state">
-                <div class="empty-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="search"></svg><!-- UNMAPPED_ICON:search -->
-                </div>
-                <h4>No Students Found</h4>
-                <p>No results match "${searchTerm}"</p>
-                <button class="btn-empty" onclick="clearSearchInput()">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle"></svg><!-- UNMAPPED_ICON:x-circle -->
-                  Clear Search
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(noResultsRow);
-        }
-      } else {
-        const noResultsRow = document.querySelector('.no-results-row');
-        if (noResultsRow) {
-          noResultsRow.remove();
-        }
-      }
-    });
-
-    // Clear search button
-    clearSearch.addEventListener('click', function () {
-      clearSearchInput();
-    });
-
-    // Clear search on Escape key
-    searchInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        clearSearchInput();
-      }
-    });
+{% block extra_css %}
+<style>
+  .stat-card {
+    transition: all 0.3s ease;
   }
 
-  function clearSearchInput() {
-    searchInput.value = '';
-    searchInput.dispatchEvent(new Event('input'));
-    searchInput.focus();
+  .stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
   }
 
-  // Keyboard shortcut: Ctrl/Cmd + K to focus search
-  document.addEventListener('keydown', function (e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-      e.preventDefault();
-      searchInput?.focus();
+  .chart-container {
+    position: relative;
+    height: 300px;
+  }
+
+  .activity-item {
+    transition: all 0.2s ease;
+  }
+
+  .activity-item:hover {
+    background: linear-gradient(to right, #f5f7ff, #ffffff);
+    transform: translateX(4px);
+  }
+
+  .progress-bar {
+    transition: width 1s ease-out;
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
     }
-  });
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slideInUp 0.5s ease-out forwards;
+  }
+
+  .stagger-1 {
+    animation-delay: 0.1s;
+    opacity: 0;
+  }
+
+  .stagger-2 {
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+
+  .stagger-3 {
+    animation-delay: 0.3s;
+    opacity: 0;
+  }
+
+  .stagger-4 {
+    animation-delay: 0.4s;
+    opacity: 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <!-- Welcome Banner -->
+  <div class="bg-gradient-to-r from-primary-500 via-primary-600 to-secondary-600 rounded-2xl p-8 text-white shadow-xl">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-3xl font-bold mb-2">Welcome back, {{ request.user.first_name }}! 👋</h2>
+        <p class="text-primary-100">Here's what's happening with your school today.</p>
+      </div>
+      <div class="hidden lg:flex items-center gap-4">
+        <div class="text-right">
+          <p class="text-sm text-primary-100">Current Session</p>
+          <p class="text-xl font-bold">2024/2025</p>
+        </div>
+        <div class="w-px h-12 bg-white/20"></div>
+        <div class="text-right">
+          <p class="text-sm text-primary-100">Current Term</p>
+          <p class="text-xl font-bold">First Term</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Total Students -->
+    <div class="stat-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100 animate-slide-in stagger-1">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-7 h-7 text-blue-600">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+          </svg>
+        </div>
+        <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">+12%</span>
+      </div>
+      <h3 class="text-gray-600 text-sm font-medium mb-1">Total Students</h3>
+      <p class="text-3xl font-bold text-gray-800">{{ total_students|default:"1,234" }}</p>
+      <p class="text-xs text-gray-500 mt-2">
+        <span class="text-green-600 font-semibold">+45</span> this month
+      </p>
+    </div>
+
+    <!-- Total Teachers -->
+    <div class="stat-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100 animate-slide-in stagger-2">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-7 h-7 text-purple-600">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+          </svg>
+        </div>
+        <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">Active</span>
+      </div>
+      <h3 class="text-gray-600 text-sm font-medium mb-1">Total Teachers</h3>
+      <p class="text-3xl font-bold text-gray-800">{{ total_teachers|default:"87" }}</p>
+      <p class="text-xs text-gray-500 mt-2">Across all departments</p>
+    </div>
+
+    <!-- Total Classes -->
+    <div class="stat-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100 animate-slide-in stagger-3">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-7 h-7 text-orange-600">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+          </svg>
+        </div>
+        <span class="px-3 py-1 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">{{
+          total_classes|default:"24" }}</span>
+      </div>
+      <h3 class="text-gray-600 text-sm font-medium mb-1">Total Classes</h3>
+      <p class="text-3xl font-bold text-gray-800">{{ total_classes|default:"24" }}</p>
+      <p class="text-xs text-gray-500 mt-2">From JSS 1 to SS 3</p>
+    </div>
+
+    <!-- Attendance Rate -->
+    <div class="stat-card bg-white rounded-2xl p-6 shadow-lg border border-gray-100 animate-slide-in stagger-4">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-7 h-7 text-green-600">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Excellent</span>
+      </div>
+      <h3 class="text-gray-600 text-sm font-medium mb-1">Attendance Today</h3>
+      <p class="text-3xl font-bold text-gray-800">{{ attendance_rate|default:"94" }}%</p>
+      <div class="mt-3 bg-gray-100 rounded-full h-2 overflow-hidden">
+        <div class="progress-bar bg-gradient-to-r from-green-400 to-green-600 h-full rounded-full"
+          style="width: {{ attendance_rate|default:" 94" }}%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts and Recent Activity -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Student Enrollment Trend -->
+    <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-lg font-bold text-gray-800">Student Enrollment Trend</h3>
+          <p class="text-sm text-gray-500">Last 6 months performance</p>
+        </div>
+        <select
+          class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <option>Last 6 months</option>
+          <option>Last year</option>
+          <option>All time</option>
+        </select>
+      </div>
+      <div class="chart-container">
+        <canvas id="enrollmentChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold text-gray-800">Recent Activity</h3>
+        <button class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All</button>
+      </div>
+      <div class="space-y-4">
+        <div class="activity-item flex items-start gap-3 p-3 rounded-lg">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5 text-blue-600">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-800 font-medium">New student registered</p>
+            <p class="text-xs text-gray-500">John Doe - SS2 Science</p>
+            <p class="text-xs text-gray-400 mt-1">2 minutes ago</p>
+          </div>
+        </div>
+
+        <div class="activity-item flex items-start gap-3 p-3 rounded-lg">
+          <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5 text-green-600">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-800 font-medium">Assessment completed</p>
+            <p class="text-xs text-gray-500">Mathematics - JSS 3</p>
+            <p class="text-xs text-gray-400 mt-1">1 hour ago</p>
+          </div>
+        </div>
+
+        <div class="activity-item flex items-start gap-3 p-3 rounded-lg">
+          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5 text-purple-600">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-800 font-medium">New subject added</p>
+            <p class="text-xs text-gray-500">Computer Science</p>
+            <p class="text-xs text-gray-400 mt-1">3 hours ago</p>
+          </div>
+        </div>
+
+        <div class="activity-item flex items-start gap-3 p-3 rounded-lg">
+          <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5 text-orange-600">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm text-gray-800 font-medium">Report cards generated</p>
+            <p class="text-xs text-gray-500">First Term 2024</p>
+            <p class="text-xs text-gray-400 mt-1">5 hours ago</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Performance Overview & Quick Actions -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Class Performance -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold text-gray-800">Top Performing Classes</h3>
+        <a href="{% url 'academics:performance_analytics' %}"
+          class="text-primary-600 hover:text-primary-700 text-sm font-medium">View Details</a>
+      </div>
+      <div class="space-y-4">
+        <div
+          class="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-white rounded-xl border border-green-100">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white font-bold">
+              1
+            </div>
+            <div>
+              <p class="font-semibold text-gray-800">SS 3A</p>
+              <p class="text-xs text-gray-500">Science Class</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-green-600">92%</p>
+            <p class="text-xs text-gray-500">Avg Score</p>
+          </div>
+        </div>
+
+        <div
+          class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-white rounded-xl border border-blue-100">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white font-bold">
+              2
+            </div>
+            <div>
+              <p class="font-semibold text-gray-800">SS 2B</p>
+              <p class="text-xs text-gray-500">Commercial Class</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-blue-600">88%</p>
+            <p class="text-xs text-gray-500">Avg Score</p>
+          </div>
+        </div>
+
+        <div
+          class="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-white rounded-xl border border-purple-100">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white font-bold">
+              3
+            </div>
+            <div>
+              <p class="font-semibold text-gray-800">JSS 3C</p>
+              <p class="text-xs text-gray-500">General Class</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-purple-600">85%</p>
+            <p class="text-xs text-gray-500">Avg Score</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <h3 class="text-lg font-bold text-gray-800 mb-6">Quick Actions</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <a href="{% url 'records:student_create' %}"
+          class="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-primary-50 to-white rounded-xl border border-primary-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+          <div
+            class="w-14 h-14 bg-primary-500 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-7 h-7 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+            </svg>
+          </div>
+          <p class="text-sm font-semibold text-gray-800">Add Student</p>
+        </a>
+
+        <a href="{% url 'academics:assessment_create' %}"
+          class="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-green-50 to-white rounded-xl border border-green-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+          <div
+            class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-7 h-7 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+            </svg>
+          </div>
+          <p class="text-sm font-semibold text-gray-800">New Assessment</p>
+        </a>
+
+        <a href="{% url 'academics:classroom_list' %}"
+          class="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-orange-50 to-white rounded-xl border border-orange-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+          <div
+            class="w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-7 h-7 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+            </svg>
+          </div>
+          <p class="text-sm font-semibold text-gray-800">Manage Classes</p>
+        </a>
+
+        <a href="{% url 'academics:performance_analytics' %}"
+          class="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-50 to-white rounded-xl border border-purple-100 hover:shadow-lg transition-all duration-300 hover:scale-105">
+          <div
+            class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-7 h-7 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+            </svg>
+          </div>
+          <p class="text-sm font-semibold text-gray-800">View Analytics</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upcoming Events & Announcements -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Upcoming Events -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold text-gray-800">Upcoming Events</h3>
+        <button class="text-primary-600 hover:text-primary-700 text-sm font-medium">View Calendar</button>
+      </div>
+      <div class="space-y-4">
+        <div
+          class="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-white rounded-xl border border-blue-100">
+          <div class="flex-shrink-0 text-center">
+            <div class="w-14 h-14 bg-blue-500 rounded-xl flex flex-col items-center justify-center text-white">
+              <span class="text-xs font-semibold">NOV</span>
+              <span class="text-xl font-bold">25</span>
+            </div>
+          </div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Parent-Teacher Meeting</p>
+            <p class="text-sm text-gray-500 mt-1">Discuss student progress and academic performance</p>
+            <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>2:00 PM - 5:00 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-white rounded-xl border border-green-100">
+          <div class="flex-shrink-0 text-center">
+            <div class="w-14 h-14 bg-green-500 rounded-xl flex flex-col items-center justify-center text-white">
+              <span class="text-xs font-semibold">NOV</span>
+              <span class="text-xl font-bold">28</span>
+            </div>
+          </div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Mid-Term Examinations Begin</p>
+            <p class="text-sm text-gray-500 mt-1">All classes - First Term Assessment</p>
+            <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>8:00 AM - 12:00 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex items-start gap-4 p-4 bg-gradient-to-r from-purple-50 to-white rounded-xl border border-purple-100">
+          <div class="flex-shrink-0 text-center">
+            <div class="w-14 h-14 bg-purple-500 rounded-xl flex flex-col items-center justify-center text-white">
+              <span class="text-xs font-semibold">DEC</span>
+              <span class="text-xl font-bold">05</span>
+            </div>
+          </div>
+          <div class="flex-1">
+            <p class="font-semibold text-gray-800">Inter-House Sports Competition</p>
+            <p class="text-sm text-gray-500 mt-1">Annual sports day for all students</p>
+            <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>All Day Event</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Important Announcements -->
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold text-gray-800">Important Announcements</h3>
+        <button class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All</button>
+      </div>
+      <div class="space-y-4">
+        <div class="p-4 bg-gradient-to-r from-red-50 to-white rounded-xl border border-red-100">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5 text-white">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-gray-800">Fee Payment Deadline</p>
+              <p class="text-sm text-gray-500 mt-1">Reminder: All outstanding fees must be paid by November 30th</p>
+              <p class="text-xs text-red-600 font-medium mt-2">Urgent</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-gradient-to-r from-blue-50 to-white rounded-xl border border-blue-100">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5 text-white">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-gray-800">New Curriculum Update</p>
+              <p class="text-sm text-gray-500 mt-1">Updated syllabus for Mathematics and English available in the staff
+                portal</p>
+              <p class="text-xs text-blue-600 font-medium mt-2">Information</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-gradient-to-r from-green-50 to-white rounded-xl border border-green-100">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5 text-white">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-gray-800">Staff Training Workshop</p>
+              <p class="text-sm text-gray-500 mt-1">Digital teaching tools workshop scheduled for December 10th</p>
+              <p class="text-xs text-green-600 font-medium mt-2">Upcoming</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Enrollment Trend Chart
+  const enrollmentCtx = document.getElementById('enrollmentChart');
+  if (enrollmentCtx) {
+    new Chart(enrollmentCtx, {
+      type: 'line',
+      data: {
+        labels: ['June', 'July', 'August', 'September', 'October', 'November'],
+        datasets: [{
+          label: 'Student Enrollment',
+          data: [1150, 1180, 1205, 1198, 1220, 1234],
+          backgroundColor: 'rgba(102, 126, 234, 0.1)',
+          borderColor: 'rgba(102, 126, 234, 1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(102, 126, 234, 1)',
+          pointHoverBorderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            borderColor: 'rgba(102, 126, 234, 0.5)',
+            borderWidth: 1,
+            displayColors: false,
+            callbacks: {
+              label: function (context) {
+                return context.parsed.y + ' students';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: 1100,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)',
+              drawBorder: false
+            },
+            ticks: {
+              padding: 10,
+              font: {
+                size: 12
+              }
+            }
+          },
+          x: {
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              padding: 10,
+              font: {
+                size: 12
+              }
+            }
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index'
+        }
+      }
+    });
+  }
 
   // Animate progress bars on load
-  document.addEventListener('DOMContentLoaded', function () {
+  window.addEventListener('load', function () {
     const progressBars = document.querySelectorAll('.progress-bar');
     progressBars.forEach(bar => {
       const width = bar.style.width;
       bar.style.width = '0';
       setTimeout(() => {
         bar.style.width = width;
-      }, 500);
+      }, 300);
     });
   });
 
-  // Highlight search terms
-  function highlightSearchTerm() {
-    const query = searchInput?.value.toLowerCase().trim();
-    if (!query) return;
-
-    const elements = document.querySelectorAll('.student-name, .badge-admission');
-    elements.forEach(el => {
-      const text = el.textContent;
-      const regex = new RegExp(`(${query})`, 'gi');
-      if (regex.test(text)) {
-        el.innerHTML = text.replace(regex, '<mark style="background: #fef08a; padding: 0 0.2rem; border-radius: 3px;">$1</mark>');
+  // Animate stat cards
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
       }
     });
-  }
+  }, { threshold: 0.1 });
 
-  // Add touch feedback for mobile
-  if (window.innerWidth < 768) {
-    document.querySelectorAll('.mobile-card').forEach(card => {
-      card.addEventListener('touchstart', function () {
-        this.style.transform = 'scale(0.98)';
-      });
-      card.addEventListener('touchend', function () {
-        this.style.transform = 'scale(1)';
-      });
-    });
-  }
-
-  // Prevent double-tap zoom on iOS
-  let lastTouchEnd = 0;
-  document.addEventListener('touchend', function (event) {
-    const now = (new Date()).getTime();
-    if (now - lastTouchEnd <= 300) {
-      event.preventDefault();
-    }
-    lastTouchEnd = now;
-  }, false);
+  document.querySelectorAll('.animate-slide-in').forEach(el => {
+    observer.observe(el);
+  });
 </script>
 {% endblock %}

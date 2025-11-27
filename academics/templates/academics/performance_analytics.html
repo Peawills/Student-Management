@@ -44,286 +44,195 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid p-4">
+<div class="max-w-7xl mx-auto p-6">
     <!-- Header -->
     <div class="analytics-header">
-        <h2 class="mb-2"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up"></svg><!-- UNMAPPED_ICON:graph-up --> Performance Analytics</h2>
+        <h2 class="mb-2 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 13l3-3 6 6 4-4"/></svg>
+            Performance Analytics
+        </h2>
         <p class="mb-0">Comprehensive academic performance insights and statistics</p>
     </div>
 
     <!-- Filters -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-gray-100">
-            <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="funnel"></svg><!-- UNMAPPED_ICON:funnel --> Filters</h5>
+    <div class="bg-white rounded-2xl shadow mb-6 p-4">
+        <div class="mb-3">
+            <h5 class="text-sm font-semibold flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h18M6 12h12M10 19h4"/></svg> Filters</h5>
         </div>
-        <div class="card-body">
-            <form method="get" id="filterForm">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Session</label>
-                        {{ form.session }}
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Term</label>
-                        {{ form.term }}
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Class</label>
-                        {{ form.classroom }}
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Subject</label>
-                        {{ form.subject }}
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Student</label>
-                        {{ form.student }}
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Min Score</label>
-                        {{ form.min_score }}
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Max Score</label>
-                        {{ form.max_score }}
-                    </div>
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="funnel"></svg><!-- UNMAPPED_ICON:funnel --> Apply Filters
-                        </button>
-                        <a href="{% url 'academics:performance_analytics' %}" class="btn btn-outline-secondary">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="x-circle"></svg><!-- UNMAPPED_ICON:x-circle --> Clear
-                        </a>
-                    </div>
+        <form method="get" id="filterForm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Session</label>
+                    {{ form.session }}
                 </div>
-            </form>
-        </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Term</label>
+                    {{ form.term }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Class</label>
+                    {{ form.classroom }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Subject</label>
+                    {{ form.subject }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Student</label>
+                    {{ form.student }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Min Score</label>
+                    {{ form.min_score }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">Max Score</label>
+                    {{ form.max_score }}
+                </div>
+                <div class="flex items-end gap-3">
+                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg">Apply Filters</button>
+                    <a href="{% url 'academics:performance_analytics' %}" class="inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-gray-700">Clear</a>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <!-- Statistics Cards -->
+    <!-- Empty state -->
     {% if stats.total_students|default:0 == 0 %}
-    <div class="alert alert-info flex items-center justify-between">
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="info-circle mr-2"></svg><!-- UNMAPPED_ICON:info-circle -->
-            No analytics data to display yet.
-            {% if used_default_filters and current_term %}
-            Showing default for current term: <strong>{{ current_term.session.name }} - {{ current_term.name }}</strong>.
-            {% endif %}
-            Add scores and calculate term results for classes, then refresh.
+    <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4 flex items-center justify-between">
+        <div class="flex items-center gap-3 text-sm text-blue-800">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01"/></svg>
+            <div>
+                <div>No analytics data to display yet.</div>
+                {% if used_default_filters and current_term %}
+                <div class="text-xs text-gray-600">Showing default for current term: <strong>{{ current_term.session.name }} - {{ current_term.name }}</strong>.</div>
+                {% endif %}
+                <div class="text-xs text-gray-500">Add scores and calculate term results for classes, then refresh.</div>
+            </div>
         </div>
-        <div>
-            <a class="btn btn-outline-secondary btn-sm" href="{% url 'academics:performance_analytics' %}">
-                Clear Filters
-            </a>
-        </div>
+                <div>
+                    <a class="inline-flex items-center gap-2 px-3 py-1 border rounded text-sm" href="{% url 'academics:performance_analytics' %}">Clear Filters</a>
+                </div>
     </div>
     {% endif %}
 
-    <div class="flex gap-2 mb-3">
-        <a class="btn btn-outline-primary" href="{% url 'academics:export_subject_performance_csv' %}?{{ request.GET.urlencode }}">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="download"></svg><!-- UNMAPPED_ICON:download --> Export Subjects CSV
-        </a>
-        <a class="btn btn-outline-info" href="{% url 'academics:export_class_performance_csv' %}?{{ request.GET.urlencode }}">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="download"></svg><!-- UNMAPPED_ICON:download --> Export Classes CSV
-        </a>
+    <div class="flex flex-wrap gap-3 mb-4">
+        <a class="inline-flex items-center gap-2 px-3 py-2 border rounded" href="{% url 'academics:export_subject_performance_csv' %}?{{ request.GET.urlencode }}">Export Subjects CSV</a>
+        <a class="inline-flex items-center gap-2 px-3 py-2 border rounded" href="{% url 'academics:export_class_performance_csv' %}?{{ request.GET.urlencode }}">Export Classes CSV</a>
         <form method="post" action="{% url 'academics:recalculate_term_results' %}" class="inline">
             {% csrf_token %}
             <input type="hidden" name="term_id" value="{{ form.term.value }}">
             <input type="hidden" name="classroom_id" value="{{ form.classroom.value }}">
-            <button type="submit" class="btn btn-warning"
-                {% if not form.term.value or not form.classroom.value %} disabled title="Select Term and Class to recalculate"{% endif %}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-repeat"></svg><!-- UNMAPPED_ICON:arrow-repeat --> Recalculate Term Results
-            </button>
+            <button type="submit" class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-400 text-black rounded" {% if not form.term.value or not form.classroom.value %}disabled title="Select Term and Class to recalculate"{% endif %}>Recalculate Term Results</button>
         </form>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center stat-card primary">
-                <div class="card-body">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="bar-chart-fill text-primary"></svg><!-- UNMAPPED_ICON:bar-chart-fill -->
-                    <h6 class="text-gray-500 mt-2">Average Score</h6>
-                    <h2 class="mb-0 text-primary">{{ stats.avg_score|floatformat:0|default:"N/A" }}</h2>
-                </div>
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl shadow p-5 stat-card primary text-center">
+            <div class="text-sm text-gray-500">Average Score</div>
+            <div class="text-2xl font-bold text-primary mt-2">{{ stats.avg_score|floatformat:0|default:"N/A" }}</div>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5 stat-card success text-center">
+            <div class="text-sm text-gray-500">Highest Score</div>
+            <div class="text-2xl font-bold text-green-600 mt-2">{{ stats.highest_score|floatformat:0|default:"N/A" }}</div>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5 stat-card warning text-center">
+            <div class="text-sm text-gray-500">Lowest Score</div>
+            <div class="text-2xl font-bold text-yellow-600 mt-2">{{ stats.lowest_score|floatformat:0|default:"N/A" }}</div>
+        </div>
+        <div class="bg-white rounded-2xl shadow p-5 stat-card info text-center">
+            <div class="text-sm text-gray-500">Total Students</div>
+            <div class="text-2xl font-bold text-blue-600 mt-2">{{ stats.total_students|default:"0" }}</div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow p-4">
+            <div class="mb-2 font-semibold">Class-wise Performance</div>
+            <div class="chart-container">
+                <canvas id="classPerformanceChart"></canvas>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center stat-card success">
-                <div class="card-body">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trophy-fill text-green-600"></svg><!-- UNMAPPED_ICON:trophy-fill -->
-                    <h6 class="text-gray-500 mt-2">Highest Score</h6>
-                    <h2 class="mb-0 text-green-600">{{ stats.highest_score|floatformat:0|default:"N/A" }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center stat-card warning">
-                <div class="card-body">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-down-circle-fill text-yellow-600"></svg><!-- UNMAPPED_ICON:arrow-down-circle-fill -->
-                    <h6 class="text-gray-500 mt-2">Lowest Score</h6>
-                    <h2 class="mb-0 text-yellow-600">{{ stats.lowest_score|floatformat:0|default:"N/A" }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center stat-card info">
-                <div class="card-body">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg>
-                    <h6 class="text-gray-500 mt-2">Total Students</h6>
-                    <h2 class="mb-0 text-blue-600">{{ stats.total_students|default:"0" }}</h2>
-                </div>
+        <div class="bg-white rounded-2xl shadow p-4 flex items-center justify-center">
+            <div class="w-56 h-56">
+                <canvas id="passFailChart"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- New Charts Row -->
-    <div class="row g-4 mb-4">
-        <!-- Class-wise Performance -->
-        <div class="col-md-8">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-blue-600 text-white">
-                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="bar-chart-line"></svg><!-- UNMAPPED_ICON:bar-chart-line --> Class-wise Performance</h5>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="classPerformanceChart"></canvas>
-                    </div>
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white rounded-2xl shadow p-4">
+            <div class="mb-2 font-semibold">Subject Performance</div>
+            <div class="overflow-auto">
+                <table class="w-full text-sm">
+                    <thead class="text-gray-600">
+                        <tr class="border-b">
+                            <th class="text-left py-2">Subject</th>
+                            <th class="text-center py-2">Avg Score</th>
+                            <th class="text-center py-2">Students</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for perf in subject_performance %}
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2"><strong>{{ perf.subject__name }}</strong></td>
+                            <td class="text-center py-2"><span class="inline-block px-2 py-1 bg-primary-100 text-primary-800 rounded">{{ perf.avg_score|floatformat:0 }}</span></td>
+                            <td class="text-center py-2">{{ perf.student_count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="py-6 text-center text-gray-500">No data available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-        <!-- Pass/Fail Ratio -->
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check2-circle"></svg><!-- UNMAPPED_ICON:check2-circle --> Pass / Fail Ratio</h5>
-                </div>
-                <div class="card-body flex items-center justify-center">
-                    <div class="chart-container" style="height: 250px; width: 250px;">
-                        <canvas id="passFailChart"></canvas>
-                    </div>
-                </div>
+
+        <div class="bg-white rounded-2xl shadow p-4">
+            <div class="mb-2 font-semibold">Grade Distribution</div>
+            <div class="chart-container">
+                <canvas id="gradeChart"></canvas>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <!-- Subject Performance -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book"></svg><!-- UNMAPPED_ICON:book --> Subject Performance</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Subject</th>
-                                    <th class="text-center">Avg Score</th>
-                                    <th class="text-center">Students</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for perf in subject_performance %}
-                                <tr>
-                                    <td><strong>{{ perf.subject__name }}</strong></td>
-                                    <td class="text-center">
-                                        <span class="badge bg-primary">{{ perf.avg_score|floatformat:0 }}</span>
-                                    </td>
-                                    <td class="text-center">{{ perf.student_count }}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="3" class="text-center py-4 text-gray-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox"></svg><!-- UNMAPPED_ICON:inbox -->
-                                        <p class="mt-2 mb-0">No data available</p>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <div class="bg-white rounded-2xl shadow p-4 mb-6">
+        <div class="mb-2 font-semibold">Performance Trend Over Time</div>
+        <div class="chart-container">
+            <canvas id="performanceTrendChart"></canvas>
         </div>
+    </div>
 
-        <!-- Grade Distribution -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-green-600 text-white">
-                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pie-chart"></svg><!-- UNMAPPED_ICON:pie-chart --> Grade Distribution</h5>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="gradeChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Performance Trend Over Time -->
-        <div class="col-md-12">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-gray-800 text-white">
-                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="graph-up-arrow"></svg><!-- UNMAPPED_ICON:graph-up-arrow --> Performance Trend Over Time</h5>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="performanceTrendChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top Performers -->
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-yellow-600 text-dark">
-                    <h5 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="star-fill"></svg><!-- UNMAPPED_ICON:star-fill --> Top 10 Performers</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th style="width: 80px;">Rank</th>
-                                    <th>Student</th>
-                                    <th>Class</th>
-                                    <th class="text-center">Average Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for performer in top_performers %}
-                                <tr>
-                                    <td>
-                                        <strong class="text-primary">#{{ forloop.counter }}</strong>
-                                        {% if forloop.counter == 1 %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trophy-fill text-yellow-600 ml-2"></svg><!-- UNMAPPED_ICON:trophy-fill -->
-                                        {% elif forloop.counter == 2 %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trophy-fill text-secondary ml-2"></svg><!-- UNMAPPED_ICON:trophy-fill -->
-                                        {% elif forloop.counter == 3 %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="trophy-fill text-blue-600 ml-2"></svg><!-- UNMAPPED_ICON:trophy-fill -->
-                                        {% endif %}
-                                    </td>
-                                    <td><strong>{{ performer.student.full_name }}</strong></td>
-                                    <td>{{ performer.classroom }}</td>
-                                    <td class="text-center">
-                                        <span class="badge bg-green-600 fs-6">{{ performer.average_score|default:0|floatformat:0 }}</span>
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center py-4 text-gray-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox"></svg><!-- UNMAPPED_ICON:inbox -->
-                                        <p class="mt-2 mb-0">No performance data available</p>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <div class="bg-white rounded-2xl shadow p-4">
+        <div class="mb-2 font-semibold">Top 10 Performers</div>
+        <div class="overflow-auto">
+            <table class="w-full text-sm">
+                <thead class="text-gray-600 border-b">
+                    <tr>
+                        <th class="py-2" style="width:80px">Rank</th>
+                        <th class="py-2">Student</th>
+                        <th class="py-2">Class</th>
+                        <th class="py-2 text-center">Average Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for performer in top_performers %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="py-2"><strong class="text-primary">#{{ forloop.counter }}</strong></td>
+                        <td class="py-2"><strong>{{ performer.student.full_name }}</strong></td>
+                        <td class="py-2">{{ performer.classroom }}</td>
+                        <td class="py-2 text-center"><span class="inline-block px-2 py-1 bg-green-600 text-white rounded">{{ performer.average_score|default:0|floatformat:0 }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="py-6 text-center text-gray-500">No performance data available</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -332,176 +241,94 @@
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Add form-select class to all selects and form-control to inputs
-    document.querySelectorAll('select').forEach(el => {
-        el.classList.add('form-select');
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure selects and numeric inputs are styled (if needed)
+        document.querySelectorAll && document.querySelectorAll('select').forEach?.(el => el.classList.add('w-full', 'rounded'));
+        document.querySelectorAll && document.querySelectorAll('input[type="number"]').forEach?.(el => el.classList.add('w-full', 'rounded'));
 
-    document.querySelectorAll('input[type="number"]').forEach(el => {
-        el.classList.add('form-control');
-    });
-
-    // Grade Distribution Chart
-    const gradeCtx = document.getElementById('gradeChart');
-    if (gradeCtx) {
-        new Chart(gradeCtx, {
-            type: 'bar',
-            data: {
-                labels: ['A', 'B', 'C', 'D', 'E', 'F'],
-                datasets: [{
-                    label: 'Number of Students',
-                    data: [
-                        {% if grade_distribution.A %}{{ grade_distribution.A }}{% else %} 0{% endif %},
-                    {{ grade_distribution.B|default:0 }},
-                    {{ grade_distribution.C|default:0 }},
-                    {{ grade_distribution.D|default:0 }},
-                    {{ grade_distribution.E|default:0 }},
-                    {{ grade_distribution.F|default:0 }}
-                    ],
-    backgroundColor: [
-        'rgba(40, 167, 69, 0.8)',
-        'rgba(0, 123, 255, 0.8)',
-        'rgba(23, 162, 184, 0.8)',
-        'rgba(255, 193, 7, 0.8)',
-        'rgba(255, 152, 0, 0.8)',
-        'rgba(220, 53, 69, 0.8)'
-    ],
-        borderColor: [
-            'rgba(40, 167, 69, 1)',
-            'rgba(0, 123, 255, 1)',
-            'rgba(23, 162, 184, 1)',
-            'rgba(255, 193, 7, 1)',
-            'rgba(255, 152, 0, 1)',
-            'rgba(220, 53, 69, 1)'
-        ],
-            borderWidth: 2
-                }]
-            },
-    options: {
-        responsive: true,
-            maintainAspectRatio: false,
-                plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        return context.parsed.y + ' students';
-                    }
+        // Grade Distribution Chart
+        const gradeCtx = document.getElementById('gradeChart');
+        if (gradeCtx) {
+            new Chart(gradeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['A', 'B', 'C', 'D', 'E', 'F'],
+                    datasets: [{
+                        label: 'Number of Students',
+                        data: [
+                            {{ grade_distribution.A|default:0 }},
+                            {{ grade_distribution.B|default:0 }},
+                            {{ grade_distribution.C|default:0 }},
+                            {{ grade_distribution.D|default:0 }},
+                            {{ grade_distribution.E|default:0 }},
+                            {{ grade_distribution.F|default:0 }}
+                        ],
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(0, 123, 255, 0.8)',
+                            'rgba(23, 162, 184, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(255, 152, 0, 0.8)',
+                            'rgba(220, 53, 69, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(23, 162, 184, 1)',
+                            'rgba(255, 193, 7, 1)',
+                            'rgba(255, 152, 0, 1)',
+                            'rgba(220, 53, 69, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return context.parsed.y + ' students'; }
+                            }
+                        }
+                    },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } } }
                 }
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                    ticks: {
-                    stepSize: 1,
-                        precision: 0
-                }
-            }
+            });
         }
-    }
-        });
-    }
 
-    // Class Performance Chart
-    const classPerfCtx = document.getElementById('classPerformanceChart');
-    if (classPerfCtx) {
-        const classLabels = [{% for perf in class_performance %} "{{ perf.classroom__level }}{{ perf.classroom__arm }}", {% endfor %}];
-    const classData = [{% for perf in class_performance %}{{ perf.avg_score|floatformat:2 }},{% endfor %}];
+        // Class Performance Chart
+        const classPerfCtx = document.getElementById('classPerformanceChart');
+        if (classPerfCtx) {
+            const classLabels = [{% for perf in class_performance %}{% if not forloop.first %}, {% endif %}"{{ perf.classroom__level }}{{ perf.classroom__arm }}"{% endfor %}];
+            const classData = [{% for perf in class_performance %}{% if not forloop.first %}, {% endif %}{{ perf.avg_score|floatformat:2 }}{% endfor %}];
 
-    new Chart(classPerfCtx, {
-        type: 'bar',
-        data: {
-            labels: classLabels,
-            datasets: [{
-                label: 'Average Score',
-                data: classData,
-                backgroundColor: 'rgba(23, 162, 184, 0.8)',
-                borderColor: 'rgba(23, 162, 184, 1)',
-                borderWidth: 2,
-                borderRadius: 5,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100
-                }
-            }
+            new Chart(classPerfCtx, {
+                type: 'bar',
+                data: { labels: classLabels, datasets: [{ label: 'Average Score', data: classData, backgroundColor: 'rgba(23, 162, 184, 0.8)', borderColor: 'rgba(23, 162, 184, 1)', borderWidth: 2, borderRadius: 5 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
+            });
+        }
+
+        // Pass/Fail Chart
+        const passFailCtx = document.getElementById('passFailChart');
+        if (passFailCtx) {
+            const passCount = {{ pass_fail_stats.pass_count|default:0 }};
+            const failCount = {{ pass_fail_stats.fail_count|default:0 }};
+
+            new Chart(passFailCtx, { type: 'doughnut', data: { labels: ['Pass', 'Fail'], datasets: [{ data: [passCount, failCount], backgroundColor: ['rgba(40, 167, 69, 0.8)', 'rgba(220, 53, 69, 0.8)'], borderColor: ['rgba(40, 167, 69, 1)', 'rgba(220, 53, 69, 1)'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+        }
+
+        // Performance Trend Chart
+        const trendCtx = document.getElementById('performanceTrendChart');
+        if (trendCtx) {
+            const trendData = {{ performance_trend|safe }} || [];
+            const trendLabels = trendData.map(d => d.term__name || '');
+            const trendScores = trendData.map(d => d.avg_score || 0);
+
+            new Chart(trendCtx, { type: 'line', data: { labels: trendLabels, datasets: [{ label: 'Average Score Over Time', data: trendScores, fill: true, backgroundColor: 'rgba(13, 148, 136, 0.1)', borderColor: 'rgba(13, 148, 136, 1)', tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } } });
         }
     });
-    }
-
-    // Pass/Fail Chart
-    const passFailCtx = document.getElementById('passFailChart');
-    if (passFailCtx) {
-        const passCount = {{ pass_fail_stats.pass_count|default:0 }};
-    const failCount = {{ pass_fail_stats.fail_count|default:0 }};
-
-    new Chart(passFailCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Pass', 'Fail'],
-            datasets: [{
-                data: [passCount, failCount],
-                backgroundColor: ['rgba(40, 167, 69, 0.8)', 'rgba(220, 53, 69, 0.8)'],
-                borderColor: ['rgba(40, 167, 69, 1)', 'rgba(220, 53, 69, 1)'],
-                borderWidth: 2,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
-    }
-
-    // Performance Trend Chart
-    const trendCtx = document.getElementById('performanceTrendChart');
-    if (trendCtx) {
-        const trendData = {{ performance_trend|safe }};
-    const trendLabels = trendData.map(d => d.term__name);
-    const trendScores = trendData.map(d => d.avg_score);
-
-    new Chart(trendCtx, {
-        type: 'line',
-        data: {
-            labels: trendLabels,
-            datasets: [{
-                label: 'Average Score Over Time',
-                data: trendScores,
-                fill: true,
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                borderColor: 'rgba(102, 126, 234, 1)',
-                tension: 0.3,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100
-                }
-            }
-        }
-    });
-    }
 </script>
 {% endblock %}

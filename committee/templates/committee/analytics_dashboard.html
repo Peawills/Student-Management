@@ -132,12 +132,14 @@
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ offenses_by_type|json_script:"offenses-by-type-data" }}
+{{ offenses_over_time|json_script:"offenses-over-time-data" }}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // 1. Offenses by Type Chart (Pie Chart)
         const typeCtx = document.getElementById('offensesByTypeChart');
         if (typeCtx) {
-            const typeData = {{ offenses_by_type|safe }};
+            const typeData = JSON.parse(document.getElementById('offenses-by-type-data').textContent);
             new Chart(typeCtx, {
                 type: 'pie',
                 data: {
@@ -171,7 +173,7 @@
         // 2. Offenses Over Time Chart (Bar Chart)
         const timeCtx = document.getElementById('offensesOverTimeChart');
         if (timeCtx) {
-            const timeData = {{ offenses_over_time|safe }};
+            const timeData = JSON.parse(document.getElementById('offenses-over-time-data').textContent);
             // Format date for labels
             const labels = timeData.map(d => {
                 const date = new Date(d.month);

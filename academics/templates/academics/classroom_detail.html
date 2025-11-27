@@ -10,29 +10,29 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h2 class="text-2xl md:text-3xl font-bold mb-2 flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="door-open"></svg><!-- UNMAPPED_ICON:door-open --> {{ classroom }}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="door-open"></svg>{{ classroom }}
                 </h2>
                 <p class="opacity-90 mb-1 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar3"></svg><!-- UNMAPPED_ICON:calendar3 --> {{ classroom.session.name }}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar3"></svg>{{ classroom.session.name }}
                 </p>
                 {% if classroom.class_teacher %}
                 <p class="opacity-90 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-badge"></svg><!-- UNMAPPED_ICON:person-badge --> Class Teacher: {{ classroom.class_teacher.get_full_name }}
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-badge"></svg>Class Teacher: {{ classroom.class_teacher.get_full_name }}
                 </p>
                 {% endif %}
             </div>
             <div class="flex flex-wrap gap-3 w-full md:w-auto">
                 <a href="{% url 'academics:classroom_update' classroom.pk %}" class="px-4 py-2 bg-white/20 text-white font-semibold rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="pencil"></svg><!-- UNMAPPED_ICON:pencil --> Edit Class
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Edit Class
                 </a>
                 <a href="{% url 'academics:take_attendance' %}?classroom={{ classroom.id }}" class="px-4 py-2 bg-white/20 text-white font-semibold rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="calendar-check"></svg><!-- UNMAPPED_ICON:calendar-check --> Take Attendance
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Take Attendance
                 </a>
                 <a href="{% url 'academics:attendance_report' %}?classroom={{ classroom.id }}" class="px-4 py-2 bg-white/20 text-white font-semibold rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-text"></svg><!-- UNMAPPED_ICON:file-earmark-text --> Attendance Report
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Attendance Report
                 </a>
                 <a href="{% url 'academics:classroom_list' %}" class="px-4 py-2 bg-white text-primary-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-left"></svg><!-- UNMAPPED_ICON:arrow-left --> Back
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Back
                 </a>
             </div>
         </div>
@@ -41,22 +41,18 @@
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4 border-primary-500">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 inline-block"><path d="M16 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM6 11c1.657 0 3-1.343 3-3S7.657 5 6 5 3 6.343 3 8s1.343 3 3 3zM6 13c-2.33 0-7 1.167-7 3.5V19h20v-2.5C22 14.167 17.33 13 15 13H6z"/></svg>
             <h6 class="text-sm font-semibold text-gray-500 uppercase mb-2">Total Students</h6>
             <h2 class="text-3xl font-bold text-gray-800">{{ students.count }}</h2>
         </div>
         <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4 border-blue-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="gender-male text-blue-500 text-4xl mb-3"></svg><!-- UNMAPPED_ICON:gender-male -->
             <h6 class="text-sm font-semibold text-gray-500 uppercase mb-2">Male</h6>
             <h2 class="text-3xl font-bold text-gray-800">{{ male_count }}</h2>
         </div>
         <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4 border-pink-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="gender-female text-pink-500 text-4xl mb-3"></svg><!-- UNMAPPED_ICON:gender-female -->
             <h6 class="text-sm font-semibold text-gray-500 uppercase mb-2">Female</h6>
             <h2 class="text-3xl font-bold text-gray-800">{{ female_count }}</h2>
         </div>
         <div class="bg-white rounded-2xl shadow-md p-6 text-center border-l-4 border-green-500">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book text-green-500 text-4xl mb-3"></svg><!-- UNMAPPED_ICON:book -->
             <h6 class="text-sm font-semibold text-gray-500 uppercase mb-2">Subjects</h6>
             <h2 class="text-3xl font-bold text-gray-800">{{ subjects.count }}</h2>
         </div>
@@ -68,7 +64,7 @@
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-6 py-4 flex justify-between items-center">
                     <h5 class="text-lg font-bold flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="people"></svg><!-- UNMAPPED_ICON:people --> Students in {{ classroom }}
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Students in {{ classroom }}
                     </h5>
                     <button onclick="document.getElementById('addStudentsModal').classList.remove('hidden')" class="px-4 py-2 bg-white/20 text-white text-sm font-semibold rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg> Add Students
@@ -107,21 +103,16 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         <div class="flex items-center justify-center gap-2">
-                                            <a href="{% url 'records:student_detail' student.pk %}"
-                                                class="inline-flex items-center justify-center w-9 h-9 border-2 border-primary-500 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7S3.732 16.057 2.458 12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/></svg>
+                                            <a href="{% url 'records:student_detail' student.pk %}" class="inline-flex items-center justify-center w-9 h-9 border-2 border-primary-500 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"></svg>
                                             </a>
-                                            <button type="button" onclick="openMoveModal('{{ student.id }}', '{{ student.full_name }}')"
-                                                class="inline-flex items-center justify-center w-9 h-9 border-2 border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-right-square"></svg><!-- UNMAPPED_ICON:arrow-right-square -->
+                                            <button type="button" onclick="openMoveModal('{{ student.id }}', '{{ student.full_name }}')" class="inline-flex items-center justify-center w-9 h-9 border-2 border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>
                                             </button>
-                                            <form method="post"
-                                                action="{% url 'academics:remove_student_from_class' classroom.pk student.pk %}"
-                                                class="inline"
-                                                onsubmit="return confirm('Remove {{ student.full_name }} from this class?');">
+                                            <form method="post" action="{% url 'academics:remove_student_from_class' classroom.pk student.pk %}" class="inline" onsubmit="return confirm('Remove {{ student.full_name }} from this class?');">
                                                 {% csrf_token %}
                                                 <button type="submit" class="inline-flex items-center justify-center w-9 h-9 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 6v12a2 2 0 002 2h4a2 2 0 002-2V6"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"></svg>
                                                 </button>
                                             </form>
                                         </div>
@@ -133,7 +124,6 @@
                     </div>
                     {% else %}
                     <div class="text-center py-12 text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="inbox text-6xl mb-4 opacity-50"></svg><!-- UNMAPPED_ICON:inbox -->
                         <p class="text-lg font-medium mb-4">No students in this class yet.</p>
                         <button onclick="document.getElementById('addStudentsModal').classList.remove('hidden')" class="px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2 mx-auto">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg> Add Students
@@ -149,7 +139,7 @@
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <div class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4">
                     <h5 class="text-lg font-bold flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="book"></svg><!-- UNMAPPED_ICON:book --> Subjects
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Subjects
                     </h5>
                 </div>
                 <div class="p-6">
@@ -171,23 +161,173 @@
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-4">
                     <h5 class="text-lg font-bold flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="clipboard-check"></svg><!-- UNMAPPED_ICON:clipboard-check --> Quick Actions
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Quick Actions
                     </h5>
                 </div>
                 <div class="p-6">
                     <div class="space-y-3">
-                        <a href="{% url 'academics:assignment_create' %}?classroom={{ classroom.pk }}"
-                            class="block w-full px-4 py-2.5 border-2 border-primary-500 text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-colors text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="plus"></svg><!-- UNMAPPED_ICON:plus --> Assign Subject
+                        <a href="{% url 'academics:assignment_create' %}?classroom={{ classroom.pk }}" class="block w-full px-4 py-2.5 border-2 border-primary-500 text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-colors text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Assign Subject
                         </a>
                         <a href="{% url 'academics:assessment_create' %}" class="block w-full px-4 py-2.5 border-2 border-green-500 text-green-600 font-semibold rounded-lg hover:bg-green-50 transition-colors text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="clipboard-plus"></svg><!-- UNMAPPED_ICON:clipboard-plus --> Create Assessment
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Create Assessment
                         </a>
                         <a href="#" class="block w-full px-4 py-2.5 border-2 border-blue-500 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="file-earmark-text"></svg><!-- UNMAPPED_ICON:file-earmark-text --> Generate Report Cards
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Generate Report Cards
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Timetable Section -->
+    <div class="mt-8">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-6 py-4 flex justify-between items-center">
+                <h5 class="text-lg font-bold flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg>Class Timetable
+                </h5>
+                <a href="{% url 'academics:timetable_create' %}" class="px-4 py-2 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg> Add Entry
+                </a>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="p-6 border-b border-gray-200 bg-gray-50">
+                <div class="flex flex-col md:flex-row gap-4 items-end">
+                    <div class="flex-1">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Filter by Day of Week</label>
+                        <select id="dayFilter" onchange="filterByDay(this.value)" class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all">
+                            <option value="">-- All Days --</option>
+                            {% for day_val, day_display in timetable_days %}
+                            <option value="{{ day_val }}" {% if selected_day == day_val %}selected{% endif %}>{{ day_display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% if selected_day %}
+                    <a href="?" class="px-6 py-2.5 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors">
+                        Clear Filter
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="p-6">
+                {% if timetable %}
+                    {% if selected_day %}
+                        <!-- Table View (when filtered by day) -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Period</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Subject</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Teacher</th>
+                                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    {% for entry in timetable %}
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-medium">Period {{ entry.period_number }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ entry.start_time|time:"H:i" }} - {{ entry.end_time|time:"H:i" }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-700">{{ entry.subject.name }}</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-700">{{ entry.teacher.get_full_name|default:entry.teacher.username }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <div class="flex items-center justify-center gap-2">
+                                                <a href="{% url 'academics:timetable_update' entry.pk %}" class="inline-flex items-center justify-center w-8 h-8 border-2 border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors" title="Edit">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block"></svg>
+                                                </a>
+                                                <form action="{% url 'academics:timetable_delete' entry.pk %}" method="post" class="inline" onsubmit="return confirm('Delete this timetable entry?');">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="inline-flex items-center justify-center w-8 h-8 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"></svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <!-- Calendar View (all days) -->
+                        <div class="space-y-6">
+                            {% for day, entries in timetable_by_day.items %}
+                            <div class="border-2 border-indigo-200 rounded-xl overflow-hidden">
+                                <!-- Day Header -->
+                                <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-6 py-4 flex items-center gap-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block"></svg>
+                                    <div>
+                                        <h3 class="text-xl font-bold">{{ day }}</h3>
+                                        <p class="text-indigo-100 text-sm">
+                                            {% if entries|length %}
+                                                {{ entries|length }} class{{ entries|length|pluralize }}
+                                            {% else %}
+                                                No classes
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <a href="?day={{ day }}" class="ml-auto px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition-colors">View Day</a>
+                                </div>
+
+                                <!-- Day Content -->
+                                <div class="p-6 bg-white">
+                                    {% if entries %}
+                                        <div class="space-y-4">
+                                            {% for entry in entries %}
+                                            <div class="flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-gradient-to-r from-indigo-50 to-transparent rounded-lg border-l-4 border-indigo-500 hover:shadow-md transition-shadow">
+                                                <!-- Time Block -->
+                                                <div class="mb-3 md:mb-0">
+                                                    <div class="text-2xl font-bold text-indigo-600">Period {{ entry.period_number }}</div>
+                                                    <div class="text-sm text-gray-600">{{ entry.start_time|time:"H:i" }} - {{ entry.end_time|time:"H:i" }}</div>
+                                                </div>
+
+                                                <!-- Subject & Teacher -->
+                                                <div class="mb-3 md:mb-0 flex-grow md:px-6">
+                                                    <div class="font-semibold text-gray-900 mb-1">{{ entry.subject.name }}</div>
+                                                    <div class="text-sm text-gray-600">👨‍🏫 {{ entry.teacher.get_full_name|default:entry.teacher.username }}</div>
+                                                </div>
+
+                                                <!-- Actions -->
+                                                <div class="flex gap-2">
+                                                    <a href="{% url 'academics:timetable_update' entry.pk %}" class="px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg hover:bg-blue-200 transition-colors flex items-center gap-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline-block"></svg> Edit
+                                                    </a>
+                                                    <form action="{% url 'academics:timetable_delete' entry.pk %}" method="post" class="inline" onsubmit="return confirm('Delete this timetable entry?');">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="px-4 py-2 bg-red-100 text-red-700 font-semibold rounded-lg hover:bg-red-200 transition-colors flex items-center gap-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 inline-block"></svg> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-8 text-gray-500">
+                                            <p class="font-medium">No classes scheduled</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-8 rounded-xl text-center">
+                        <h4 class="text-lg font-bold text-blue-800 mb-2">No Timetable Entries</h4>
+                        <p class="text-blue-700 mb-4">No timetable entries have been created for this class yet.</p>
+                        <a href="{% url 'academics:timetable_create' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg> Add Timetable Entry
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -206,14 +346,12 @@
             {% csrf_token %}
             <div class="p-6 flex-1 overflow-y-auto">
                 <div class="mb-4">
-                    <input type="text" id="searchStudent" placeholder="Search students by name or admission number..."
-                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all">
+                    <input type="text" id="searchStudent" placeholder="Search students by name or admission number..." class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all">
                 </div>
                 <div class="max-h-96 overflow-y-auto space-y-2" id="studentList">
                     {% for student in available_students %}
                     <label class="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors cursor-pointer student-item">
-                        <input type="checkbox" name="students" value="{{ student.id }}"
-                            class="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                        <input type="checkbox" name="students" value="{{ student.id }}" class="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
                             {{ student.surname|slice:":1"|upper }}{{ student.other_name|slice:":1"|upper }}
                         </div>
@@ -239,7 +377,7 @@
                     Cancel
                 </button>
                 <button type="submit" class="flex-1 px-4 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="check-circle"></svg><!-- UNMAPPED_ICON:check-circle --> Add Selected Students
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg> Add Selected Students
                 </button>
             </div>
         </form>
@@ -251,7 +389,7 @@
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
         <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 flex justify-between items-center">
             <h5 class="text-lg font-bold flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="arrow-right-square"></svg><!-- UNMAPPED_ICON:arrow-right-square --> Move Student
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block"></svg> Move Student
             </h5>
             <button onclick="document.getElementById('moveStudentModal').classList.add('hidden')" class="text-white hover:text-gray-200 text-2xl">&times;</button>
         </div>
@@ -263,8 +401,7 @@
                 <p class="mb-4 text-gray-700">Move student <strong id="moveStudentName"></strong> to a new class:</p>
                 <div class="mb-4">
                     <label for="newClassroom" class="block text-sm font-semibold text-gray-700 mb-2">New Classroom</label>
-                    <select name="new_classroom_id" id="newClassroom" required
-                        class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all">
+                    <select name="new_classroom_id" id="newClassroom" required class="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all">
                         <option value="" disabled selected>-- Select a new class --</option>
                         {% for c in all_classrooms %}
                         <option value="{{ c.id }}">{{ c }}</option>
@@ -272,10 +409,7 @@
                     </select>
                 </div>
                 <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg">
-                    <div class="flex items-start gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="exclamation-triangle-fill text-yellow-600 mt-0.5"></svg><!-- UNMAPPED_ICON:exclamation-triangle-fill -->
-                        <p class="text-sm text-yellow-800">This action will re-assign the student to the selected class.</p>
-                    </div>
+                    <p class="text-sm text-yellow-800">This action will re-assign the student to the selected class.</p>
                 </div>
             </div>
             <div class="px-6 py-4 border-t border-gray-200 flex gap-3">
@@ -295,6 +429,14 @@
         document.getElementById('moveStudentId').value = studentId;
         document.getElementById('moveStudentName').textContent = studentName;
         document.getElementById('moveStudentModal').classList.remove('hidden');
+    }
+
+    function filterByDay(day) {
+        if (day) {
+            window.location.href = "?day=" + encodeURIComponent(day);
+        } else {
+            window.location.href = window.location.pathname;
+        }
     }
 
     // Search functionality

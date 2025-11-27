@@ -71,7 +71,11 @@ def user_list(request):
     Display a list of users, with the ability to filter by role (admin, staff, parent, student).
     """
     user_type = request.GET.get("type")
-    users_qs = User.objects.all().select_related("student_profile", "parent_profile").order_by("-date_joined")
+    users_qs = (
+        User.objects.all()
+        .select_related("student_profile", "parent_profile")
+        .order_by("-date_joined")
+    )
 
     page_title = "All Users"
 

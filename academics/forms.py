@@ -3,6 +3,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.db import models
 from .models import (
     AcademicSession,
     Term,
@@ -69,13 +70,57 @@ class TermForm(forms.ModelForm):
             "is_current": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If session is selected, limit term choices to only those not already used
+        session = self.initial.get("session") or self.data.get("session")
+        if session:
+            from .models import Term, AcademicSession
+
+            try:
+                session_obj = AcademicSession.objects.get(pk=session)
+                used_terms = set(
+                    Term.objects.filter(session=session_obj).values_list(
+                        "name", flat=True
+                    )
+                )
+                all_terms = [choice[0] for choice in Term.TERM_CHOICES]
+                available_terms = [
+                    (t, dict(Term.TERM_CHOICES)[t])
+                    for t in all_terms
+                    if t not in used_terms
+                ]
+                self.fields["name"].choices = available_terms
+            except AcademicSession.DoesNotExist:
+                pass
+
     def clean(self):
         cleaned_data = super().clean()
+        session = cleaned_data.get("session")
+        name = cleaned_data.get("name")
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
 
         if start_date and end_date and end_date <= start_date:
             raise ValidationError("End date must be after start date.")
+
+        # Prevent more than 3 terms per session
+        if session:
+            from .models import Term
+
+            term_count = Term.objects.filter(session=session).count()
+            if self.instance.pk is None and term_count >= 3:
+                raise ValidationError(
+                    "You cannot create more than 3 terms for a session."
+                )
+            # Prevent duplicate term name for session
+            if (
+                name
+                and Term.objects.filter(session=session, name=name)
+                .exclude(pk=getattr(self.instance, "pk", None))
+                .exists()
+            ):
+                raise ValidationError(f"{name} term already exists for this session.")
 
         return cleaned_data
 
@@ -190,6 +235,7 @@ class AssessmentForm(forms.ModelForm):
         fields = [
             "assignment",
             "assessment_type",
+            "assessment_code",
             "title",
             "date",
             "max_score",
@@ -198,12 +244,25 @@ class AssessmentForm(forms.ModelForm):
         widgets = {
             "assignment": forms.Select(attrs={"class": "form-select"}),
             "assessment_type": forms.Select(attrs={"class": "form-select"}),
+            "assessment_code": forms.Select(
+                attrs={
+                    "class": "form-select",
+                    "id": "id_assessment_code",
+                    "data-toggle": "tooltip",
+                    "title": "Select assessment type: CA1/CA2/CA3 (max 10), TEST (max 10), EXAM (60)",
+                }
+            ),
             "title": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "e.g., Week 1 Test"}
             ),
             "date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
             "max_score": forms.NumberInput(
-                attrs={"class": "form-control", "placeholder": "100", "min": 1}
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "100",
+                    "min": 1,
+                    "id": "id_max_score",
+                }
             ),
             "instructions": forms.Textarea(
                 attrs={
@@ -227,6 +286,67 @@ class AssessmentForm(forms.ModelForm):
                 .select_related("classroom", "subject", "term")
                 .order_by("-term__is_current", "-term__start_date")
             )
+
+        # Add help text to max_score field
+        self.fields["max_score"].help_text = (
+            "CA: max 10 points | TEST: max 10 points | EXAM: 60 points | "
+            "Total CA cannot exceed 40"
+        )
+
+    def clean(self):
+        """Validate assessment score constraints"""
+        cleaned_data = super().clean()
+        assessment_code = cleaned_data.get("assessment_code")
+        max_score = cleaned_data.get("max_score")
+        assignment = cleaned_data.get("assignment")
+
+        if not assessment_code or not max_score:
+            return cleaned_data
+
+        # Validate based on assessment code
+        if assessment_code.startswith("CA"):
+            if max_score > 10:
+                raise ValidationError(
+                    f"❌ CA assessments cannot exceed 10 points. You set {max_score}. "
+                    "Please reduce the score to 10 or less."
+                )
+
+            # Check total CA for this subject/class/term
+            if assignment:
+                ca_total = (
+                    Assessment.objects.filter(
+                        assignment__classroom=assignment.classroom,
+                        assignment__subject=assignment.subject,
+                        assignment__term=assignment.term,
+                        assessment_code__startswith="CA",
+                    )
+                    .exclude(pk=self.instance.pk if self.instance else None)
+                    .aggregate(total=models.Sum("max_score"))["total"]
+                    or 0
+                )
+
+                if ca_total + max_score > 40:
+                    raise ValidationError(
+                        f"❌ Total CA cannot exceed 40 points. "
+                        f"Current CA total: {ca_total}, trying to add: {max_score} = {ca_total + max_score}. "
+                        f"Please reduce the score. (Max allowed: {40 - ca_total})"
+                    )
+
+        elif assessment_code == "TEST":
+            if max_score > 10:
+                raise ValidationError(
+                    f"❌ Test assessments cannot exceed 10 points. You set {max_score}. "
+                    "Please reduce the score to 10 or less."
+                )
+
+        elif assessment_code == "EXAM":
+            if max_score != 60:
+                raise ValidationError(
+                    f"❌ Exam must be exactly 60 points. You set {max_score}. "
+                    "Please set the score to 60."
+                )
+
+        return cleaned_data
 
 
 # ============================================
@@ -264,6 +384,34 @@ class StudentScoreForm(forms.ModelForm):
         if self.assessment:
             # Set max score from assessment
             self.fields["score"].widget.attrs["max"] = self.assessment.max_score
+
+            # Show lock warning if assessment is locked
+            if self.assessment.is_locked:
+                locked_by_name = (
+                    self.assessment.locked_by.get_full_name()
+                    or self.assessment.locked_by.username
+                    if self.assessment.locked_by
+                    else "Admin"
+                )
+                self.fields["score"].widget.attrs["readonly"] = True
+                self.fields["remarks"].widget.attrs["readonly"] = True
+                self.fields[
+                    "score"
+                ].help_text = f"🔒 LOCKED by {locked_by_name} on {self.assessment.locked_at.strftime('%Y-%m-%d %H:%M')}"
+
+    def clean(self):
+        """Check if assessment is locked and prevent editing if so"""
+        cleaned_data = super().clean()
+
+        # Check if assessment is locked
+        if self.assessment and self.assessment.is_locked:
+            raise ValidationError(
+                "🔒 This assessment is LOCKED. Only admins can modify scores. "
+                f"Locked by: {self.assessment.locked_by.username if self.assessment.locked_by else 'Admin'} "
+                f"at {self.assessment.locked_at.strftime('%Y-%m-%d %H:%M') if self.assessment.locked_at else 'N/A'}"
+            )
+
+        return cleaned_data
 
     def clean_score(self):
         score = self.cleaned_data.get("score")
@@ -401,9 +549,15 @@ class TimetableForm(forms.ModelForm):
         widgets = {
             "classroom": forms.Select(attrs={"class": "form-select"}),
             "day_of_week": forms.Select(attrs={"class": "form-select"}),
-            "period_number": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
-            "start_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
-            "end_time": forms.TimeInput(attrs={"class": "form-control", "type": "time"}),
+            "period_number": forms.NumberInput(
+                attrs={"class": "form-control", "min": 1}
+            ),
+            "start_time": forms.TimeInput(
+                attrs={"class": "form-control", "type": "time"}
+            ),
+            "end_time": forms.TimeInput(
+                attrs={"class": "form-control", "type": "time"}
+            ),
             "subject": forms.Select(attrs={"class": "form-select"}),
             "teacher": forms.Select(attrs={"class": "form-select"}),
             "term": forms.Select(attrs={"class": "form-select"}),
@@ -413,9 +567,13 @@ class TimetableForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["teacher"].queryset = User.objects.filter(is_staff=True)
-        self.fields["subject"].queryset = Subject.objects.all().order_by('name')
-        self.fields["classroom"].queryset = ClassRoom.objects.filter(session__is_current=True).order_by('level', 'arm')
-        self.fields["term"].queryset = Term.objects.filter(is_current=True).order_by('-session__start_date', 'name')
+        self.fields["subject"].queryset = Subject.objects.all().order_by("name")
+        self.fields["classroom"].queryset = ClassRoom.objects.filter(
+            session__is_current=True
+        ).order_by("level", "arm")
+        self.fields["term"].queryset = Term.objects.filter(is_current=True).order_by(
+            "-session__start_date", "name"
+        )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -490,6 +648,7 @@ class BulkReportCardGenerationForm(forms.Form):
 # Filter & Search Forms
 # ============================================
 
+
 class PerformanceFilterForm(forms.Form):
     session = forms.ModelChoiceField(
         queryset=AcademicSession.objects.all(),
@@ -516,7 +675,7 @@ class PerformanceFilterForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-select"}),
     )
     student = forms.ModelChoiceField(
-        queryset=Student.objects.all().order_by('surname', 'other_name'),
+        queryset=Student.objects.all().order_by("surname", "other_name"),
         required=False,
         empty_label="All Students",
         widget=forms.Select(attrs={"class": "form-select"}),
@@ -610,3 +769,163 @@ class PerformanceCommentForm(forms.ModelForm):
             ),
             "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
+
+
+# ============================================
+# Enhanced Report Card Workflow Forms
+# ============================================
+
+
+class EnhancedReportCardForm(forms.ModelForm):
+    """Enhanced form for creating/editing report cards with all new fields"""
+
+    class Meta:
+        model = ReportCard
+        fields = [
+            "student",
+            "term",
+            "classroom",
+            "days_present",
+            "days_absent",
+            "attendance_percentage",
+            "class_teacher_remarks",
+            "principal_remarks",
+            "performance_trend",
+            "next_term_recommendation",
+            "status",
+            "punctuality",
+            "attendance_in_class",
+            "honesty",
+            "neatness",
+            "discipline",
+            "participation",
+            "handwriting",
+            "sports_and_games",
+            "creative_skills",
+            "internal_notes",
+        ]
+        widgets = {
+            "student": forms.Select(attrs={"class": "form-select"}),
+            "term": forms.Select(attrs={"class": "form-select"}),
+            "classroom": forms.Select(attrs={"class": "form-select"}),
+            "days_present": forms.NumberInput(
+                attrs={"class": "form-control", "min": 0}
+            ),
+            "days_absent": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
+            "attendance_percentage": forms.NumberInput(
+                attrs={"class": "form-control", "min": 0, "max": 100, "step": 0.01}
+            ),
+            "class_teacher_remarks": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": "Class teacher's remarks on overall performance",
+                }
+            ),
+            "principal_remarks": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": "Principal's remarks and overall assessment",
+                }
+            ),
+            "performance_trend": forms.Select(attrs={"class": "form-select"}),
+            "next_term_recommendation": forms.Select(attrs={"class": "form-select"}),
+            "status": forms.Select(attrs={"class": "form-select"}),
+            "punctuality": forms.Select(attrs={"class": "form-select"}),
+            "attendance_in_class": forms.Select(attrs={"class": "form-select"}),
+            "honesty": forms.Select(attrs={"class": "form-select"}),
+            "neatness": forms.Select(attrs={"class": "form-select"}),
+            "discipline": forms.Select(attrs={"class": "form-select"}),
+            "participation": forms.Select(attrs={"class": "form-select"}),
+            "handwriting": forms.Select(attrs={"class": "form-select"}),
+            "sports_and_games": forms.Select(attrs={"class": "form-select"}),
+            "creative_skills": forms.Select(attrs={"class": "form-select"}),
+            "internal_notes": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 3,
+                    "placeholder": "Internal notes for staff only",
+                }
+            ),
+        }
+
+
+class ReportCardPublishForm(forms.Form):
+    """Form for publishing report cards in bulk"""
+
+    term = forms.ModelChoiceField(
+        queryset=Term.objects.all(),
+        widget=forms.Select(attrs={"class": "form-select"}),
+        label="Select Term",
+    )
+    classroom = forms.ModelChoiceField(
+        queryset=ClassRoom.objects.all(),
+        widget=forms.Select(attrs={"class": "form-select"}),
+        label="Select Class",
+    )
+    publish_all = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        label="Publish all report cards for this class/term",
+    )
+
+
+class ReportCardStatusForm(forms.Form):
+    """Form for changing report card status"""
+
+    STATUS_CHOICES = [
+        ("Draft", "Draft"),
+        ("Published", "Published"),
+        ("Archived", "Archived"),
+    ]
+
+    status = forms.ChoiceField(
+        choices=STATUS_CHOICES,
+        widget=forms.Select(attrs={"class": "form-select"}),
+        label="New Status",
+    )
+    notify_student = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        label="Notify student when published",
+    )
+
+
+class ReportCardBenchmarkForm(forms.Form):
+    """Form for setting benchmark data"""
+
+    class_average = forms.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Class average score",
+                "step": 0.01,
+            }
+        ),
+    )
+    national_average = forms.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "National average (optional)",
+                "step": 0.01,
+            }
+        ),
+    )
+    target_score = forms.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Target score for this class",
+                "step": 0.01,
+            }
+        ),
+    )

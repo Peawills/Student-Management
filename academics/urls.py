@@ -78,6 +78,27 @@ urlpatterns = [
         views.unpublish_assessment,
         name="unpublish_assessment",
     ),
+    # === Score Locking System ===
+    path(
+        "assessments/<int:pk>/lock/",
+        views.lock_assessment_scores,
+        name="lock_assessment_scores",
+    ),
+    path(
+        "assessments/<int:pk>/unlock/",
+        views.unlock_assessment_scores,
+        name="unlock_assessment_scores",
+    ),
+    path(
+        "assessments/<int:pk>/validate/",
+        views.validate_assessment_constraints,
+        name="validate_assessment_constraints",
+    ),
+    path(
+        "assessments/lock-management/",
+        views.lock_management_dashboard,
+        name="lock_management_dashboard",
+    ),
     # Scores
     path(
         "assessments/<int:assessment_id>/scores/",
@@ -88,8 +109,36 @@ urlpatterns = [
     # Report Cards
     path("report-cards/", views.report_card_list, name="report_card_list"),
     path("report-cards/<int:pk>/", views.report_card_detail, name="report_card_detail"),
-    path("report-cards/<int:pk>/publish/", views.publish_report_card, name="publish_report_card"),
-    path("report-cards/<int:pk>/unpublish/", views.unpublish_report_card, name="unpublish_report_card"),
+    path(
+        "report-cards/<int:pk>/interactive/",
+        views.report_card_detail_interactive,
+        name="report_card_detail_interactive",
+    ),
+    path(
+        "report-cards/<int:pk>/publish/",
+        views.publish_report_card,
+        name="publish_report_card",
+    ),
+    path(
+        "report-cards/<int:pk>/change-status/",
+        views.change_report_card_status,
+        name="change_report_card_status",
+    ),
+    path(
+        "report-cards/bulk/publish/",
+        views.bulk_publish_report_cards,
+        name="bulk_publish_report_cards",
+    ),
+    path(
+        "report-cards/<int:pk>/unpublish/",
+        views.unpublish_report_card,
+        name="unpublish_report_card",
+    ),
+    path(
+        "report-cards/generate/",
+        views.generate_report_cards,
+        name="generate_report_cards",
+    ),
     # --- New Report Card Generation Workflow ---
     path(
         "report-cards/prepare/",
@@ -144,6 +193,10 @@ urlpatterns = [
     # Timetable
     path("timetables/", views.timetable_list, name="timetable_list"),
     path("timetables/create/", views.timetable_create, name="timetable_create"),
-    path("timetables/<int:pk>/update/", views.timetable_update, name="timetable_update"),
-    path("timetables/<int:pk>/delete/", views.timetable_delete, name="timetable_delete"),
+    path(
+        "timetables/<int:pk>/update/", views.timetable_update, name="timetable_update"
+    ),
+    path(
+        "timetables/<int:pk>/delete/", views.timetable_delete, name="timetable_delete"
+    ),
 ]

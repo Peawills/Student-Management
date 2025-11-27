@@ -12,7 +12,9 @@ urlpatterns = [
     # PARENT INVITATION
     # ============================================
     path(
-        "invitation/accept/<uuid:token>/", views.accept_invitation, name="accept_invitation"
+        "invitation/accept/<uuid:token>/",
+        views.accept_invitation,
+        name="accept_invitation",
     ),
     # ============================================
     # PARENT PORTAL

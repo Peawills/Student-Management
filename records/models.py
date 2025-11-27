@@ -7,6 +7,29 @@ import os
 
 
 class Student(models.Model):
+    def average_score_for_session(self, session):
+        """
+        Compute the average score for this student for a given session across all subjects and all 3 terms.
+        Returns None if not all 3 terms exist for the session.
+        """
+        from academics.models import Term, TermResult
+
+        terms = Term.objects.filter(session=session).order_by("name")
+        if terms.count() != 3:
+            return None  # Only compute if all 3 terms exist
+        total = 0
+        subject_count = 0
+        for term in terms:
+            # Get all subject results for this student in this term
+            results = TermResult.objects.filter(student=self, term=term)
+            for result in results:
+                total += result.total_score or 0
+                subject_count += 1
+        if subject_count == 0:
+            return 0
+        # Average per subject per term, then divided by 3 terms
+        return total / 3 if terms.count() == 3 else 0
+
     surname = models.CharField(max_length=100)
     user = models.OneToOneField(
         User,
@@ -51,7 +74,8 @@ class Student(models.Model):
         upload_to="students/images/", blank=True, null=True
     )
     is_active = models.BooleanField(
-        default=True, help_text="Active students are shown in lists. Unselect this to archive a student."
+        default=True,
+        help_text="Active students are shown in lists. Unselect this to archive a student.",
     )
     graduation_session = models.ForeignKey(
         "academics.AcademicSession",
@@ -147,7 +171,7 @@ class Student(models.Model):
         retry a few times if a race causes an IntegrityError.
         """
         is_create = self._state.adding
-        
+
         # Sync class_at_present with the classroom foreign key
         if self.classroom:
             self.class_at_present = str(self.classroom)

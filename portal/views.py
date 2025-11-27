@@ -29,7 +29,15 @@ from .forms import (
     ParentInvitationForm,
     ReplyMessageForm,
 )
-from academics.models import StudentScore, TermResult, ReportCard, Term, Assessment, Attendance, Timetable
+from academics.models import (
+    StudentScore,
+    TermResult,
+    ReportCard,
+    Term,
+    Assessment,
+    Attendance,
+    Timetable,
+)
 from academics.models import ClassRoom, SubjectAssignment
 
 
@@ -232,8 +240,11 @@ def parent_dashboard(request):
     # Enhance students with stats
     for student in students:
         # Get latest report card
-        latest_report = ReportCard.objects.filter(student=student, is_published=True)\
-            .order_by("-term__start_date").first()
+        latest_report = (
+            ReportCard.objects.filter(student=student, is_published=True)
+            .order_by("-term__start_date")
+            .first()
+        )
         if latest_report:
             student.average_score = latest_report.average_score
             student.position = f"{latest_report.position}/{latest_report.out_of}"
@@ -320,8 +331,11 @@ def parent_student_detail(request, student_id):
     )
 
     # Get latest report card
-    latest_report = ReportCard.objects.filter(student=student, is_published=True)\
-        .order_by("-term__start_date").first()
+    latest_report = (
+        ReportCard.objects.filter(student=student, is_published=True)
+        .order_by("-term__start_date")
+        .first()
+    )
 
     context = {
         "student": student,
@@ -555,9 +569,11 @@ def student_dashboard(request):
     current_term = Term.objects.filter(is_current=True).first()
 
     # Get latest report card
-    latest_report = ReportCard.objects.filter(
-        student=student, is_published=True
-    ).order_by("-term__start_date").first()
+    latest_report = (
+        ReportCard.objects.filter(student=student, is_published=True)
+        .order_by("-term__start_date")
+        .first()
+    )
 
     # Get unread messages
     unread_messages = PortalMessage.objects.filter(
@@ -591,7 +607,9 @@ def student_scores(request):
 
     # Only show scores from published assessments
     scores = StudentScore.objects.filter(
-        student=student, assessment__assignment__term=current_term, assessment__is_published=True
+        student=student,
+        assessment__assignment__term=current_term,
+        assessment__is_published=True,
     )
 
     scores = (

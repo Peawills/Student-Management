@@ -81,14 +81,3 @@
     }
 </script>
 {% endblock %}
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="action-buttons">
-        <a href="{% url 'records:student_detail' student.pk %}" class="btn btn-secondary btn-action"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block" title="person-lines-fill"></svg><!-- UNMAPPED_ICON:person-lines-fill --> View Student Profile</a>
-        <a href="{% url 'records:student_create' %}" class="btn btn-primary btn-action"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 inline-block"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8M8 12h8"/></svg> Add Another Student</a>
-    </div>
-</div>
-{% endblock %}
